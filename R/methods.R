@@ -38,7 +38,11 @@ SVDstacked <- function(X.list,
 
   my.svd <- svd(V.stacked)
 
-  return(my.svd$v)
+  rank.keep <- ifelse(rank == "auto",
+                      sum(my.svd$d > 1 + 10^{-10}),
+                      as.numeric(rank))
+
+  return(my.svd$v[,1:rank.keep])
 }
 
 
@@ -69,16 +73,27 @@ SVDstackedWeighted <- function(X.list,
 
     V.best <- irlba::irlba(X.list[[best.m]], nv=max.rank, nu=max.rank)$v
 
-    best.beta <- 1 - (c[best.m] + Theta[[best.m]][r]^2)/(Theta[[best.m]][r]^2 + Theta[[best.m]][r]^4)
+    best.beta <- sqrt(1 - (c[best.m] + Theta[[best.m]][r]^2)/(Theta[[best.m]][r]^2 + Theta[[best.m]][r]^4))
+    print(best.beta)
+    cat("Best beta for rank", r, " is ", best.beta, "\n")
 
     for(m in 1:M) {
       if(m == best.m) {
         Beta[m, r] <- best.beta
       } else{
-        Beta[m, r] <- min(1/best.beta * (sqrt(sum((X.list[[m]] %*% V.best[,r])^2) - c[m])), 1 - 10^{-10})
+        theta_mr <- 1/best.beta * (sqrt(sum((X.list[[m]] %*% V.best[,r])^2) - c[m]))
+        if(is.nan(theta_mr)) {
+          Beta[m,r] <- 0
+        } else if(theta_mr > c[m]^{1/4}) {
+          Beta[m,r] <- sqrt(1 - (c[m] + theta_mr^2)/(theta_mr^2 + theta_mr^4))
+        } else{
+          Beta[m,r] <- 0
+        }
       }
     }
   }
+
+  print(Beta)
 
   W <- 1/sqrt(1 - Beta^2)
 
@@ -86,9 +101,7 @@ SVDstackedWeighted <- function(X.list,
   for(m in 1:M) {
     my.svd <- irlba::irlba(X.list[[m]], nv=max.rank, nu=max.rank)
 
-    ci <- nrow(X.list[[m]])/ncol(X.list[[m]])
-
-    V.list[[m]] <- W[m,] * t(my.svd$v[,1:max.rank])
+    V.list[[m]] <- t(W[m,]) %*% t(my.svd$v)
   }
 
   V.stacked <- do.call(rbind, V.list)
@@ -97,6 +110,3 @@ SVDstackedWeighted <- function(X.list,
 
   return(my.svd$v)
 }
-
-
-
