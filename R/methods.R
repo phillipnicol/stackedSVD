@@ -167,7 +167,7 @@ stackedSVDWeighted <- function(X.list, rank, max.rank = 50) {
       }
 
       if(r == 1) {
-        print(W[,m])
+        #print(W[,m])
       }
       Xw[[m]] <- W[m,r]*X.list[[m]]
     }
