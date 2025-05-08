@@ -9,11 +9,15 @@ stackedSVDOracle <- function(X.list, theta.true,
 
   c <- unlist(lapply(X.list, function(X) nrow(X)/ncol(X)))
 
+  print(c)
+
   if(weight) {
-    w <- theta.true/(sqrt(theta.true^2 + 1))
+    w <- theta.true/(sqrt(theta.true^2 + c))
   } else{
     w <- rep(1,M)
   }
+
+  print(w)
 
   for(m in 1:M) {
     X.list[[m]] <- w[m] * X.list[[m]]
