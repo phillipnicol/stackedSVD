@@ -156,13 +156,15 @@ stackedSVDWeighted <- function(X.list, rank, max.rank = 50) {
     for(m in 1:M) {
       if(m == best.m) {
         #print(Theta[[best.m]][r])
-        W[m,r] <- Theta[[best.m]][r]* sqrt((Theta[[best.m]][r]^2 + 1)/(Theta[[best.m]][r]^2 + c[m]))
+        #W[m,r] <- Theta[[best.m]][r]* sqrt((Theta[[best.m]][r]^2 + 1)/(Theta[[best.m]][r]^2 + c[m]))
+        W[m,r] <- Theta[[best.m]][r]/(sqrt(Theta[[best.m]][r]^2 + c[m]^2))
       } else{
         theta_mr <- 1/best.beta * (sqrt(sum((X.list[[m]] %*% V.best[,r])^2) - c[m]))
         if(is.nan(theta_mr)) {
           W[m,r] <- 0
         } else{
-          W[m,r] <- theta_mr * sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
+          #W[m,r] <- theta_mr * sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
+          W[m,r] <- theta_mr/(sqrt(theta_mr^2 + c[m]^2))
         }
       }
 

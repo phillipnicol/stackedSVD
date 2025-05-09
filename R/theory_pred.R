@@ -16,7 +16,7 @@ compute_x_star <- function(theta.true, c.vec = rep(1, length(theta.true))) {
 ### Get theoretical values
 
 getTheoryPred <- function(theta.true, c) {
-
+  M <- length(theta.true)
   #Stack-SVD
 
   theta2 <- sqrt(sum(theta.true^2))
@@ -24,10 +24,13 @@ getTheoryPred <- function(theta.true, c) {
   stack.svd <- ifelse(theta2^4/sum(c) > 1, (theta2^4 - sum(c))/(theta2^4 + theta2^2), 0)
 
   #SVD-Stack
-
-  beta.true <- ifelse(theta.true > c^{1/4},
-                      sqrt(1 - (c+theta.true^2)/(theta.true^4+theta.true^2)),
-                      0)
+  beta.true <- lapply(1:M, function(m) {
+    if(theta.true[m] > c[m]^{1/4}) {
+      sqrt(1 - (c[m] + theta.true[m]^2)/(theta.true[m]^4 + theta.true[m]^2))
+    } else{
+      0
+    }
+  }) |> unlist()
 
   A <- beta.true %*% t(beta.true) + diag(1 - beta.true^2)
 
@@ -35,7 +38,11 @@ getTheoryPred <- function(theta.true, c) {
 
   #Stack-SVD W
 
-  stack.svd.w <- compute_x_star(theta.true, c.vec=c)
+  if(sum(theta.true^4/c) < 1) {
+    stack.svd.w <- 0
+  } else{
+    stack.svd.w <- compute_x_star(theta.true, c.vec=c)
+  }
 
   #SVD-Stack W
   S <- sum(beta.true^2/(1 - beta.true^2))

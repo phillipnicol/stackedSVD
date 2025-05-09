@@ -42,9 +42,13 @@ SVDstackedOracle <- function(X.list,
 
   c <- unlist(lapply(X.list, function(X) nrow(X)/ncol(X)))
 
-  beta.true <- ifelse(theta.true > c^{1/4},
-                      sqrt(1 - (c+theta^2)/(theta^4+theta^2)),
-                      0)
+  beta.true <- lapply(1:M, function(m) {
+    if(theta.true[m] > c[m]^{1/4}) {
+      sqrt(1 - (c[m] + theta.true[m]^2)/(theta.true[m]^4 + theta.true[m]^2))
+    } else{
+      0
+    }
+  }) |> unlist()
 
   #Get w
 
