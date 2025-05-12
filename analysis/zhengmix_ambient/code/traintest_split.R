@@ -1,5 +1,7 @@
 
 set.seed(1)
+sce <- DuoClustering2018::sce_filteredHVG10_Zhengmix8eq()
+Y <- t(sce@assays@data$counts)
 Y.perm <- Y[sample(1:nrow(Y), size=nrow(Y), replace = TRUE),]
 
 Ytrain <- Y.perm[1:3000,]

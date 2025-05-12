@@ -16,16 +16,20 @@ for(K in 1:length(M.try)) {
   Y <- Ytrain
 
   #M <- M.try[K]
-
+  #prob <- c(1:10)/10
   ixs <- sample(1:10, size=nrow(Y), replace=TRUE)
 
   X <- list()
   for(i in 1:10) {
-    #X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient=ifelse(i == 1,
-    #                                                   0,
-    #                                                   25))
+    X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient=ifelse(i == 1,
+                                                       10,
+                                                       1000))
 
-    X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient = i*5)
+    #X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient=ifelse(i == 1,
+    #                                                   10,
+    #                                                   50))
+
+    #X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient = 25)
 
     X[[i]] <- 2*sqrt(X[[i]]/d)
     X[[i]] <- scale(X[[i]], center=TRUE, scale=FALSE)
@@ -65,7 +69,7 @@ for(K in 1:length(M.try)) {
   cor.3 <- sqrt(sum((V.true %*% t(V.true) - V3 %*% t(V3))^2))
   cor.4 <- sqrt(sum((V.true %*% t(V.true) - V4 %*% solve(t(V4) %*% V4) %*% t(V4))^2))
 
-  V5 <- irlba::irlba(X.list[[1]], nu=10 ,nv=10)$v
+  V5 <- irlba::irlba(X.list[[1]], nu=my.rank ,nv=my.rank)$v
 
   cor.5 <-  sqrt(sum((V.true %*% t(V.true) - V5 %*% t(V5))^2))
 
