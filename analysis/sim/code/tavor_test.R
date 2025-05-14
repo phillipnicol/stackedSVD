@@ -5,11 +5,11 @@
 
 M <- 2
 
-n <- 1000
-d <- 1000
+n <- 10000
+d <- 10000
 
 c <- c(1,1)
-theta <- c(0.95, 0.8)
+theta <- c(1, 0.8)
 
 v <- rnorm(n = d, sd = 1)
 v <- v / sqrt(sum(v^2))
@@ -30,7 +30,8 @@ for(i in 1:5) {
   X.list <- list()
   for (m in 1:M) {
     n <- round(d * c[m])
-    u <- rnorm(n = n, sd = 1 / sqrt(n))
+    #u <- rnorm(n = n, sd = 1 / sqrt(n))
+    u <- u/sqrt(sum(u^2))
     X.list[[m]] <- theta[m] * outer(u, v) + matrix(rnorm(n * d, sd = 1 / sqrt(d)), nrow = n, ncol = d)
   }
 
