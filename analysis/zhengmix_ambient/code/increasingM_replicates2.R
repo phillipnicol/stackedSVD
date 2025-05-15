@@ -33,7 +33,7 @@ for(rep in 1:n.reps) {
 
     X <- list()
     for(i in 1:10) {
-      X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient=ifelse(i == 1, 10, 1000))
+      X[[i]] <- generate_Xi(Y[ixs==i,], n_ambient=ifelse(i == 1, 10, 50))
       X[[i]] <- 2 * sqrt(X[[i]] / d)
       X[[i]] <- scale(X[[i]], center=TRUE, scale=FALSE)
     }
