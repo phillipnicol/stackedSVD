@@ -71,7 +71,7 @@ Res_mean <- apply(Res_all, c(1,2), mean)
 
 Res_mean <- t(Res_mean)
 
-colnames(Res_mean) <- c("Stack SVD", "SVD Stack", "SVD Stack (W)", "Stack SVD (W)", "Low noise matrix")
+colnames(Res_mean) <- c("Unweighted Stack-SVD", "Unweighted SVD-Stack", "Weighted SVD-Stack", "Weighted Stack-SVD", "Best single matrix")
 rownames(Res_mean) <- M.try
 
 Res_mean <- as.data.frame(Res_mean)
@@ -89,3 +89,5 @@ p <- df |> ggplot(aes(x=M, y=value, color=variable)) +
   xlab("M") + ylab("Norm metric")
 
 print(p)
+
+saveRDS(df, file="../data/increasing_M_one_low_rest_medium.RDS")

@@ -68,6 +68,8 @@ SVDstackedWeighted <- function(X.list,
   #Get w
 
   Beta <- matrix(0, nrow=M, ncol=max.rank)
+  #Theta <- matrix(0, nrow=M, ncol=max.rank)
+  Wmr <- Beta
   for(r in 1:max.rank) {
     best.m <- which.max(unlist(sapply(Theta, function(theta) theta[r])))
 
@@ -80,20 +82,31 @@ SVDstackedWeighted <- function(X.list,
     for(m in 1:M) {
       if(m == best.m) {
         Beta[m, r] <- best.beta
+        theta_mr <- Theta[[best.m]][r]
+        Wmr[m,r] <- theta_mr*sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
       } else{
         theta_mr <- 1/best.beta * (sqrt(sum((X.list[[m]] %*% V.best[,r])^2) - c[m]))
         if(is.nan(theta_mr)) {
           Beta[m,r] <- 0
+          Wmr[m,r] <- 0
         } else if(theta_mr > c[m]^{1/4}) {
           Beta[m,r] <- sqrt(1 - (c[m] + theta_mr^2)/(theta_mr^2 + theta_mr^4))
+          Wmr[m,r] <- theta_mr*sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
         } else{
           Beta[m,r] <- 0
+          Wmr[m,r] <- theta_mr*sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
         }
       }
     }
   }
 
-  W <- 1/sqrt(1 - Beta^2)
+  #W <- 1/sqrt(1 - Beta^2)
+  W <- Wmr
+
+  W.orig <- 1/sqrt(1-Beta^2)
+
+  cat("Theta weights ", Wmr[1,], "\n")
+  cat("Beta weights ", W.orig[1,], "\n")
 
   V.list <- list()
   #cat("M: ", M, "\n")

@@ -71,7 +71,6 @@ X3 <- scale(X3, center=TRUE, scale=FALSE)
 
 #X1 <- Y[ixs==1,]; X2 <- Y[ixs==2,]; X3 <- Y[ixs==3,]
 
-## Scramble da X3
 #X3 <- matrix(sample(X3, size = nrow(X3)*ncol(X3), replace=TRUE), nrow=nrow(X3),
 #             ncol=ncol(X3))
 

@@ -53,7 +53,8 @@ SVDstackedOracle <- function(X.list,
   #Get w
 
   if(weight) {
-    w <- 1/sqrt(1-beta.true^2)
+    #w <- 1/sqrt(1-beta.true^2)
+    w <- theta*sqrt((theta^2 + 1)/(theta^2 + c))
   } else{
     w <- rep(1,M)
   }

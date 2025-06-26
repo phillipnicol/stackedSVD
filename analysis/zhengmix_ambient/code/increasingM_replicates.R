@@ -62,7 +62,7 @@ for(rep in 1:n.reps) {
     cor.5 <- sqrt(sum((V.true %*% t(V.true) - V5 %*% t(V5))^2))
 
     Res_all[,K,rep] <- c(cor.1, cor.2, cor.3, cor.4, cor.5)
-    print(c(cor.1, cor.2, cor.3, cor.4, cor.5))
+    #print(c(cor.1, cor.2, cor.3, cor.4, cor.5))
   }
 }
 
@@ -71,7 +71,7 @@ Res_mean <- apply(Res_all, c(1,2), mean)
 
 Res_mean <- t(Res_mean)
 
-colnames(Res_mean) <- c("Stack SVD", "SVD Stack", "SVD Stack (W)", "Stack SVD (W)", "Low noise matrix")
+colnames(Res_mean) <- c("Unweighted Stack-SVD", "Unweighted SVD-Stack", "Weighted SVD-Stack", "Weighted Stack-SVD", "Best single matrix")
 rownames(Res_mean) <- M.try
 
 Res_mean <- as.data.frame(Res_mean)
