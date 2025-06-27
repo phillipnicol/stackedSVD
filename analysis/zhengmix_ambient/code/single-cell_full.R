@@ -1,3 +1,4 @@
+setwd(here::here("analysis/zhengmix_ambient/code"))
 
 set.seed(1)
 sce <- DuoClustering2018::sce_filteredHVG10_Zhengmix8eq()
@@ -385,7 +386,6 @@ p1 <- df1 |> ggplot(aes(x=M, y=value, color=variable)) +
   geom_point() + geom_line() + theme_bw() +
   xlab("M") + ylab("Distance") + labs(color="Method") +
   ggtitle("High noise scenario")
-
 
 
 library(ggpubr)
