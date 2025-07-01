@@ -1,4 +1,4 @@
-#' Compute Right Singular Vectors from Stacked Matrix
+#' Stacked SVD
 #'
 #' Performs truncated SVD on the row-stacked version of a list of matrices.
 #'
@@ -20,7 +20,7 @@ stackedSVD <- function(X.list,
   return(V.hat)
 }
 
-#' Consensus Singular Vectors via Individual SVD and Aggregation
+#' SVD Stacked
 #'
 #' Computes the right singular vectors by individually applying SVD and stacking the results.
 #'
@@ -48,7 +48,7 @@ SVDstacked <- function(X.list,
   return(my.svd$v[,1:rank.keep])
 }
 
-#' Weighted Stacking of SVDs with Theta-Based Weights
+#' Weighted Stacked SVD
 #'
 #' Constructs right singular vectors by weighting and stacking based on estimated signal strength.
 #'
@@ -114,7 +114,7 @@ SVDstackedWeighted <- function(X.list,
   return(my.svd$v[,1:rank.keep])
 }
 
-#' Theta-Weighted Stacked SVD
+#' SVD Stacked with Weighting
 #'
 #' Computes right singular vectors using a weighted stacking procedure based on theoretical theta values.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{stackedSVD}
 \alias{stackedSVD}
-\title{Compute Right Singular Vectors from Stacked Matrix}
+\title{Stacked SVD}
 \usage{
 stackedSVD(X.list, rank = "auto", max.rank = 50)
 }

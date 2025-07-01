@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{SVDstacked}
 \alias{SVDstacked}
-\title{Consensus Singular Vectors via Individual SVD and Aggregation}
+\title{SVD Stacked}
 \usage{
 SVDstacked(X.list, rank = "auto", max.rank = 50)
 }

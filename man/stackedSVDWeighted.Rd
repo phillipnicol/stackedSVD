@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{stackedSVDWeighted}
 \alias{stackedSVDWeighted}
-\title{Theta-Weighted Stacked SVD}
+\title{SVD Stacked with Weighting}
 \usage{
 stackedSVDWeighted(X.list, rank, max.rank = 50)
 }
