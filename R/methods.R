@@ -1,84 +1,83 @@
-
-
+#' Compute Right Singular Vectors from Stacked Matrix
+#'
+#' Performs truncated SVD on the row-stacked version of a list of matrices.
+#'
+#' @param X.list A list of numeric matrices with matching column dimensions.
+#' @param rank Desired rank or "auto" for automatic selection.
+#' @param max.rank Maximum allowable rank for truncated SVD.
+#'
+#' @return A matrix of right singular vectors.
+#' @export
 stackedSVD <- function(X.list,
                        rank = "auto",
                        max.rank = 50) {
-
   X.stacked <- do.call(rbind, X.list)
-
   c.tilde <- nrow(X.stacked)/ncol(X.stacked)
-
   my.svd <- irlba::irlba(X.stacked, nv=max.rank, nu=max.rank)
-
   rank <- ifelse(rank == "auto", sum(my.svd$d > 1 + sqrt(c.tilde)),
                  as.numeric(rank))
-
   V.hat <- my.svd$v[,1:rank]
-
   return(V.hat)
 }
 
-
+#' Consensus Singular Vectors via Individual SVD and Aggregation
+#'
+#' Computes the right singular vectors by individually applying SVD and stacking the results.
+#'
+#' @param X.list A list of numeric matrices with matching column dimensions.
+#' @param rank Desired rank or "auto" for automatic selection.
+#' @param max.rank Maximum allowable rank for truncated SVD.
+#'
+#' @return A matrix of aggregated right singular vectors.
+#' @export
 SVDstacked <- function(X.list,
                        rank = "auto",
                        max.rank = 50) {
-
   V.list <- lapply(X.list, function(X) {
     my.svd <- irlba::irlba(X, nv=max.rank, nu=max.rank)
-
     ci <- nrow(X)/ncol(X)
-
     rank <- ifelse(rank == "auto", sum(my.svd$d > 1 + sqrt(ci)),
                    as.numeric(rank))
-
     return(t(my.svd$v[,1:rank]))
   })
-
   V.stacked <- do.call(rbind, V.list)
-
   my.svd <- svd(V.stacked)
-
   rank.keep <- ifelse(rank == "auto",
                       sum(my.svd$d > 1 + 10^{-10}),
                       as.numeric(rank))
-
   return(my.svd$v[,1:rank.keep])
 }
 
-
+#' Weighted Stacking of SVDs with Theta-Based Weights
+#'
+#' Constructs right singular vectors by weighting and stacking based on estimated signal strength.
+#'
+#' @param X.list A list of numeric matrices with matching column dimensions.
+#' @param rank Desired rank or "auto" for automatic selection.
+#' @param max.rank Maximum allowable rank for truncated SVD.
+#'
+#' @return A matrix of weighted consensus right singular vectors.
+#' @export
 SVDstackedWeighted <- function(X.list,
-                       rank = "auto",
-                       max.rank = 50) {
+                               rank = "auto",
+                               max.rank = 50) {
   M <- length(X.list)
 
-  #Get Theta
   Theta <- lapply(X.list, function(X) {
     my.svd <- irlba::irlba(X, nv=max.rank, nu=max.rank)
-
     ci <- nrow(X)/ncol(X)
-
     sapply(my.svd$d, function(x) ifelse(x > 1 + sqrt(ci), max(Re(polyroot(c(ci,0,ci+1-x^2,0,1)))), 0))
   })
 
-  #Get Rank
   max.rank <- max(unlist(lapply(Theta, function(theta) sum(theta > 10^{-10}))))
-
   c <- unlist(lapply(X.list, function(X) nrow(X)/ncol(X)))
 
-  #Get w
-
   Beta <- matrix(0, nrow=M, ncol=max.rank)
-  #Theta <- matrix(0, nrow=M, ncol=max.rank)
   Wmr <- Beta
   for(r in 1:max.rank) {
     best.m <- which.max(unlist(sapply(Theta, function(theta) theta[r])))
-
     V.best <- irlba::irlba(X.list[[best.m]], nv=max.rank, nu=max.rank)$v
-
     best.beta <- sqrt(1 - (c[best.m] + Theta[[best.m]][r]^2)/(Theta[[best.m]][r]^2 + Theta[[best.m]][r]^4))
-    #print(best.beta)
-    #cat("Best beta for rank", r, " is ", best.beta, "\n")
-
     for(m in 1:M) {
       if(m == best.m) {
         Beta[m, r] <- best.beta
@@ -100,95 +99,69 @@ SVDstackedWeighted <- function(X.list,
     }
   }
 
-  #W <- 1/sqrt(1 - Beta^2)
   W <- Wmr
-
-  W.orig <- 1/sqrt(1-Beta^2)
-
-  cat("Theta weights ", Wmr[1,], "\n")
-  cat("Beta weights ", W.orig[1,], "\n")
-
   V.list <- list()
-  #cat("M: ", M, "\n")
   for(m in 1:M) {
     my.svd <- irlba::irlba(X.list[[m]], nv=max.rank, nu=max.rank)
-
     V.list[[m]] <- t(my.svd$v) * W[m, ]
-    #print(dim(V.list[[m]]))
   }
 
   V.stacked <- do.call(rbind, V.list)
-
-  #print(dim(V.stacked))
-
   my.svd <- svd(V.stacked)
-
   rank.keep <- ifelse(rank == "auto",
                       sum(my.svd$d > 1 + 10^{-10}),
                       as.numeric(rank))
-
   return(my.svd$v[,1:rank.keep])
 }
 
+#' Theta-Weighted Stacked SVD
+#'
+#' Computes right singular vectors using a weighted stacking procedure based on theoretical theta values.
+#'
+#' @param X.list A list of numeric matrices with matching column dimensions.
+#' @param rank Desired number of components to keep.
+#' @param max.rank Maximum allowable rank for truncated SVD.
+#'
+#' @return A matrix of consensus right singular vectors.
+#' @export
 stackedSVDWeighted <- function(X.list, rank, max.rank = 50) {
   M <- length(X.list)
-
   d <- ncol(X.list[[1]])
 
-  #Get Theta
   Theta <- lapply(X.list, function(X) {
     my.svd <- irlba::irlba(X, nv=max.rank, nu=max.rank)
-
     ci <- nrow(X)/ncol(X)
-
     sapply(my.svd$d, function(x) ifelse(x > 1 + sqrt(ci), max(Re(polyroot(c(ci,0,ci+1-x^2,0,1)))), 0))
   })
 
-  #Get Rank
   max.rank <- max(unlist(lapply(Theta, function(theta) sum(theta > 10^{-10}))))
-
   max.rank <- rank
-
   c <- unlist(lapply(X.list, function(X) nrow(X)/ncol(X)))
-
-  #Get w
 
   V.hat <- matrix(0, nrow=d, ncol=max.rank)
   W <- matrix(0, nrow = M, ncol=max.rank)
+
   for(r in 1:max.rank) {
     best.m <- which.max(unlist(sapply(Theta, function(theta) theta[r])))
-
     V.best <- irlba::irlba(X.list[[best.m]], nv=max.rank, nu=max.rank)$v
-
     best.beta <- sqrt(1 - (c[best.m] + Theta[[best.m]][r]^2)/(Theta[[best.m]][r]^2 + Theta[[best.m]][r]^4))
-    #print(best.beta)
-    #cat("Best beta for rank", r, " is ", best.beta, "\n")
 
     Xw <- list()
-
     for(m in 1:M) {
       if(m == best.m) {
-        #print(Theta[[best.m]][r])
-        #W[m,r] <- Theta[[best.m]][r]* sqrt((Theta[[best.m]][r]^2 + 1)/(Theta[[best.m]][r]^2 + c[m]))
         W[m,r] <- Theta[[best.m]][r]/(sqrt(Theta[[best.m]][r]^2 + c[m]^2))
       } else{
         theta_mr <- 1/best.beta * (sqrt(sum((X.list[[m]] %*% V.best[,r])^2) - c[m]))
         if(is.nan(theta_mr)) {
           W[m,r] <- 0
         } else{
-          #W[m,r] <- theta_mr * sqrt((theta_mr^2 + 1)/(theta_mr^2 + c[m]))
           W[m,r] <- theta_mr/(sqrt(theta_mr^2 + c[m]^2))
         }
-      }
-
-      if(r == 1) {
-        #print(W[,m])
       }
       Xw[[m]] <- W[m,r]*X.list[[m]]
     }
 
     Xbigw <- do.call(rbind, Xw)
-
     try(V.hat[,r] <- irlba::irlba(Xbigw, nv=max.rank)$v[,r])
   }
 
