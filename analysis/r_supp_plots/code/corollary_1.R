@@ -33,11 +33,12 @@ p <- ggplot(data=df,aes(x=x,y=value, color=variable)) +
   theme_bw() +
   geom_vline(xintercept=3^{-1/4}, linetype="dashed", color="grey") +
   geom_vline(xintercept=1, linetype="dashed", color="grey") +
-  xlab("theta0") +
+  xlab(expression(theta[0])) +
   ylab("Squared inner product") +
   labs(color="Method")
 
-ggsave(p, filename="../plots/corollary_1_plot.png")
+ggsave(p, filename="../plots/corollary_1_plot.png",
+       width=5.71, height=3.85)
 
 
 
