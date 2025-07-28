@@ -1,3 +1,5 @@
+setwd(here::here("analysis/sim/code"))
+
 df <- readRDS("../data/ctheta_sim_1.1_0.1.RDS")
 df$mean <- 1
 df$sd <- 0.1
@@ -156,4 +158,8 @@ p.big <- ggarrange(p, p.var, nrow=2, labels=c("a","b"))
 
 
 ggsave(p.big, filename="../plots/asymptotic_bias.png",
+       width=7.9, height=7.34, units="in")
+
+
+ggsave(p.big, filename="../plots/asymptotic_bias.pdf",
        width=7.9, height=7.34, units="in")

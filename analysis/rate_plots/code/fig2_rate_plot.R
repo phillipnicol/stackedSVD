@@ -1,6 +1,11 @@
 
 #Panel a
 
+setwd(here::here("analysis/rate_plots/code"))
+
+library(tidyverse)
+library(ggpubr)
+
 res <- read.csv("../data/fig2a_rate_overall_results.tsv", sep="\t")
 
 res <- res |> group_by(d, Method) |>
@@ -65,4 +70,7 @@ p.full <- ggarrange(p, p2, p3, nrow=1, ncol=3, common.legend=TRUE,
 
 
 ggsave(p.full, filename="../plots/fig2_rversion.png",
+       width=11.3, height=3.95)
+
+ggsave(p.full, filename="../plots/fig2_rversion.pdf",
        width=11.3, height=3.95)

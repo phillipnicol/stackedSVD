@@ -1,4 +1,4 @@
-
+setwd(here::here("analysis/zhengmix_ambient/code"))
 
 library(DuoClustering2018)
 library(ggpubr)
@@ -39,7 +39,7 @@ p <- ggplot(data=data.frame(x=1:25, y= topd), aes(x=x,y=y)) +
   geom_hline(yintercept = 1 + sqrt(c), color="blue",linetype="dashed") +
   xlab("") + ylab("Singular value")
 
-ggsave(p, filename="/Users/phillipnicol/Desktop/tenx_sv_plot.png",
+ggsave(p, filename="../plots/tenx_sv_plot.pdf",
        width=6.06, height=4.65, units="in")
 
 X1 <- generate_Xi(Y, n_ambient=0)
@@ -160,10 +160,10 @@ p.indiv <- ggarrange(df.svd1, df.svd2, df.svd3, nrow=1, common.legend=TRUE, lege
 
 df <- readRDS("../data/increasing_M_one_low_rest_medium.RDS")
 
-avg.low <- df |> filter(variable == "Low noise matrix") |> select(value)
+avg.low <- df |> filter(variable == "Best single matrix") |> select(value)
 avg.low <- mean(avg.low$value)
 
-df[df$variable == "Low noise matrix",]$value <- avg.low
+df[df$variable == "Best single matrix",]$value <- avg.low
 
 p <- df |> ggplot(aes(x=M, y=value, color=variable)) +
   geom_point() + geom_line() + theme_bw() +
@@ -176,10 +176,12 @@ p <- df |> ggplot(aes(x=M, y=value, color=variable)) +
 
 df1 <- readRDS("../data/increasing_M_one_low.RDS")
 
-avg.low <- df1 |> filter(variable == "Low noise matrix") |> select(value)
+#df1$variable[df1$variable == "Low noise matrix"] <- "Best single matrix"
+
+avg.low <- df1 |> filter(variable == "Best single matrix") |> select(value)
 avg.low <- mean(avg.low$value)
 
-df1[df1$variable == "Low noise matrix",]$value <- avg.low
+df1[df1$variable == "Best single matrix",]$value <- avg.low
 
 p1 <- df1 |> ggplot(aes(x=M, y=value, color=variable)) +
   geom_point() + geom_line() + theme_bw() +
@@ -198,5 +200,7 @@ p.full <- ggarrange(p.indiv,
 ggsave(p.full, filename="../plots/ambient_sim.png",
        width=8.46, height=7.44, units="in")
 
+ggsave(p.full, filename="../plots/ambient_sim.pdf",
+       width=8.46, height=7.44, units="in")
 
 

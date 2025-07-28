@@ -402,3 +402,9 @@ p.full <- ggarrange(p.indiv,
 
 ggsave(p.full, filename="../plots/ambient_sim.png",
        width=8.66, height=7.44, units="in")
+
+
+
+ggsave(p.full, filename="../plots/ambient_sim.pdf",
+       width=8.66, height=7.44, units="in")
+

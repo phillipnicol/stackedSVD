@@ -59,3 +59,6 @@ p.full <- ggarrange(p, p2, p3, nrow=1, ncol=3, common.legend=TRUE,
 
 ggsave(p.full, filename="../plots/fig3_rversion.png",
        width=11.3, height=3.95)
+
+ggsave(p.full, filename="../plots/fig3_rversion.pdf",
+       width=11.3, height=3.95)
