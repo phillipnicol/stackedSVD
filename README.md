@@ -55,4 +55,4 @@ To replicate the single-cell RNA-seq results, navigate to `analysis/zhengmix_amb
 
 ## Reference
 
-Put link to paper here.
+Baharav, T.Z., Nicol, P.B., Irizarry, R.A., and Ma, R. (2025). Stacked SVD or SVD Stacked? A Random Matrix Theory perspective on data integration. [ArXiv](https://arxiv.org/abs/2507.22170)
