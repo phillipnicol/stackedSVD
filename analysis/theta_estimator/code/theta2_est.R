@@ -113,6 +113,8 @@ results$sq_error <- (results$theta2_hat - results$theta2)^2
 #Save RDS
 saveRDS(results, file = "../data/theta2_estimation_results.RDS")
 
+results <- readRDS("../data/theta2_estimation_results.RDS")
+
 mse_results <- aggregate(
   sq_error ~ theta1 + theta2,
   data = results,
@@ -132,59 +134,7 @@ plot_data <- results %>%
     .groups = "drop"
   )
 
-ggplot(plot_data,
-       aes(x = theta1,
-           y = mse,
-           color = factor(theta2),
-           fill = factor(theta2))) +
 
-  geom_line(linewidth = 1.2) +
 
-  geom_point(size = 2.5) +
-
-  geom_errorbar(
-    aes(ymin = mse - 1.96 * se,
-        ymax = mse + 1.96 * se),
-    width = 0.015,
-    alpha = 0.6
-  ) +
-
-  scale_color_manual(
-    values = c(
-      "#0072B2",  # blue
-      "#D55E00",  # vermillion
-      "#009E73"   # green
-    ),
-    labels = c("0.1", "0.5", "0.9")
-  ) +
-
-  scale_fill_manual(
-    values = c(
-      "#0072B2",
-      "#D55E00",
-      "#009E73"
-    ),
-    labels = c("0.1", "0.5", "0.9")
-  ) +
-
-  theme_bw(base_size = 14) +
-
-  theme(
-    plot.title = element_text(
-      hjust = 0.5,
-      face = "bold"
-    ),
-    legend.position = "top",
-    legend.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
-  ) +
-
-  labs(
-    x = expression(theta[1]),
-    y = expression(MSE(hat(theta)[2])),
-    color = expression(theta[2]),
-    fill = expression(theta[2]),
-    title = expression(
-      paste("MSE of ", hat(theta)[2], " vs ", theta[1])
-    )
-  )
+ggsave(p, filename="../plots/theta2_estimation_mse.png", width = 6, height = 4,
+       units = "in")

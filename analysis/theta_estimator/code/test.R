@@ -1,7 +1,7 @@
-n <- 1000
-d <- 1000
+n <- 10^4
+d <- 10^4
 
-theta1 <- 2
+theta1 <- 1.5
 theta2 <- 0.1
 
 u1 <- rnorm(n); u1 <- u1/sqrt(sum(u1^2))
@@ -31,3 +31,5 @@ if(my.norm < c2) {
 }
 
 print(theta2.hat)
+
+theta2.hat - theta2

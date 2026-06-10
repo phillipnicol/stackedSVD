@@ -1,0 +1,60 @@
+args <- commandArgs(trailingOnly = FALSE)
+file_arg <- "--file="
+script_path <- sub(file_arg, "", args[startsWith(args, file_arg)])
+script_dir <- if (length(script_path) > 0) dirname(normalizePath(script_path)) else getwd()
+
+data_file <- file.path(script_dir, "..", "data", "theta2_estimation_results.RDS")
+plot_file <- file.path(script_dir, "..", "plots", "theta2_estimation_mse.png")
+
+library(ggplot2)
+library(dplyr)
+
+results <- readRDS(data_file)
+
+plot_data <- results |>
+  mutate(rel_sq_error = sq_error / theta2^2) |>
+  group_by(theta1, theta2) |>
+  summarise(
+    rrmse = sqrt(mean(rel_sq_error)),
+    se = sd(rel_sq_error) / sqrt(n()) / (2 * rrmse),
+    .groups = "drop"
+  ) |>
+  mutate(theta2_label = factor(theta2, levels = c(0.1, 0.5, 0.9)))
+
+p <- ggplot(
+  plot_data,
+  aes(x = theta1, y = rrmse, color = theta2_label, group = theta2_label)
+) +
+  geom_errorbar(
+    aes(ymin = rrmse - 1.96 * se, ymax = rrmse + 1.96 * se),
+    width = 0.015,
+    linewidth = 0.7,
+    alpha = 0.65
+  ) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3.2) +
+  scale_color_manual(
+    name = expression(theta[2]),
+    values = c("0.1" = "#0072B2", "0.5" = "#D55E00", "0.9" = "#009E73")
+  ) +
+  labs(
+    x = expression(theta[1]),
+    y = expression(RRMSE(hat(theta)[2])),
+    title = expression(paste("RRMSE of ", hat(theta)[2], " vs ", theta[1]))
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 20, hjust = 0.5),
+    axis.title = element_text(size = 16),
+    axis.text = element_text(size = 14, color = "gray30"),
+    legend.position = "top",
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 14),
+    panel.grid.major = element_line(color = "gray90", linewidth = 0.6),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "white", color = NA)
+  )
+
+print(p)
+
+ggsave(plot_file, p, width = 6, height = 4, units = "in", dpi = 300, bg = "white")
