@@ -1,5 +1,4 @@
 library(irlba)
-library(ggplot2)
 library(here)
 
 set.seed(1)
@@ -19,7 +18,7 @@ theta2_grid <- c(0.1, 0.5, 0.9)
 theta1_grid <- seq(1.025, 1.5, by = 0.025)
 
 
-estimate_theta2 <- function(theta1, theta2, n, d) {
+run_iteration <- function(theta1, theta2, n, d) {
 
   u1 <- rnorm(n)
   u1 <- u1 / sqrt(sum(u1^2))
@@ -60,17 +59,12 @@ estimate_theta2 <- function(theta1, theta2, n, d) {
   beta1_sq <- (theta1.hat^4 - c1) /
     (theta1.hat^2 * (theta1.hat^2 + 1))
 
-  # Numerical safety
-  if (!is.finite(beta1_sq) || beta1_sq <= 0) {
-    return(0)
-  }
-
-  beta1.hat <- sqrt(beta1_sq)
+  beta1.hat <- if (is.finite(beta1_sq) && beta1_sq > 0) sqrt(beta1_sq) else NA_real_
 
   # Estimate theta2
   my.norm <- sum((X2 %*% my.svd$v[, 1])^2)
 
-  if (my.norm <= c2) {
+  if (!is.finite(beta1.hat) || my.norm <= c2) {
 
     theta2.hat <- 0
 
@@ -83,7 +77,33 @@ estimate_theta2 <- function(theta1, theta2, n, d) {
     }
   }
 
-  return(theta2.hat)
+  # Singular vector recovery
+  X <- rbind(X1, X2)
+  v.hat <- irlba(X, nv = 1)$v[, 1]
+  unweighted_stack_svd <- sum(v.hat * v)^2
+
+  w.hat <- sqrt(c(
+    theta1.hat^2 / (theta1.hat^2 + 1),
+    theta2.hat^2 / (theta2.hat^2 + 1)
+  ))
+  X <- rbind(w.hat[1] * X1, w.hat[2] * X2)
+  v.hat <- irlba(X, nv = 1)$v[, 1]
+  estimated_weight_stack_svd <- sum(v.hat * v)^2
+
+  w.opt <- sqrt(c(
+    theta1^2 / (theta1^2 + 1),
+    theta2^2 / (theta2^2 + 1)
+  ))
+  X <- rbind(w.opt[1] * X1, w.opt[2] * X2)
+  v.hat <- irlba(X, nv = 1)$v[, 1]
+  optimal_weight_stack_svd <- sum(v.hat * v)^2
+
+  return(c(
+    theta2_hat = theta2.hat,
+    unweighted_stack_svd = unweighted_stack_svd,
+    estimated_weight_stack_svd = estimated_weight_stack_svd,
+    optimal_weight_stack_svd = optimal_weight_stack_svd
+  ))
 }
 
 # Run simulations
@@ -94,15 +114,26 @@ results <- expand.grid(
 )
 
 results$theta2_hat <- NA_real_
+results$unweighted_stack_svd <- NA_real_
+results$estimated_weight_stack_svd <- NA_real_
+results$optimal_weight_stack_svd <- NA_real_
 
 for (i in seq_len(nrow(results))) {
+  if (i %% 50 == 0 || i == 1 || i == nrow(results)) {
+    message("Running simulation ", i, " of ", nrow(results))
+  }
 
-  results$theta2_hat[i] <- estimate_theta2(
+  sim_results <- run_iteration(
     theta1 = results$theta1[i],
     theta2 = results$theta2[i],
     n = n,
     d = d
   )
+
+  results$theta2_hat[i] <- sim_results["theta2_hat"]
+  results$unweighted_stack_svd[i] <- sim_results["unweighted_stack_svd"]
+  results$estimated_weight_stack_svd[i] <- sim_results["estimated_weight_stack_svd"]
+  results$optimal_weight_stack_svd[i] <- sim_results["optimal_weight_stack_svd"]
 }
 
 
@@ -110,31 +141,5 @@ for (i in seq_len(nrow(results))) {
 # Compute MSE
 results$sq_error <- (results$theta2_hat - results$theta2)^2
 
-#Save RDS
+# Save RDS
 saveRDS(results, file = "../data/theta2_estimation_results.RDS")
-
-results <- readRDS("../data/theta2_estimation_results.RDS")
-
-mse_results <- aggregate(
-  sq_error ~ theta1 + theta2,
-  data = results,
-  FUN = mean
-)
-
-names(mse_results)[3] <- "mse"
-
-library(dplyr)
-
-# Summary statistics for error bars
-plot_data <- results %>%
-  group_by(theta1, theta2) %>%
-  summarise(
-    mse = mean(sq_error),
-    se = sd(sq_error) / sqrt(n()),
-    .groups = "drop"
-  )
-
-
-
-ggsave(p, filename="../plots/theta2_estimation_mse.png", width = 6, height = 4,
-       units = "in")

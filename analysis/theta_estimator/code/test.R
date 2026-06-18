@@ -1,8 +1,8 @@
-n <- 10^4
-d <- 10^4
+n <- 5000
+d <- 5000
 
-theta1 <- 1.5
-theta2 <- 0.1
+theta1 <- 1.1
+theta2 <- 0.5
 
 u1 <- rnorm(n); u1 <- u1/sqrt(sum(u1^2))
 u2 <- rnorm(n); u2 <- u2/sqrt(sum(u2^2))
@@ -33,3 +33,24 @@ if(my.norm < c2) {
 print(theta2.hat)
 
 theta2.hat - theta2
+
+###Singular vector recovery
+#Unweighted Stack SVD
+X <- rbind(X1, X2)
+my.svd <- irlba::irlba(X,nv=1)
+v.hat <- my.svd$v 
+sum(v.hat*v)^2
+
+#Estimated weight Stack SVD
+w.hat <- sqrt(c(theta1.hat^2/(theta1.hat^2 + 1), theta2.hat^2/(theta2.hat^2 + 1)))
+X <- rbind(w.hat[1] * X1, w.hat[2] * X2)
+my.svd <- irlba::irlba(X,nv=1)
+v.hat <- my.svd$v 
+sum(v.hat*v)^2
+
+#Optimal weight Stack SVD
+w.opt <- sqrt(c(theta1^2/(theta1^2 + 1), theta2^2/(theta2^2 + 1)))
+X <- rbind(w.opt[1] * X1, w.opt[2] * X2)
+my.svd <- irlba::irlba(X,nv=1)
+v.hat <- my.svd$v 
+sum(v.hat*v)^2
