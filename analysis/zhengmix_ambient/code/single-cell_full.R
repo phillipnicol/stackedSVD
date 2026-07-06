@@ -366,8 +366,17 @@ avg.low <- mean(avg.low$value)
 
 df[df$variable == "Best single matrix",]$value <- avg.low
 
+color_map <- c(
+  "Weighted Stack-SVD" = "#aec7e8",
+  "Unweighted Stack-SVD" = "#1f77b4",
+  "Weighted SVD-Stack" = "#ffbb78",
+  "Unweighted SVD-Stack" = "#ff7f0e",
+  "Best single matrix" = "#7f7f7f"
+)
+
 p <- df |> ggplot(aes(x=M, y=value, color=variable)) +
   geom_point() + geom_line() + theme_bw() +
+  scale_color_manual(values=color_map) +
   xlab("M") + ylab("Distance") + labs(color="Method") +
   ggtitle("Low noise scenario")
 
@@ -384,6 +393,7 @@ df1[df1$variable == "Best single matrix",]$value <- avg.low
 
 p1 <- df1 |> ggplot(aes(x=M, y=value, color=variable)) +
   geom_point() + geom_line() + theme_bw() +
+  scale_color_manual(values=color_map) +
   xlab("M") + ylab("Distance") + labs(color="Method") +
   ggtitle("High noise scenario")
 
@@ -407,4 +417,3 @@ ggsave(p.full, filename="../plots/ambient_sim.png",
 
 ggsave(p.full, filename="../plots/ambient_sim.pdf",
        width=8.66, height=7.44, units="in")
-

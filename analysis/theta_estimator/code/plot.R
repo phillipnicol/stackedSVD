@@ -4,17 +4,17 @@ script_path <- sub(file_arg, "", args[startsWith(args, file_arg)])
 script_dir <- if (length(script_path) > 0) dirname(normalizePath(script_path)) else getwd()
 
 data_file <- file.path(script_dir, "..", "data", "theta2_estimation_results.RDS")
-plot_file <- file.path(script_dir, "..", "plots", "theta2_estimation_mse.png")
-singular_vector_plot_file <- file.path(
+combined_plot_file <- file.path(
   script_dir,
   "..",
   "plots",
-  "singular_vector_recovery.png"
+  "theta2_estimation_combined.pdf"
 )
 
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(ggpubr)
 
 results <- readRDS(data_file)
 
@@ -80,8 +80,6 @@ p <- ggplot(
 
 print(p)
 
-ggsave(plot_file, p, width = 6, height = 4, units = "in", dpi = 300, bg = "white")
-
 singular_vector_data <- results |>
   select(
     theta1,
@@ -96,16 +94,16 @@ singular_vector_data <- results |>
   mutate(
     method = recode(
       method,
-      unweighted_stack_svd = "Unweighted Stack SVD",
-      estimated_weight_stack_svd = "Estimated Weight Stack SVD",
-      optimal_weight_stack_svd = "Optimally Weighted Stack SVD"
+      unweighted_stack_svd = "Stack SVD (Unweighted)",
+      estimated_weight_stack_svd = "Stack SVD (estimated weights)",
+      optimal_weight_stack_svd = "Stack SVD (oracle weights)"
     ),
     method = factor(
       method,
       levels = c(
-        "Unweighted Stack SVD",
-        "Estimated Weight Stack SVD",
-        "Optimally Weighted Stack SVD"
+        "Stack SVD (Unweighted)",
+        "Stack SVD (estimated weights)",
+        "Stack SVD (oracle weights)"
       )
     ),
     theta2_label = paste0("theta2 = ", theta2)
@@ -136,9 +134,9 @@ p.singular <- ggplot(
   scale_color_manual(
     name = "Method",
     values = c(
-      "Unweighted Stack SVD" = "#0072B2",
-      "Estimated Weight Stack SVD" = "#D55E00",
-      "Optimally Weighted Stack SVD" = "#009E73"
+      "Stack SVD (Unweighted)" = "#0072B2",
+      "Stack SVD (estimated weights)" = "#D55E00",
+      "Stack SVD (oracle weights)" = "#009E73"
     )
   ) +
   labs(
@@ -153,7 +151,7 @@ p.singular <- ggplot(
     axis.text = element_text(size = 14, color = "gray30"),
     legend.position = "top",
     legend.title = element_text(size = 14),
-    legend.text = element_text(size = 12),
+    legend.text = element_text(size = 10),
     panel.grid.major = element_line(color = "gray90", linewidth = 0.6),
     panel.grid.minor = element_blank(),
     strip.text = element_text(size = 13),
@@ -162,12 +160,27 @@ p.singular <- ggplot(
 
 print(p.singular)
 
-ggsave(
-  singular_vector_plot_file,
-  p.singular,
-  width = 10,
-  height = 4,
-  units = "in",
-  dpi = 300,
-  bg = "white"
+blank_plot <- ggplot() + theme_void()
+
+top_panel <- ggarrange(
+  blank_plot,
+  p,
+  blank_plot,
+  nrow = 1,
+  ncol = 3,
+  widths = c(0.19, 0.62, 0.19)
 )
+
+combined_plot <- ggarrange(
+  top_panel,
+  p.singular,
+  nrow = 2,
+  ncol = 1,
+  labels = c("a", "b"),
+  heights = c(1, 1.15)
+)
+
+print(combined_plot)
+
+ggsave(combined_plot_file, combined_plot, width = 10, height = 8,
+       units = "in", bg = "white")

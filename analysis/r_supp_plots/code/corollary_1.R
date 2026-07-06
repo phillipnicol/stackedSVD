@@ -28,9 +28,21 @@ df <- melt(df, id.vars = "x")
 
 library(ggplot2)
 
+color_map <- c(
+  stacksvd = "#1f77b4",
+  svdstack = "#ff7f0e"
+)
+
 p <- ggplot(data=df,aes(x=x,y=value, color=variable)) +
   geom_line() +
   theme_bw() +
+  scale_color_manual(
+    values=color_map,
+    labels=c(
+      stacksvd = "Unweighted Stack-SVD",
+      svdstack = "Unweighted SVD-Stack"
+    )
+  ) +
   geom_vline(xintercept=3^{-1/4}, linetype="dashed", color="grey") +
   geom_vline(xintercept=1, linetype="dashed", color="grey") +
   xlab(expression(theta[0])) +
@@ -40,5 +52,6 @@ p <- ggplot(data=df,aes(x=x,y=value, color=variable)) +
 ggsave(p, filename="../plots/corollary_1_plot.png",
        width=5.71, height=3.85)
 
-
+ggsave(p, filename="../plots/corollary_1_plot.pdf",
+       width=5.71, height=3.85)
 
