@@ -1,0 +1,19 @@
+=== Xcount2: cell-wise shape bound (exact, no seed) ===
+k=2  tree row = Narayana: True   cells with D>=1: 1   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 4.883e-04   at (s,t,D)=(1, 1, 1) S=1 N=1
+    cell-blind against N(k,1)=1: worst ratio 4.883e-04  (must be <= 1)
+k=3  tree row = Narayana: True   cells with D>=1: 3   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 1.286e-04   at (s,t,D)=(1, 2, 1) S=3 N=1
+    cell-blind against N(k,1)=1: worst ratio 2.572e-04  (must be <= 1)
+k=4  tree row = Narayana: True   cells with D>=1: 6   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 4.578e-05   at (s,t,D)=(1, 3, 1) S=6 N=1
+    cell-blind against N(k,1)=1: worst ratio 2.518e-04  (must be <= 1)
+k=5  tree row = Narayana: True   cells with D>=1: 10   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 2.000e-05   at (s,t,D)=(1, 4, 1) S=10 N=1
+    cell-blind against N(k,1)=1: worst ratio 3.400e-04  (must be <= 1)
+k=6  tree row = Narayana: True   cells with D>=1: 15   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 1.005e-05   at (s,t,D)=(1, 5, 1) S=15 N=1
+    cell-blind against N(k,1)=1: worst ratio 5.573e-04  (must be <= 1)
+k=7  tree row = Narayana: True   cells with D>=1: 21   violations: 0
+    worst cell ratio S / ((2k)^6/2)^D N(k,s) = 5.578e-06   at (s,t,D)=(1, 6, 1) S=21 N=1
+    cell-blind against N(k,1)=1: worst ratio 1.041e-03  (must be <= 1)
