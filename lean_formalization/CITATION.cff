@@ -1,0 +1,53 @@
+# Citation metadata (Citation File Format 1.2.0). GitHub reads this file and offers
+# "Cite this repository". The `preferred-citation` block is the paper this repository
+# formalizes; the top-level entry is the Lean development itself.
+cff-version: 1.2.0
+message: "If you use this formalization, cite the paper below and this repository."
+title: "Lean 4 formalization of \"Stacked SVD or SVD stacked? A random matrix theory perspective on data integration\""
+type: software
+authors:
+  - family-names: Baharav
+    given-names: Tavor Z.
+    orcid: "https://orcid.org/0000-0001-8924-0243"
+  - family-names: Nicol
+    given-names: Phillip B.
+    orcid: "https://orcid.org/0000-0002-8526-5889"
+  - family-names: Irizarry
+    given-names: Rafael A.
+    orcid: "https://orcid.org/0000-0002-3944-4309"
+  - family-names: Ma
+    given-names: Rong
+    orcid: "https://orcid.org/0000-0002-9248-8503"
+repository-code: "https://github.com/phillipnicol/stackedSVD"
+license: Apache-2.0
+date-released: "2026-09-11"
+keywords:
+  - Lean 4
+  - Mathlib
+  - random matrix theory
+  - spiked covariance model
+  - data integration
+  - formal verification
+preferred-citation:
+  type: article
+  title: "Stacked SVD or SVD stacked? A random matrix theory perspective on data integration"
+  authors:
+    - family-names: Baharav
+      given-names: Tavor Z.
+      orcid: "https://orcid.org/0000-0001-8924-0243"
+    - family-names: Nicol
+      given-names: Phillip B.
+      orcid: "https://orcid.org/0000-0002-8526-5889"
+    - family-names: Irizarry
+      given-names: Rafael A.
+      orcid: "https://orcid.org/0000-0002-3944-4309"
+    - family-names: Ma
+      given-names: Rong
+      orcid: "https://orcid.org/0000-0002-9248-8503"
+  year: 2025
+  identifiers:
+    - type: other
+      value: "arXiv:2507.22170"
+      description: "The arXiv preprint (v1, 2025-07-29), which carries the same result labels as the Lean statements"
+  url: "https://arxiv.org/abs/2507.22170"
+  notes: "Under revision for the Annals of Statistics; the formalization follows the resubmission."

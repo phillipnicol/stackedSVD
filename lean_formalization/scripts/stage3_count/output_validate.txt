@@ -1,0 +1,25 @@
+k=1: shapes cells=1 tree cells=1 worst L2 ratio=0
+k=2: shapes cells=3 tree cells=2 worst L2 ratio=0.0003255
+k=3: shapes cells=6 tree cells=3 worst L2 ratio=9.645e-05
+k=4: shapes cells=10 tree cells=4 worst L2 ratio=3.662e-05
+k=5: shapes cells=15 tree cells=5 worst L2 ratio=1.667e-05
+k=6: shapes cells=21 tree cells=6 worst L2 ratio=8.612e-06
+k=7: shapes cells=28 tree cells=7 worst L2 ratio=4.881e-06
+TOTAL cells tested=560  L2 violations=0  TR violations=0
+k | tree shapes by s | Narayana | total | Catalan | all NoSingle shapes
+1 | [1] | [1] | 1 | 1 | 1 | match=True
+2 | [1, 1] | [1, 1] | 2 | 2 | 3 | match=True
+3 | [1, 3, 1] | [1, 3, 1] | 5 | 5 | 12 | match=True
+4 | [1, 6, 6, 1] | [1, 6, 6, 1] | 14 | 14 | 62 | match=True
+5 | [1, 10, 20, 10, 1] | [1, 10, 20, 10, 1] | 42 | 42 | 398 | match=True
+6 | [1, 15, 50, 50, 15, 1] | [1, 15, 50, 50, 15, 1] | 132 | 132 | 3108 | match=True
+7 | [1, 21, 105, 175, 105, 21, 1] | [1, 21, 105, 175, 105, 21, 1] | 429 | 429 | 28549 | match=True
+
+smallest exponent p that survives every tested cell:
+k=1: needed factor per unit D = (2k)^0.000
+k=2: needed factor per unit D = (2k)^0.208
+k=3: needed factor per unit D = (2k)^0.839
+k=4: needed factor per unit D = (2k)^1.088
+k=5: needed factor per unit D = (2k)^1.222
+k=6: needed factor per unit D = (2k)^1.307
+k=7: needed factor per unit D = (2k)^1.366

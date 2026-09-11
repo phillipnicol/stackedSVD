@@ -1,0 +1,28 @@
+start=1789060373 end=1789060375 elapsed=2s exit=0
+command: python3 scripts/stage3_count/x8_cells8.py  (run from the repository root, no CLI argument, default k=2..7)
+
+=== X8: the exponent p per cell (exact, no seed) ===
+k= 2 cells(D>=1)=  1   p_tight=2  p_proof=5  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [0.0 s]
+     tight worst ratio 4 at (s,t,D)=(1, 1, 1)
+     proof worst ratio 350 at (s,t,D)=(1, 1, 1)
+     crude worst ratio 3.277e+04 at (s,t,D)=(1, 1, 1)
+k= 3 cells(D>=1)=  3   p_tight=2  p_proof=6  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [0.0 s]
+     tight worst ratio 36 at (s,t,D)=(1, 1, 2)
+     proof worst ratio 4.688e+04 at (s,t,D)=(1, 1, 2)
+     crude worst ratio 4.571e+10 at (s,t,D)=(1, 1, 2)
+k= 4 cells(D>=1)=  6   p_tight=2  p_proof=6  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [0.0 s]
+     tight worst ratio 512 at (s,t,D)=(1, 1, 3)
+     proof worst ratio 6.718e+06 at (s,t,D)=(1, 1, 3)
+     crude worst ratio 7.206e+17 at (s,t,D)=(1, 1, 3)
+k= 5 cells(D>=1)= 10   p_tight=3  p_proof=6  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [0.0 s]
+     tight worst ratio 1e+04 at (s,t,D)=(1, 1, 4)
+     proof worst ratio 2.22e+09 at (s,t,D)=(2, 1, 3)
+     crude worst ratio 6.5e+25 at (s,t,D)=(1, 1, 4)
+k= 6 cells(D>=1)= 15   p_tight=3  p_proof=6  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [0.1 s]
+     tight worst ratio 2.483e+07 at (s,t,D)=(2, 2, 3)
+     proof worst ratio 1.031e+12 at (s,t,D)=(2, 1, 4)
+     crude worst ratio 2.279e+34 at (s,t,D)=(1, 1, 5)
+k= 7 cells(D>=1)= 21   p_tight=3  p_proof=6  p_crude=8   max Q/k^D=1 (Q<=k^D: True)   [1.0 s]
+     tight worst ratio 1.869e+10 at (s,t,D)=(2, 2, 4)
+     proof worst ratio 4.804e+14 at (s,t,D)=(2, 1, 5)
+     crude worst ratio 2.424e+43 at (s,t,D)=(1, 1, 6)
