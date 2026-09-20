@@ -1,0 +1,26 @@
+name = "StackedSVD"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["StackedSVD"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+# Pinned to StatsMLlib's Mathlib (decision 2026-08-29: downgrade to reuse StatsMLlib;
+# the smaller COLT83 files get backported instead). If StatsMLlib fails to build on the
+# server, revert both requires to mathlib "v4.34.0-rc2" and record why in notes/SERVER_TODO.md.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0"
+
+[[require]]
+name = "StatsMLlib"
+git = "https://github.com/Lean-MoDS/StatsMLlib.git"
+rev = "37286c3d2c7e17642fbe26988be40f3ff982f944"
+
+[[lean_lib]]
+name = "StackedSVD"

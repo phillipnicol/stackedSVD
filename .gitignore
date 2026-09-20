@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 *.DS_Store
+
+*.RDS
+*.csv
+*.tsv
+
+*.pdf

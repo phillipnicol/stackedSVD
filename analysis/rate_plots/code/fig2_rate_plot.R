@@ -18,12 +18,20 @@ library(tidyverse)
 
 a <- 1.96
 
+color_map <- c(
+  "Weighted Stack-SVD" = "#aec7e8",
+  "Unweighted Stack-SVD" = "#1f77b4",
+  "Weighted SVD-Stack" = "#ffbb78",
+  "Unweighted SVD-Stack" = "#ff7f0e"
+)
+
 p <- ggplot(data=res, aes(x=d, y=mean, color=Method,
                           ymin=mean-a*sd, ymax=mean+a*sd)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0.1) +
   geom_line(aes(x=d, y=asymp_opt_power, color=Method), linetype="dashed") +
   theme_bw() +
+  scale_color_manual(values=color_map) +
   xlab("Dimension (d)") +
   ylab("Squared inner product") +
   scale_x_log10()
@@ -41,6 +49,7 @@ p2 <- ggplot(data=res, aes(x=d, y=mean, color=Method,
   geom_errorbar(width=0.1) +
   geom_line(aes(x=d, y=asymp_opt_power, color=Method), linetype="dashed") +
   theme_bw() +
+  scale_color_manual(values=color_map) +
   xlab("Dimension (d)") +
   ylab("Squared inner product") +
   scale_x_log10()
@@ -57,6 +66,7 @@ p3 <- ggplot(data=res, aes(x=d, y=mean, color=Method,
   geom_errorbar(width=0.1) +
   geom_line(aes(x=d, y=asymp_opt_power, color=Method), linetype="dashed") +
   theme_bw() +
+  scale_color_manual(values=color_map) +
   xlab("Dimension (d)") +
   ylab("Squared inner product") +
   scale_x_log10()

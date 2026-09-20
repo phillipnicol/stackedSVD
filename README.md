@@ -53,6 +53,13 @@ To replicate the results in Figures 4 and 5, navigate to `analysis/python_plots`
 
 To replicate the single-cell RNA-seq results, navigate to `analysis/zhengmix_ambient/code` and run `single-cell_full.R`. 
 
+## Lean formalization
+
+The folder `lean_formalization/` holds a machine-checked proof, in Lean 4 with Mathlib, of
+the results of the paper. Its `README.md` lists every result with the hypotheses under which
+it is proved, and its `GETTING_STARTED.md` explains how to build the project and check one
+theorem.
+
 ## Reference
 
 Baharav, T.Z., Nicol, P.B., Irizarry, R.A., and Ma, R. (2025). Stacked SVD or SVD Stacked? A Random Matrix Theory perspective on data integration. [ArXiv](https://arxiv.org/abs/2507.22170)

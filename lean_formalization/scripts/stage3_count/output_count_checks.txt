@@ -1,0 +1,11 @@
+walks enumerated: 192741;  caterpillar cases: 256
+  sum_walkMult: 0 violations
+  mem_walkEdges: 0 violations
+  card_walkEdges_le: 0 violations
+  walkVerts_le_edges_succ: 0 violations
+  walkVerts_le_of_excess: 0 violations
+  isPaired_of_walkVerts_eq: 0 violations
+  two_le_walkVerts: 0 violations
+  noSingle_of_families: 0 violations
+  clsCard_eq_sum_cellCard: 0 violations
+  one_le_cellCard: 0 violations

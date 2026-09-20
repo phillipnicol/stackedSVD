@@ -1,0 +1,8 @@
+k=1: shapes cells=1 tree cells=1 worst L2 ratio=0
+k=2: shapes cells=3 tree cells=2 worst L2 ratio=0.0003255
+k=3: shapes cells=6 tree cells=3 worst L2 ratio=9.645e-05
+k=4: shapes cells=10 tree cells=4 worst L2 ratio=3.662e-05
+k=5: shapes cells=15 tree cells=5 worst L2 ratio=1.667e-05
+k=6: shapes cells=21 tree cells=6 worst L2 ratio=8.612e-06
+k=7: shapes cells=28 tree cells=7 worst L2 ratio=4.881e-06
+TOTAL cells tested=560  L2 violations=0  TR violations=0
