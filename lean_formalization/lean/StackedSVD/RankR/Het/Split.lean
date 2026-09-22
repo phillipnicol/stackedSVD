@@ -48,7 +48,7 @@ Two modeling choices are inherited from the rank-one file:
    (`EperpHetR_mul_V`), rather than living on a `d - r` dimensional complement. The `d - r`
    block appears only inside `exists_block_hasLaw_hetR`, where the law is stated.
 
-Paper: `main_paper.tex:2294` (`eq:rank_r_model`), `:2325` (`eq:stacksvd_appXstack`).
+Paper: `eq:rank_r_model`, `eq:stacksvd_appXstack`.
 
 No `sorry`.
 -/

@@ -4,9 +4,9 @@
 Rows P1 to P5 are exact identities and must hit machine precision. A failure there means
 the Lean statement is wrong. Rows P6 and P7 are the statistical rows.
 
-Model (`assum:unaligned`, main_paper.tex:753):
+Model (`assum:unaligned`):
     X_i = U_i Theta_i (V R_i)^T + Z_i / sqrt(d),   Z_i standard normal, n_i = round(c_i d).
-Core matrix C = sum_i R_i Theta_i^2 R_i^T (main_paper.tex:826).
+Core matrix C = sum_i R_i Theta_i^2 R_i^T (`eq:signal_cov`).
 Limit  = sum_j betaSq(sqrt(lambda_j(C)), sum_i c_i),
          betaSq(t, c) = (t^4 - c)/(t^4 + t^2) if t^4 > c else 0  (Defs.lean:38).
 
@@ -50,7 +50,7 @@ def CBlock(theta, R):
 
 
 def C_paper(theta, R):
-    """sum_i R_i Theta_i^2 R_i^T  (main_paper.tex:826)."""
+    """sum_i R_i Theta_i^2 R_i^T  (eq:signal_cov)."""
     r = R[0].shape[0]
     C = np.zeros((r, r))
     for i, th in enumerate(theta):

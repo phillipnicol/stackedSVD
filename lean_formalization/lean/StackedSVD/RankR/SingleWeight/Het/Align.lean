@@ -34,8 +34,8 @@ under `SingleWeight.EigSep` instead of `Scalars.Assumption4`. The target
    `sum_filter_lt_succ_sub` reduces the difference of the two half-line limits of unit G3 to
    the single term `(z_l)_k² / ν_l`.
 5. The quotient by `λ_l → ρ_l` and the overlap identity `1/(ρ_l ν_l) = swTerm` (unit G0)
-   give the limit `swTerm … (γ l) (z l) * (z_l)_k²` of the paper display at
-   `main_paper.tex:2153`.
+   give the limit `swTerm … (γ l) (z l) * (z_l)_k²` of the display of `(v̂_lᵀ v_k)²` (Liu et al.
+   Theorem 1) in the proof of `prop:gen_rank_stacksvd_singleweight`.
 
 The index range `(l : ℕ) < ∑ i, n i N` is not a model constraint at general `rk`, so it
 enters through `UnalignedModelR.eventually_r_le_min` and the eventual squeeze
@@ -251,8 +251,8 @@ theorem tendstoInProb_eigVal_sw [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
 /-! ### 3. The target: the `align` field of `SingleWeightLaw` -/
 
 /-- **Unit G4, the target** (the `align` field of `SingleWeightLaw`,
-`RankR/SingleWeight/Main.lean:67`; the paper display is `main_paper.tex:2153` inside
-`prop:gen_rank_stacksvd_singleweight`, `:2112`). Under `EigSep` the overlap of the sorted
+`RankR/SingleWeight/Main.lean:67`; the paper's display of `(v̂_lᵀ v_k)²` (Liu et al. Theorem 1)
+in the proof of `prop:gen_rank_stacksvd_singleweight`). Under `EigSep` the overlap of the sorted
 right singular direction `l` of the weighted stack `X_W` with the spike direction `v_k` tends
 in probability to `swTerm … (γ l) (z l) * (z_l)_k²`.
 

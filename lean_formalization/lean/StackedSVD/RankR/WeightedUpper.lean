@@ -7,9 +7,9 @@ import StackedSVD.RankR.WeightedMain
 import StackedSVD.RankR.Frobenius
 
 /-!
-# E2: the weight-free upper bound of `thm:gen_rank_weight_svdstak`, at `r_i = 1`
+# E2: the weight-free upper bound of `thm:gen_rank_weight_svdstack`, at `r_i = 1`
 
-`RankR/Weighted.lean` proves `thm:gen_rank_weight_svdstak` (`main_paper.tex:893`) under
+`RankR/Weighted.lean` proves `thm:gen_rank_weight_svdstack` under
 `hrankB : rank B_R = r`, and bounds `limitRW W` only for an admissible `W` (a top-`r` eigengap
 of `W A_{β,R} Wᵀ` and `0 < λ_{r-1}`). This file closes both gaps with one deterministic
 inequality, which is item E2 of `paper_edits.md` and the rank-`r` twin of `SVDStack/Rayleigh.lean`.
@@ -31,8 +31,8 @@ truncated performance at `W⋆` gives the attainment half with no hypothesis on 
 2. `rbPhiR`, `rowBoundR_tendsto`, `tendsto_measure_det_gram_eq_zero`: the bound converges.
 3. `limitRTrace` and `limitRTrace_eq_limitROpt`: the trace form of `L⋆`.
 4. `perfRWk`, `limitRWk`, `perfRWk_tendsto`, `perfRWk_le_perfRW` and
-   `thm_gen_rank_weight_svdstak_norank`: attainment at `W⋆` without `rank B_R = r`.
-5. `perfRW_uniform_bound`, `perfRW_le_opt_whp`, `thm_gen_rank_weight_svdstak_full` and its
+   `thm_gen_rank_weight_svdstack_norank`: attainment at `W⋆` without `rank B_R = r`.
+5. `perfRW_uniform_bound`, `perfRW_le_opt_whp`, `thm_gen_rank_weight_svdstack_full` and its
    Gaussian facade.
 -/
 
@@ -404,7 +404,7 @@ theorem rbPhiR_rbFR (m : UnalignedModel μ M n d r) (N : ℕ) (ω : Ω N) :
   rbPhiR_eq (m.gram N ω) (m.VtV N ω) (m.rbFR N ω) (fun _ _ => rfl) (fun _ _ => rfl)
 
 /-- `gramR` and `VtV_tendsto` in one family (the six lines inside
-`thm_gen_rank_weight_svdstak_general`). -/
+`thm_gen_rank_weight_svdstack_general`). -/
 theorem tendstoInProbPi_rbFR (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
     (law : ∀ i, (m.tbl i).SingleTableLaw (c i)) (hG : m.JointGaussianNoise) :
@@ -732,7 +732,7 @@ theorem perfRWk_le_perfRW (m : UnalignedModel μ M n d r) (W : Matrix (Fin M) (F
   trace_specInvTop_conj_mono (m.isHermitian_gramW W N ω) (m.posSemidef_gramW W N ω) hk
     (m.VtVW W N ω)
 
-/-- `thm_gen_rank_weight_svdstak_general` with the truncation index `k` free. Same proof; only
+/-- `thm_gen_rank_weight_svdstack_general` with the truncation index `k` free. Same proof; only
 the index inside `continuousAt_traceFun` changes. -/
 theorem perfRWk_tendsto (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (W : Matrix (Fin M) (Fin M) ℝ)
@@ -792,11 +792,11 @@ theorem perfRWk_tendsto (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
   filter_upwards with ω
   exact traceFun_eq (m.isHermitian_gramW W N ω) (m.VtVW W N ω)
 
-/-- **`thm:gen_rank_weight_svdstak`, attainment half, with no rank hypothesis**
+/-- **`thm:gen_rank_weight_svdstack`, attainment half, with no rank hypothesis**
 (`paper_edits.md`, item E2, "Attainment"). The performance at `W⋆` is squeezed between the
 truncated performance at `k = rank B_R`, which converges because the gap at that index is
 automatic, and `rowBoundR`, which converges with no gap at all. -/
-theorem thm_gen_rank_weight_svdstak_norank (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
+theorem thm_gen_rank_weight_svdstack_norank (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)) (hrM : r ≤ M)
     (law : ∀ i, (m.tbl i).SingleTableLaw (c i)) (hG : m.JointGaussianNoise) :
     TendstoInProb μ (fun N ω => m.perfRW (optWR β) N ω)
@@ -925,17 +925,17 @@ theorem perfRW_le_opt_whp (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
   intro N ω hω
   exact ⟨W, hω⟩
 
-/-- **`thm:gen_rank_weight_svdstak` in the form of item E2.** Three conclusions in one
+/-- **`thm:gen_rank_weight_svdstack` in the form of item E2.** Three conclusions in one
 declaration and **no hypothesis on `rank B_R`**:
 
 1. the performance at `W⋆ = D^{-1/2}` tends to `L⋆`;
 2. for every admissible `W` the performance tends to `limitRW W ≤ L⋆`;
 3. with probability tending to one no weight matrix at all beats `L⋆ + ε`.
 
-Conjunct 3 replaces the paper's footnote (`main_paper.tex:888`), which excludes every `W`
-without an eigengap. Conjunct 1 drops the hypothesis `β_ij > 0` of `main_paper.tex:893` and
-the removal remark after it. -/
-theorem thm_gen_rank_weight_svdstak_full (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
+Conjunct 3 replaces the paper's footnote (before `thm:gen_rank_weight_svdstack`), which excludes
+every `W` without an eigengap. Conjunct 1 drops the hypothesis `β_ij > 0` of
+`thm:gen_rank_weight_svdstack` and the removal remark after it. -/
+theorem thm_gen_rank_weight_svdstack_full (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
     (hr : 0 < r) (hrM : r ≤ M)
     (law : ∀ i, (m.tbl i).SingleTableLaw (c i)) (hG : m.JointGaussianNoise) :
@@ -949,16 +949,16 @@ theorem thm_gen_rank_weight_svdstak_full (m : UnalignedModel μ M n d r) (c β :
           limitRW W β m.R ≤ limitROpt β m.R (by simpa using hrM)) ∧
       ∀ ε > 0, Tendsto (fun N => μ N {ω | ∃ W : Matrix (Fin M) (Fin M) ℝ,
         limitROpt β m.R (by simpa using hrM) + ε ≤ m.perfRW W N ω}) atTop (𝓝 0) :=
-  ⟨m.thm_gen_rank_weight_svdstak_norank c β hc hβdef hrM law hG,
+  ⟨m.thm_gen_rank_weight_svdstack_norank c β hc hβdef hrM law hG,
     fun W hgapW hposW =>
-      ⟨m.thm_gen_rank_weight_svdstak_general c β W hβdef hr hrM hgapW hposW law hG,
-        m.thm_gen_rank_weight_svdstak_opt c β hc hβdef hr hrM W hgapW hposW⟩,
+      ⟨m.thm_gen_rank_weight_svdstack_general c β W hβdef hr hrM hgapW hposW law hG,
+        m.thm_gen_rank_weight_svdstack_opt c β hc hβdef hr hrM W hgapW hposW⟩,
     m.perfRW_uniform_bound c β hc hβdef hrM law hG⟩
 
 /-- **Item E2, Layer 2 form.** The same three conclusions from the proportional regime of
 each table and the joint Gaussian law, with no `SingleTableLaw` hypothesis. Same discharge as
-`thm_gen_rank_weight_svdstak_gaussian` (`RankR/Weighted.lean`). -/
-theorem thm_gen_rank_weight_svdstak_full_gaussian [∀ N, IsProbabilityMeasure (μ N)]
+`thm_gen_rank_weight_svdstack_gaussian` (`RankR/Weighted.lean`). -/
+theorem thm_gen_rank_weight_svdstack_full_gaussian [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
     (hr : 0 < r) (hrM : r ≤ M)
@@ -973,7 +973,7 @@ theorem thm_gen_rank_weight_svdstak_full_gaussian [∀ N, IsProbabilityMeasure (
           limitRW W β m.R ≤ limitROpt β m.R (by simpa using hrM)) ∧
       ∀ ε > 0, Tendsto (fun N => μ N {ω | ∃ W : Matrix (Fin M) (Fin M) ℝ,
         limitROpt β m.R (by simpa using hrM) + ε ≤ m.perfRW W N ω}) atTop (𝓝 0) :=
-  m.thm_gen_rank_weight_svdstak_full c β hc hβdef hr hrM
+  m.thm_gen_rank_weight_svdstack_full c β hc hβdef hr hrM
     (fun i => SpikedModel.singleTableLaw_of_gaussian (hc i) (m.tbl i) (hreg i)
       (m.gaussianNoise_of_joint hG i)) hG
 

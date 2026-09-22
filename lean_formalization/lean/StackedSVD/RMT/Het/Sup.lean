@@ -36,8 +36,8 @@ of `RMT/Het/R5het.lean` (item H4), and so discharges the black box
 4. The paper-level corollaries at the exact edge, both regimes, model hypotheses only:
    `thm_stacksvd_weighted_gaussian`, `_inner`, `_smul` (at `t • optWstack` for every
    `t ≠ 0`, the paper's `w ∝ θ_i/√(θ_i² + c_i)`), `_opt` (the optimal weights beat every
-   other nonzero `w`) and `prop_dominance_gaussian` (`prop:dominance`,
-   `main_paper.tex:634`: optimal stacksvd beats optimal svdstack and unweighted stacksvd).
+   other nonzero `w`) and `prop_dominance_gaussian` (`prop:dominance`:
+   optimal stacksvd beats optimal svdstack and unweighted stacksvd).
    The margin corollaries `thm_stacksvd_weighted_gaussian_margin`, `_inner`, `_smul` are
    weaker versions of the same statements, above `bSF c w < rhoHet θ c w` instead of the
    exact edge; they are kept as a record of the interim result, not because any later
@@ -45,7 +45,7 @@ of `RMT/Het/R5het.lean` (item H4), and so discharges the black box
    None of the theorems above takes `[∀ N, IsProbabilityMeasure (μ N)]`: `hG` gives it
    through `(hG N).isProbabilityMeasure` (`notes/INTERFACES.md`).
 5. `stackPerfW_binary_inad_gaussian` and `stackPerfW_opt_inad_gaussian`:
-   `prop:binarystacksvd_inadmissable` (`main_paper.tex:660`) for Gaussian noise, on the
+   `prop:binarystacksvd_inadmissable` for Gaussian noise, on the
    instance with every `θ_i = 1`. `heteroLaw_of_gaussian` (item 3) supplies the law they
    need, which is why these two theorems live here and not next to the rest of
    `prop:binarystacksvd_inadmissable` in `StackSVDWeighted.lean`. Unlike the theorems of
@@ -68,8 +68,8 @@ to `bSF ≥ bHet`, keep `h4` (at `w = optWstack θ c` it is the paper's detectab
 `thm_stacksvd_weighted_gaussian` run at the exact edge `bHet` and cover both regimes.
 No field of `HeteroLaw` is weakened in either case.
 
-Paper: `main_paper.tex` line 462 (`thm:stacksvd_weighted`), lines 1409 to 1440
-(`eq:assumption4`, the proof), line 1602 (the threshold `∑_j θ_j⁴/c_j > 1`).
+Paper: `thm:stacksvd_weighted`, Appendix `app:weightedStackSVDProof`
+(`eq:assumption4`, the proof, and the threshold `∑_j θ_j⁴/c_j > 1` at its end).
 
 STATUS 2026-08-30: `lake env lean -j 3 StackedSVD/RMT/Het/Sup.lean` exit 0; no `sorry`,
 no `axiom`.
@@ -174,7 +174,7 @@ the band `bHet < bSF` and the subcritical regime with no margin hypothesis at al
 theorem is kept as a weaker corollary, a record of the interim result proved before item
 H12 closed the subcritical case.
 
-Paper: `main_paper.tex` line 462 (`thm:stacksvd_weighted`), line 1409 (`eq:assumption4`). -/
+Paper: `thm:stacksvd_weighted`, `eq:assumption4`. -/
 theorem heteroLaw_of_gaussian_margin
     (m : MultiTableModel μ M n d) (w c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hreg : ∀ i, (m.tbl i).Regime (c i)) (hG : m.JointGaussianNoise)
@@ -216,10 +216,10 @@ theorem heteroLaw_of_gaussian [NeZero M]
   · exact m.align_tendstoInProb_het_subcritical w c hc hw hG
       (m.resolventLimitsHet_of_edge w c hc hw hreg hG hedge) h4
 
-/-! ### `thm:stacksvd_weighted` for Gaussian noise (`main_paper.tex:462`) -/
+/-! ### `thm:stacksvd_weighted` for Gaussian noise -/
 
-/-- **`thm:stacksvd_weighted` with no black box** (`main_paper.tex:462`): for Gaussian noise,
-above the detectability threshold `1 < ∑_i θ_i⁴/c_i` (`main_paper.tex:1602`) and above the
+/-- **`thm:stacksvd_weighted` with no black box**: for Gaussian noise,
+above the detectability threshold `1 < ∑_i θ_i⁴/c_i` and above the
 Sudakov-Fernique margin, the performance of stacksvd at the paper's optimal weights
 `w_i⋆ ∝ θ_i/√(θ_i² + c_i)` tends in probability to `γ_opt`, the unique root in `(0,1)` of
 `∑_i θ_i⁴(1-x)/(c_i + xθ_i²) = 1`.
@@ -252,7 +252,7 @@ theorem thm_stacksvd_weighted_gaussian_margin
 
 /-- The paper's inner-product form of the corollary above: for any selected unit top
 eigenvector `v̂` of the weighted stack Gram matrix, `(v̂ᵀ v)² → γ_opt`
-(`main_paper.tex:462`). The simplicity field of `HeteroLaw` is what makes the projector form
+(`thm:stacksvd_weighted`). The simplicity field of `HeteroLaw` is what makes the projector form
 and the inner-product form agree. `∃ i, θ_i ≠ 0` follows from `hdet`, as above. -/
 theorem thm_stacksvd_weighted_gaussian_margin_inner
     (m : MultiTableModel μ M n d) (c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
@@ -280,7 +280,7 @@ theorem thm_stacksvd_weighted_gaussian_margin_inner
       ((Scalars.assumption4_optW_iff hc).mpr hdet) hmargin) vhat hmem hnorm
 
 omit [NeZero M] in
-/-- **`thm:stacksvd_weighted` under the exact edge, both regimes** (`main_paper.tex:462`):
+/-- **`thm:stacksvd_weighted` under the exact edge, both regimes**:
 with no black box, the performance at the optimal weights tends to `γ_opt` above the
 threshold `1 < ∑_i θ_i⁴/c_i` and to `0` below it (`Scalars.stackSVDLimitW` carries both
 branches), with no condition on the parameters. The exact edge comes from
@@ -300,7 +300,7 @@ theorem thm_stacksvd_weighted_gaussian [NeZero M]
     (m.heteroLaw_of_gaussian _ c hc (Scalars.optWstack_ne_zero hc hθ) hreg hG)
 
 /-- The inner-product form of `thm_stacksvd_weighted_gaussian`, under the exact edge and
-both regimes (`main_paper.tex:462`). Mirrors `thm_stacksvd_weighted_gaussian_margin_inner`,
+both regimes (`thm:stacksvd_weighted`). Mirrors `thm_stacksvd_weighted_gaussian_margin_inner`,
 with `heteroLaw_of_gaussian` in place of the margin route: every random matrix theory
 hypothesis is discharged for Gaussian noise. -/
 theorem thm_stacksvd_weighted_gaussian_inner
@@ -319,7 +319,7 @@ theorem thm_stacksvd_weighted_gaussian_inner
 
 /-! ### The optimal weights are fixed up to a scale (`w ∝ θ_i/√(θ_i² + c_i)`)
 
-`main_paper.tex:462` writes the optimal weights as a proportionality. The performance of
+`thm:stacksvd_weighted` writes the optimal weights as a proportionality. The performance of
 stacksvd sees only the direction of `w`, because `t • w` multiplies the whole weighted stack
 by `t` and `Spectral.overlap_smul` is scale invariant. The two lemmas below sit here, and
 not in `StackSVDWeighted.lean`, so that no olean outside `RMT/Het/` is invalidated; move
@@ -347,7 +347,7 @@ theorem stackPerfW_smul (m : MultiTableModel μ M n d) {t : ℝ} (ht : t ≠ 0) 
   rw [m.stackW_smul_X t w N ω, overlap_smul ht]
 
 /-- **`thm:stacksvd_weighted` at every weighting proportional to `w⋆`**
-(`main_paper.tex:462`, `w_i⋆ ∝ θ_i/√(θ_i² + c_i)`): the conclusion of
+(`w_i⋆ ∝ θ_i/√(θ_i² + c_i)`): the conclusion of
 `thm_stacksvd_weighted_gaussian_margin` holds at `t • w⋆` for every `t ≠ 0`. The scalar
 limit does not move, because `Scalars.stackSVDLimitW` does not depend on `w`; the random
 side does not move either, by `stackPerfW_smul`. -/
@@ -366,7 +366,7 @@ theorem thm_stacksvd_weighted_gaussian_margin_smul
   simpa only [m.stackPerfW_smul ht] using h
 
 /-- **`thm_stacksvd_weighted_gaussian` at every weighting proportional to `w⋆`**
-(`main_paper.tex:462`, `w_i⋆ ∝ θ_i/√(θ_i² + c_i)`), under the exact edge and both regimes.
+(`thm:stacksvd_weighted`, `w_i⋆ ∝ θ_i/√(θ_i² + c_i)`), under the exact edge and both regimes.
 Mirrors `thm_stacksvd_weighted_gaussian_margin_smul`: every random matrix theory hypothesis
 is discharged for Gaussian noise. -/
 theorem thm_stacksvd_weighted_gaussian_smul
@@ -383,7 +383,7 @@ theorem thm_stacksvd_weighted_gaussian_smul
 unweighted stacksvd, under the exact edge -/
 
 omit [NeZero M] in
-/-- **`thm:stacksvd_weighted`, bundled with `L_le_opt`** (`main_paper.tex:462`): the
+/-- **`thm:stacksvd_weighted`, bundled with `L_le_opt`**: the
 optimal weights `optWstack` attain `Scalars.stackSVDLimitW`, and every other nonzero
 weighting `w` converges to a value `Scalars.Lw θ c w` that is at most `stackSVDLimitW`. The
 first half is `thm_stacksvd_weighted_gaussian`; the second is `heteroLaw_of_gaussian.align`
@@ -405,7 +405,7 @@ theorem thm_stacksvd_weighted_gaussian_opt [NeZero M]
     fun w hw => ⟨(m.heteroLaw_of_gaussian w c hc hw hreg hG).align, Scalars.L_le_opt hc w⟩⟩
 
 omit [NeZero M] in
-/-- **`prop:dominance`** (`main_paper.tex:634`), with the Gaussian estimator convergence at
+/-- **`prop:dominance`**, with the Gaussian estimator convergence at
 the optimal weights attached: optimally weighted stacksvd tends to `Scalars.stackSVDLimitW`
 in probability, and that limit dominates both optimally weighted svdstack
 (`Scalars.svdstackOpt_le_stackSVDLimitW`) and unweighted stacksvd
@@ -425,7 +425,7 @@ theorem prop_dominance_gaussian [NeZero M]
   ⟨m.thm_stacksvd_weighted_gaussian c hc hθ hreg hG,
     Scalars.svdstackOpt_le_stackSVDLimitW hc, Scalars.stackSVDLimit_le_stackSVDLimitW hc⟩
 
-/-! ### `prop:binarystacksvd_inadmissable`, Gaussian noise (`main_paper.tex:660`)
+/-! ### `prop:binarystacksvd_inadmissable`, Gaussian noise
 
 The scalar content and the model half over a generic law are in `StackSVDWeighted.lean`.
 These two Gaussian corollaries need `heteroLaw_of_gaussian`, so they land here rather than
@@ -513,7 +513,7 @@ theorem optW_sq (i : Fin 2) : optWstack thetaEx cEx i ^ 2 = 5 / 6 := by
   rw [div_pow, Real.sq_sqrt (by norm_num : (5:ℝ) ≥ 0).le,
     Real.sq_sqrt (by norm_num : (6:ℝ) ≥ 0).le]
 
-/-- The detectability threshold of `main_paper.tex:1602`: `∑ θ_i⁴/c_i = 50 > 1`. -/
+/-- The detectability threshold of `thm:stacksvd_weighted`: `∑ θ_i⁴/c_i = 50 > 1`. -/
 theorem det_ex : 1 < ∑ i, thetaEx i ^ 4 / cEx i := by
   have h : ∀ i : Fin 2, thetaEx i ^ 4 / cEx i = 25 := by
     intro i
@@ -575,7 +575,7 @@ theorem margin_ex : MPhet.bSF cEx (optWstack thetaEx cEx) <
 open MultiTableModel in
 /-- Every hypothesis of `thm_stacksvd_weighted_gaussian_margin` is satisfiable at once: on
 any Gaussian two-table model in the regime `c = (1, 1)` with `θ = (√5, √5)`, the theorem
-applies and gives the conclusion of `thm:stacksvd_weighted` (`main_paper.tex:462`). -/
+applies and gives the conclusion of `thm:stacksvd_weighted`. -/
 example {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
     {n : Fin 2 → ℕ → ℕ} {d : ℕ → ℕ}
     (m : MultiTableModel μ 2 n d) (hθv : ∀ i, (m.tbl i).θ = Real.sqrt 5)

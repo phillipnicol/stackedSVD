@@ -10,8 +10,8 @@ import StackedSVD.Prob.NoiseMoments
 /-!
 # `thm:theta_est`: estimating a signal strength below the detection threshold
 
-`main_paper.tex:958` (statement), `main_paper.tex:2442` (proof),
-`main_paper.tex:2496` (item P, `lem:noise_projection_concentration`).
+`thm:theta_est` (statement), Appendix `app:theta_est_proof` (proof),
+the proof of `thm:theta_est` (item P, `lem:noise_projection_concentration`).
 Review note: `notes/archive/thm_theta_est.md`.
 
 Table `i` is above its threshold (`c_i < θ_i⁴`). Its top singular value gives a consistent
@@ -523,7 +523,7 @@ theorem sqNormMulVec_E (m : SpikedModel μ n d) (N : ℕ) (ω : Ω N)
   rw [Matrix.smul_mulVec, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul,
     ← mul_assoc, R2.sqrt_inv_mul_sqrt_inv]
 
-/-- The paper's expansion of `‖X a‖²` (`main_paper.tex:2470`). -/
+/-- The paper's expansion of `‖X a‖²` (the proof of `thm:theta_est`). -/
 theorem sqNormMulVec_X (m : SpikedModel μ n d) (N : ℕ) (ω : Ω N)
     (a : EuclideanSpace ℝ (Fin (d N))) :
     ThetaEst.sqNormMulVec (m.X N ω) a
@@ -822,7 +822,7 @@ noncomputable def thetaHat (m : MultiTableModel μ M n d) (i j : Fin M) (ci cj :
   ThetaEst.thetaHatFn ci cj (gramLamMax ((m.tbl i).X N ω),
     ThetaEst.sqNormMulVec ((m.tbl j).X N ω) (ThetaEst.topDir ((m.tbl i).X N ω)))
 
-/-- The limit of the projection: `‖X_j v̂_i‖² → θ_j² β_i² + c_j` (`main_paper.tex:2470`). -/
+/-- The limit of the projection: `‖X_j v̂_i‖² → θ_j² β_i² + c_j` (the proof of `thm:theta_est`). -/
 theorem sqNormMulVec_X_tendsto (m : MultiTableModel μ M n d) {i j : Fin M} {ci cj : ℝ}
     (law : (m.tbl i).SingleTableLaw ci) (est : m.ThetaEstLaw i j cj) :
     TendstoInProb μ (fun N ω => ThetaEst.sqNormMulVec ((m.tbl j).X N ω)
@@ -879,7 +879,7 @@ theorem sqNormMulVec_X_tendsto (m : MultiTableModel μ M n d) {i j : Fin M} {ci 
   have hvv : (m.tbl j).v N = (m.tbl i).v N := m.hv j i N
   rw [(m.tbl j).sqNormMulVec_X N ω (ThetaEst.topDir ((m.tbl i).X N ω)), hvv]
 
-/-- **`thm:theta_est`** (`main_paper.tex:958`). The estimator of `eq:theta_estimation` is
+/-- **`thm:theta_est`**. The estimator of `eq:theta_estimation` is
 consistent for `θ_j`, whatever the size of `θ_j`, as soon as table `i` is above its own
 detection threshold. -/
 theorem thm_theta_est (m : MultiTableModel μ M n d) {i j : Fin M} {ci cj : ℝ}
@@ -907,8 +907,8 @@ theorem thm_theta_est_gaussian [∀ N, IsProbabilityMeasure (μ N)]
 /-! ### The general-noise discharge of `ThetaEstLaw` (Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`)
 
 The same two limits for a fixed i.i.d. noise law `ν` with mean `0`, variance `1` and a
-finite fourth moment (`NoiseLaw ν`, `Prob/NoiseLaw.lean`); `assum:general_noise` of the paper
-(`main_paper.tex:244`). The Fubini step is stated for a family of table laws so that both the
+finite fourth moment (`NoiseLaw ν`, `Prob/NoiseLaw.lean`); `assum:general_noise` of the paper.
+The Fubini step is stated for a family of table laws so that both the
 Gaussian and the general case instantiate it; the moment inputs are those of
 `Prob/NoiseMoments.lean`, with the bound `(ν₄ + 2) n_j / d²` in place of the Gaussian identity
 `varSq · n_j / d²`. Nothing above this line changes; `thetaEstLaw_of_gaussian` keeps its own
@@ -1107,7 +1107,7 @@ example (m : MultiTableModel μ M n d) {i j : Fin M} (hij : i ≠ j) (hG : m.Joi
     {cj : ℝ} (hregj : (m.tbl j).Regime cj) : m.ThetaEstLaw i j cj :=
   m.thetaEstLaw_of_general noiseLaw_gaussian hij hG hregj
 
-/-- **`thm:theta_est` at a general noise law** (`assum:general_noise`, `main_paper.tex:244`):
+/-- **`thm:theta_est` at a general noise law** (`assum:general_noise`):
 the estimator is consistent for `θ_j` when the noise entries are i.i.d. with mean `0`,
 variance `1` and a finite fourth moment. `SingleTableLaw` of table `i` stays a hypothesis: its
 general-noise discharge is a later stage. -/

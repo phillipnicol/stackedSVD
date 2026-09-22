@@ -12,8 +12,8 @@ import StackedSVD.Prob.GaussianMatrix
 
 This file proves the `delocUniform` field of `SpikedModel.SingleTableLaw` for Gaussian noise,
 in both regimes and with no hypothesis on `θ` and no random matrix input. It is the route of
-`notes/archive/L2_CHOICES_ANSWERS.md`, top decision 1 (`notes/FLAGGED.md`, D6), and it is the
-paper's own remark (`main_paper.tex:350`, Loffler et al. Lemma 4.4).
+`notes/archive/L2_CHOICES_ANSWERS.md`, top decision 1 (`notes/FLAGGED.md`, D6). It is also the
+paper's own remark before `eq:A_beta_main_text` (Loffler et al. Lemma 4.4).
 
 ## The argument
 

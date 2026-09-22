@@ -12,10 +12,10 @@ import StackedSVD.StackSVD.Weighted
 `notes/SERVER_TODO.md`, "After the third external review", item P2. The paper states two
 comparisons with strict inequalities under extra hypotheses:
 
-* `thm:stacksvd_binary_optimal_svd_stack` (`main_paper.tex:626`): binary-weighted stacksvd on
+* `thm:stacksvd_binary_optimal_svd_stack`: binary-weighted stacksvd on
   the detectable set beats optimally weighted svdstack strictly once `β₂ > 0`, that is, once
   at least two tables clear their own detection threshold.
-* `prop:dominance` (`main_paper.tex:634`): optimally weighted stacksvd beats optimally
+* `prop:dominance`: optimally weighted stacksvd beats optimally
   weighted svdstack strictly once at least two tables carry signal, and beats unweighted
   stacksvd strictly once `θ_i²/c_i` is not constant across tables.
 
@@ -41,7 +41,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### `thm:stacksvd_binary_optimal_svd_stack`, strict half -/
 
-/-- **`thm:stacksvd_binary_optimal_svd_stack`** (`main_paper.tex:626`), strict half, Gaussian
+/-- **`thm:stacksvd_binary_optimal_svd_stack`**, strict half, Gaussian
 noise: with every kept table at `c_i ≤ 1` and at least two tables above their own detection
 threshold `c_i < θ_i⁴` (`hcard`, the paper's hypothesis `β₂ > 0`), the binary weighting on the
 detectable set `S` converges to `Scalars.binaryStackSVDLimit S θ c`, and that limit is
@@ -73,10 +73,10 @@ theorem thm_stacksvd_binary_optimal_svd_stack_gaussian_strict
 
 /-! ### `prop:dominance`, strict halves -/
 
-/-- **`prop:dominance`** (`main_paper.tex:634`), both strict halves, Gaussian noise: above the
-recovery threshold `hthr` (`∑ θ_i⁴/c_i > 1`, the condition of `thm:stacksvd_weighted` at
-`main_paper.tex:471`; `eq:assumption4` at line 1368 is the general-`w` form, equivalent to
-it only at the optimal weights, line 1602), with at least two tables carrying signal
+/-- **`prop:dominance`**, both strict halves, Gaussian noise: above the
+recovery threshold `hthr` (`∑ θ_i⁴/c_i > 1`, the condition of `thm:stacksvd_weighted`;
+`eq:assumption4` is the general-`w` form, equivalent to it only at the optimal weights by
+the proof of `thm:stacksvd_weighted`), with at least two tables carrying signal
 (`htwo`, the paper's hypothesis for the svdstack comparison) and `θ_i²/c_i` not constant
 across tables (`hnc`, the paper's hypothesis for the unweighted stacksvd
 comparison), optimally weighted stacksvd converges to `Scalars.stackSVDLimitW` and strictly

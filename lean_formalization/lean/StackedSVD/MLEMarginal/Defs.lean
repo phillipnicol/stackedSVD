@@ -9,7 +9,7 @@ import StackedSVD.Prob.GaussianDensity
 /-!
 # The random-effects model behind `app:wstacksvd_mle` (L5): definitions
 
-The paper (`main_paper.tex:1645`) keeps `X_i = θ_i u_i vᵀ + E_i` and makes `u_i` random,
+The paper (`app:wstacksvd_mle`) keeps `X_i = θ_i u_i vᵀ + E_i` and makes `u_i` random,
 `u_i ~ N(0, I_{n_i} / n_i)`, independent of the Gaussian noise `E_i = Z_i / √d`. The review
 note is `notes/archive/L5_mle_marginal.md`.
 

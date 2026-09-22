@@ -26,7 +26,7 @@ nothing else.
    `prop:single_table` in rank `r`, at `r_i = 1` and at general `r_i`.
 3. `UnalignedModel.prop_stacksvd_subspace_gaussian` and
    `UnalignedModelR.prop_stacksvd_subspace_general_gaussian`: `prop:stacksvd_subspace`
-   (`main_paper.tex:834`) with the law discharged.
+   with the law discharged.
 4. The Frobenius form of the same proposition at the canonical eigenframe:
    `UnalignedModel.r_le_d`, `UnalignedModel.topGap_stackGram_whp_of_gaussian` and
    `UnalignedModel.prop_stacksvd_subspace_frobenius_eig_gaussian`. The top-`r` gap of the
@@ -120,7 +120,7 @@ theorem subspaceLaw_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
 
 /-! ### 3. `prop:stacksvd_subspace` at `r_i = 1`, unconditional -/
 
-/-- **`prop:stacksvd_subspace`** (`main_paper.tex:834`) at `r_i = 1` for joint Gaussian noise:
+/-- **`prop:stacksvd_subspace`** at `r_i = 1` for joint Gaussian noise:
 the stacksvd subspace performance tends to one rank-one performance per spike of the core
 matrix. The Layer 1 form `prop_stacksvd_subspace` (`RankR/Subspace.lean:498`) takes the
 rank-`r` spiked law as a hypothesis; here that law is proved, so the only hypotheses left are
@@ -197,7 +197,7 @@ theorem topGap_stackGram_whp_of_gaussian [NeZero M] (m : UnalignedModel μ M n d
   have hrd : r ≤ d N := by simpa using m.r_le_d N
   exact (ae_iff.mp (m.ae_topGap_stackGram hG N (le_min hN hrd))).symm
 
-/-- **`prop:stacksvd_subspace`** (`main_paper.tex:834`) at `r_i = 1` for joint Gaussian noise,
+/-- **`prop:stacksvd_subspace`** at `r_i = 1` for joint Gaussian noise,
 on the paper's own quantity `‖V̂_stacksvdᵀ V‖_F²`, with `V̂_stacksvd` the canonical top-`r`
 eigenframe of `X_stackᵀ X_stack`. Both side conditions of
 `prop_stacksvd_subspace_frobenius_eig` (`RankR/Frobenius.lean:886`) are proved above, so the
@@ -230,14 +230,14 @@ theorem subspaceLawG_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
   ⟨fun j => m.toStackG.align_of_gaussian (m.gaussianNoise_toStackG hG) hc
     (hreg ⟨0, NeZero.pos M⟩).2.1 (m.toMultiTableShell.stack_regime cc hreg).2.2 j⟩
 
-/-- **`prop:stacksvd_subspace`** (`main_paper.tex:834`) at general `r_i` for joint Gaussian
+/-- **`prop:stacksvd_subspace`** at general `r_i` for joint Gaussian
 noise. The general-`r_i` twin of `UnalignedModel.prop_stacksvd_subspace_gaussian`; the Layer 1
 form is `prop_stacksvd_subspace_general` (`RankR/SubspaceMain.lean:193`).
 
 Scope (Track A audit F1, 2026-09-02): each table is a `SpikedModelR`, whose fields `hθnn` and
 `hθanti : StrictAnti θ` require distinct nonnegative `θ_ij` inside a table. The paper makes no
-ordering assumption (`main_paper.tex:767`) and assumes distinct entries for svdstack only
-(`:768`), so this statement is narrower than the paper's at a table with a repeated `θ_ij`.
+ordering assumption (after `assum:unaligned`) and assumes distinct entries for svdstack only,
+so this statement is narrower than the paper's at a table with a repeated `θ_ij`.
 The stacksvd proofs read neither field; the order is a model field, not a hypothesis. -/
 theorem prop_stacksvd_subspace_general_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r rk) (hG : m.JointGaussianNoise) (cc : Fin M → ℝ)
@@ -259,7 +259,7 @@ theorem r_le_d (m : UnalignedModelR μ M n d r rk) (N : ℕ) : r ≤ Fintype.car
   omega
 
 /-- The general-`r_i` twin of `UnalignedModel.prop_stacksvd_subspace_frobenius`
-(`RankR/Frobenius.lean:871`): `prop:stacksvd_subspace` (`main_paper.tex:834`) on the paper's
+(`RankR/Frobenius.lean:871`): `prop:stacksvd_subspace` on the paper's
 own quantity `‖V̂_stacksvdᵀ V‖_F²`, for any selection `Y` that is a top-`r` frame of the stack
 Gram matrix with probability tending to one. Same proof, through
 `prop_stacksvd_subspace_general` (`RankR/SubspaceMain.lean:193`) in place of
@@ -348,7 +348,7 @@ theorem topGap_stackGramG_whp_of_gaussian [NeZero M] (m : UnalignedModelR μ M n
   exact (ae_iff.mp (m.ae_topGap_stackGramG hG N (le_min hN hrd))).symm
 
 /-- The general-`r_i` twin of `UnalignedModel.prop_stacksvd_subspace_frobenius_eig_gaussian`
-(`RankR/SubspaceGaussian.lean:198`): `prop:stacksvd_subspace` (`main_paper.tex:834`) on the
+(`RankR/SubspaceGaussian.lean:198`): `prop:stacksvd_subspace` on the
 paper's own quantity, with the law and the gap both discharged, so the hypotheses are the
 model, the Gaussian noise and the regime. Same proof, through `subspaceLawG_of_gaussian` in
 place of `subspaceLaw_of_gaussian`. -/
@@ -375,12 +375,12 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### 5. The worked example of Section 7, stacksvd half, unconditional -/
 
-/-- **`eq:perf_rankr_ex_stacksvd`** (`main_paper.tex:848`) for joint Gaussian noise. This is
+/-- **`eq:perf_rankr_ex_stacksvd`** for joint Gaussian noise. This is
 `example_perfStackR_tendsto` (`RankR/SubspaceMain.lean:156`) with its hypothesis `law` discharged
 by `UnalignedModel.subspaceLaw_of_gaussian`, so the only hypotheses left are the two tables of
 `eq:psi_equation`, the common regime `c` and the Gaussian noise. The svdstack twin is
 `example_perfR_tendsto_gaussian` (`RankR/Example.lean:976`) and the two together are the
-comparison of `main_paper.tex:864`. -/
+comparison after `eq:perf_rankr_ex_stacksvd`. -/
 theorem example_perfStackR_tendsto_gaussian [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModel μ 2 n d 2) (θ c ψ : ℝ) (hc : 0 < c)
     (hθ : ∀ i, (m.tbl i).θ = θ) (hR : m.R = Rex ψ)

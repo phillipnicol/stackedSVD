@@ -23,13 +23,13 @@ C1 and C3. Nothing here is new mathematics: every result transcribes a rank-one 
    `singleTableLaw_of_gaussian` (`RMT/Full.lean`) and `tableLawR_of_singleTableLaw`
    (`RankR/General.lean`), and `UnalignedModelR.tableLawR_of_gaussian` does it for every table
    of a model at `rk = fun _ => 1`.
-2. **W1, the Frobenius form.** `vhatSvdstackG` and `vhatSvdstackGW` are the paper's
-   `V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` (`main_paper.tex:1982, 2016`) at general `r_i`, and
-   `frobSq_vhatSvdstackG`, `frobSq_vhatSvdstackGW` identify `perfRG` and `perfRGW` with
-   `‖V̂ᵀ V‖_F²`. The corollaries `..._frobenius` ask the frame only on an event of probability
-   tending to one; the `..._frobenius_eig` companions take the canonical frame `topEigMat` and
-   carry no frame hypothesis, because `topGap_gramG_whp` and `topGap_gramWG_whp` supply the
-   gap. Mirrors: `Frobenius.lean:575-600, 700-861`.
+2. **W1, the Frobenius form.** At general `r_i`, `vhatSvdstackG` and `vhatSvdstackGW` are the
+   `V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` of the proofs of `prop:general_rank_unweighted_svdstack` and
+   `thm:gen_rank_weight_svdstack`, and `frobSq_vhatSvdstackG`, `frobSq_vhatSvdstackGW` identify
+   `perfRG` and `perfRGW` with `‖V̂ᵀ V‖_F²`. The corollaries `..._frobenius` ask the frame only on
+   an event of probability tending to one; the `..._frobenius_eig` companions take the canonical
+   frame `topEigMat` and carry no frame hypothesis, because `topGap_gramG_whp` and
+   `topGap_gramWG_whp` supply the gap. Mirrors: `Frobenius.lean:575-600, 700-861`.
 3. **W2 (iii), the Gaussian corollaries.** `..._gaussian_one` at `rk = fun _ => 1`: the two
    Layer 1 theorems with `law` replaced by `hc`, `hreg` and `hG : m.JointGaussianNoise`.
 4. **W2 (iv), the model bridge.** `UnalignedModelR.toUnaligned` reads a model at
@@ -37,9 +37,9 @@ C1 and C3. Nothing here is new mathematics: every result transcribes a rank-one 
    performance functionals agree along `i ↦ flat i 0`. Mirror of section 6 of
    `RankR/General.lean`, which does the same for the limits.
 5. **C1 and C3, the hypothesis trims.**
-   `thm_gen_rank_weight_svdstak_general_r_of_rank` drops `hrr : r ≤ rtot rk`, which follows
+   `thm_gen_rank_weight_svdstack_general_r_of_rank` drops `hrr : r ≤ rtot rk`, which follows
    from `hrankB` by `Matrix.rank_le_card_height`.
-   `thm_gen_rank_weight_svdstak_general_r_paper` takes the paper's own two hypotheses,
+   `thm_gen_rank_weight_svdstack_general_r_paper` takes the paper's own two hypotheses,
    `β_ij > 0` and `Rank(∑_i R_i R_iᵀ) = r`, in place of `hrankB`.
 
 Every theorem here takes `hG : UnalignedModelR.IndepNoise` where Layer 1 takes it (finding W3,
@@ -160,7 +160,7 @@ theorem sum_mul_transpose_eq_sum_vecMulVec
   simp only [hL, hR, blk]
   exact (sum_stack_index fun i j => R i k j * R i l j).symm
 
-/-- Finding C3: the paper's rank condition `Rank(∑_i R_i R_iᵀ) = r` (`main_paper.tex:757`) and
+/-- Finding C3: the paper's rank condition `Rank(∑_i R_i R_iᵀ) = r` (`assum:unaligned`) and
 the Lean form `(Rstack (Rcol R)).rank = r` are the same condition. -/
 theorem rank_sum_mul_transpose (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) :
     (∑ i, R i * (R i)ᵀ).rank = (Rstack (Rcol R)).rank := by
@@ -168,7 +168,7 @@ theorem rank_sum_mul_transpose (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) 
 
 /-- Finding C3, the step the paper-literal corollary needs: `β_ij > 0` at every spike plus the
 paper's rank condition give `rank B_R = r`. The converse fails, so
-`thm_gen_rank_weight_svdstak_general_r` is the stronger theorem (`Weighted.lean:530`, D16). -/
+`thm_gen_rank_weight_svdstack_general_r` is the stronger theorem (`Weighted.lean:530`, D16). -/
 theorem rank_BBlock_of_paper {β : (i : Fin M) → Fin (rk i) → ℝ}
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (hβpos : ∀ i j, 0 < β i j)
     (hrank : (∑ i, R i * (R i)ᵀ).rank = r) : (BBlock β R).rank = r := by
@@ -196,9 +196,9 @@ theorem tableLawR_of_gaussian [∀ N, IsProbabilityMeasure (μ N)]
 
 /-! ### 2. W1: `V̂_svdstack` and the Frobenius form, unweighted -/
 
-/-- `V̂_svdstack` at general `r_i`, written as the paper writes it (`main_paper.tex:1982`):
-`V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r` eigenframe of `Ṽ Ṽᵀ`. Mirror:
-`UnalignedModel.vhatSvdstack`. -/
+/-- `V̂_svdstack` at general `r_i`, written as the paper writes it (the proof of
+`prop:general_rank_unweighted_svdstack`): `V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r`
+eigenframe of `Ṽ Ṽᵀ`. Mirror: `UnalignedModel.vhatSvdstack`. -/
 noncomputable def vhatSvdstackG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N)
     (Q : Matrix (Fin (rtot rk)) (Fin r) ℝ) (lam : Fin r → ℝ) : Matrix (Fin (d N)) (Fin r) ℝ :=
   (m.VtG N ω)ᵀ * Q * Matrix.diagonal fun j => (Real.sqrt (lam j))⁻¹
@@ -252,7 +252,7 @@ theorem topGap_gramG_whp (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ)
       (fun N ω => m.isHermitian_gramG N ω)
       (fun p q => m.gramR_general c β hβdef law hG p q) hr hrp hgap
 
-/-- **`prop:general_rank_unweighted_svdstack`** (`main_paper.tex:799`) at general `r_i`, on the
+/-- **`prop:general_rank_unweighted_svdstack`** at general `r_i`, on the
 paper's own quantity `‖V̂_svdstackᵀ V‖_F²`. `(Q N ω, λ N ω)` is any selection that is a top-`r`
 eigenframe of `Ṽ Ṽᵀ` with nonnegative eigenvalues on an event whose probability tends to one.
 Mirror: `prop_general_rank_unweighted_svdstack_frobenius`. -/
@@ -303,8 +303,8 @@ theorem prop_general_rank_unweighted_svdstack_general_frobenius_eig
 
 /-! ### 3. W1: `V̂_svdstack(W)` and the Frobenius form, weighted -/
 
-/-- `V̂_svdstack(W)` at general `r_i` (`main_paper.tex:2016`): `V̂ = Ṽ_Wᵀ Q_r Λ_r^{-1/2}` with
-`(Q, λ)` a top-`r` eigenframe of `Ṽ_W Ṽ_Wᵀ`. -/
+/-- `V̂_svdstack(W)` at general `r_i` (the proof of `thm:gen_rank_weight_svdstack`):
+`V̂ = Ṽ_Wᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r` eigenframe of `Ṽ_W Ṽ_Wᵀ`. -/
 noncomputable def vhatSvdstackGW (m : UnalignedModelR μ M n d r rk)
     (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ) (N : ℕ) (ω : Ω N)
     (Q : Matrix (Fin (rtot rk)) (Fin r) ℝ) (lam : Fin r → ℝ) : Matrix (Fin (d N)) (Fin r) ℝ :=
@@ -336,7 +336,7 @@ theorem posSemidef_gramWG (m : UnalignedModelR μ M n d r rk)
 
 /-- `Ṽ_W Ṽ_Wᵀ → W A_{β,R} Wᵀ` entrywise in probability. Each entry is a fixed real linear
 combination of the entries of `Ṽ Ṽᵀ` (`mul_mul_transpose_apply`). The same step runs inside
-`thm_gen_rank_weight_svdstak_general_r_conv`; it is named here for `topGap_gramWG_whp`.
+`thm_gen_rank_weight_svdstack_general_r_conv`; it is named here for `topGap_gramWG_whp`.
 Mirror: `UnalignedModel.gramRW` (`RankR/Frobenius.lean`). -/
 theorem gramRWG (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ)
     (β : (i : Fin M) → Fin (rk i) → ℝ) (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ)
@@ -385,10 +385,10 @@ theorem topGap_gramWG_whp (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ
       (fun N ω => m.isHermitian_gramWG W N ω)
       (fun p q => m.gramRWG c β W hβdef law hG p q) hr hrp hgapW
 
-/-- **`thm:gen_rank_weight_svdstak`** for one admissible `W` (`main_paper.tex:893`) at general
+/-- **`thm:gen_rank_weight_svdstack`** for one admissible `W` at general
 `r_i`, on the paper's own quantity. The frame is asked only on an event whose probability
-tends to one. Mirror: `thm_gen_rank_weight_svdstak_frobenius`. -/
-theorem thm_gen_rank_weight_svdstak_general_r_conv_frobenius
+tends to one. Mirror: `thm_gen_rank_weight_svdstack_frobenius`. -/
+theorem thm_gen_rank_weight_svdstack_general_r_conv_frobenius
     (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ)
     (β : (i : Fin M) → Fin (rk i) → ℝ) (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i)) (hr : 0 < r) (hrr : r ≤ rtot rk)
@@ -403,15 +403,15 @@ theorem thm_gen_rank_weight_svdstak_general_r_conv_frobenius
       (fun N ω => frobSq ((m.vhatSvdstackGW W N ω (Q N ω) (lam N ω))ᵀ * m.V N))
       (limitRGW W β m.R) := by
   refine TendstoInProb.of_tendsto_measure_ne_of_tendsto ?_
-    (m.thm_gen_rank_weight_svdstak_general_r_conv c β W hβdef hr hrr hgapW hposW law hG)
+    (m.thm_gen_rank_weight_svdstack_general_r_conv c β W hβdef hr hrr hgapW hposW law hG)
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hQ (fun _ => zero_le)
     (fun N => measure_mono fun ω hω => ?_)
   intro hgood
   exact hω (m.frobSq_vhatSvdstackGW W N ω hgood.1 hgood.2)
 
 /-- The same at the canonical frame of `Ṽ_W Ṽ_Wᵀ`, with **no frame hypothesis**: the
-hypotheses are those of `thm_gen_rank_weight_svdstak_general_r_conv`. -/
-theorem thm_gen_rank_weight_svdstak_general_r_conv_frobenius_eig
+hypotheses are those of `thm_gen_rank_weight_svdstack_general_r_conv`. -/
+theorem thm_gen_rank_weight_svdstack_general_r_conv_frobenius_eig
     (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ)
     (β : (i : Fin M) → Fin (rk i) → ℝ) (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i)) (hr : 0 < r)
@@ -424,7 +424,7 @@ theorem thm_gen_rank_weight_svdstak_general_r_conv_frobenius_eig
         (topEigMat (m.isHermitian_gramWG W N ω) hrp)
         (topEigVal (m.isHermitian_gramWG W N ω) hrp))ᵀ * m.V N))
       (limitRGW W β m.R) := by
-  refine m.thm_gen_rank_weight_svdstak_general_r_conv_frobenius c β W hβdef hr
+  refine m.thm_gen_rank_weight_svdstack_general_r_conv_frobenius c β W hβdef hr
     (by simpa using hrp) hgapW hposW law hG _ _ ?_
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     (m.topGap_gramWG_whp c β W hβdef hrp hgapW law hG) (fun _ => zero_le)
@@ -433,11 +433,11 @@ theorem thm_gen_rank_weight_svdstak_general_r_conv_frobenius_eig
   exact hω ⟨isTopEigFrame_topEigMat (m.isHermitian_gramWG W N ω) hrp hgapN,
     fun j => topEigVal_nonneg hrp (m.posSemidef_gramWG W N ω) j⟩
 
-/-- **`thm:gen_rank_weight_svdstak`, first display** (`main_paper.tex:893`) at general `r_i`,
+/-- **`thm:gen_rank_weight_svdstack`, first display** at general `r_i`,
 on the paper's own quantity `‖V̂_svdstack(W⋆)ᵀ V‖_F²` and at the canonical frame of
-`Ṽ_{W⋆} Ṽ_{W⋆}ᵀ`. The hypotheses are those of `thm_gen_rank_weight_svdstak_general_r`; the
+`Ṽ_{W⋆} Ṽ_{W⋆}ᵀ`. The hypotheses are those of `thm_gen_rank_weight_svdstack_general_r`; the
 eigengap and the positivity at `W⋆` come from `rank B_R = r`, as they do there. -/
-theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig (m : UnalignedModelR μ M n d r rk)
+theorem thm_gen_rank_weight_svdstack_general_r_frobenius_eig (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i)) (hr : 0 < r)
     (hrp : r ≤ Fintype.card (Fin (rtot rk))) (hrankB : (BBlock β m.R).rank = r)
@@ -463,18 +463,18 @@ theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig (m : UnalignedModelR
       ⟨r - 1, by omega⟩ := by
     rw [← eigenvalues_eigIdx]
     exact hpdOpt.eigenvalues_pos _
-  have h := m.thm_gen_rank_weight_svdstak_general_r_conv_frobenius_eig c β (optWG β) hβdef hr
+  have h := m.thm_gen_rank_weight_svdstack_general_r_conv_frobenius_eig c β (optWG β) hβdef hr
     hrp hgapOpt hposOpt law hG
   have hval : limitRGW (optWG β) β m.R = limitOptG β m.R hrp := by
     rw [limitRGW_eq_limitRW, limitOptG_eq_limitROpt, optWG_eq_optWR,
       limitRW_optWR (betaFlat β) (Rcol m.R) h0 h1 hrp]
   rwa [hval] at h
 
-/-! ### 4. C1 and C3: the two hypothesis trims of `thm:gen_rank_weight_svdstak` -/
+/-! ### 4. C1 and C3: the two hypothesis trims of `thm:gen_rank_weight_svdstack` -/
 
-/-- **Finding C1.** `thm_gen_rank_weight_svdstak_general_r` without `hrr : r ≤ r̃`: the bound
+/-- **Finding C1.** `thm_gen_rank_weight_svdstack_general_r` without `hrr : r ≤ r̃`: the bound
 is already inside `hrankB`, because `B_R` has `r̃` rows. -/
-theorem thm_gen_rank_weight_svdstak_general_r_of_rank (m : UnalignedModelR μ M n d r rk)
+theorem thm_gen_rank_weight_svdstack_general_r_of_rank (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
     (hr : 0 < r) (hrankB : (BBlock β m.R).rank = r)
@@ -489,14 +489,14 @@ theorem thm_gen_rank_weight_svdstak_general_r_of_rank (m : UnalignedModelR μ M 
             omega⟩ →
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R (rank_le_card_of_rank_BBlock hrankB) :=
-  m.thm_gen_rank_weight_svdstak_general_r c β hc hβdef hr
+  m.thm_gen_rank_weight_svdstack_general_r c β hc hβdef hr
     (by simpa using rank_le_card_of_rank_BBlock hrankB) hrankB law hG
 
-/-- **Finding C3, the paper-literal corollary.** `thm_gen_rank_weight_svdstak_general_r` with
-the paper's own two hypotheses (`main_paper.tex:757, 893`): `β_ij > 0` at every spike and
-`Rank(∑_i R_i R_iᵀ) = r`. They imply `rank B_R = r` and are strictly stronger, so this is the
-weaker theorem of the two. -/
-theorem thm_gen_rank_weight_svdstak_general_r_paper (m : UnalignedModelR μ M n d r rk)
+/-- **Finding C3, the paper-literal corollary.** `thm_gen_rank_weight_svdstack_general_r` with
+the paper's own two hypotheses (`assum:unaligned`, `thm:gen_rank_weight_svdstack`): `β_ij > 0` at
+every spike and `Rank(∑_i R_i R_iᵀ) = r`. They imply `rank B_R = r` and are strictly stronger, so
+this is the weaker theorem of the two. -/
+theorem thm_gen_rank_weight_svdstack_general_r_paper (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
     (hr : 0 < r) (hβpos : ∀ i j, 0 < β i j)
@@ -515,7 +515,7 @@ theorem thm_gen_rank_weight_svdstak_general_r_paper (m : UnalignedModelR μ M n 
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R
             (rank_le_card_of_rank_BBlock (rank_BBlock_of_paper m.R hβpos hrank)) :=
-  m.thm_gen_rank_weight_svdstak_general_r_of_rank c β hc hβdef hr
+  m.thm_gen_rank_weight_svdstack_general_r_of_rank c β hc hβdef hr
     (rank_BBlock_of_paper m.R hβpos hrank) law hG
 
 /-! ### 5. W2 (iii): the Gaussian corollaries at one spike per table
@@ -554,8 +554,8 @@ theorem prop_general_rank_unweighted_svdstack_general_frobenius_eig_gaussian_one
   m.prop_general_rank_unweighted_svdstack_general_frobenius_eig c β hc hβdef hrp hgap
     (m.tableLawR_of_gaussian hc hreg hG) hG.indepNoise
 
-/-- **`thm:gen_rank_weight_svdstak` under Gaussian noise**, at one spike per table. -/
-theorem thm_gen_rank_weight_svdstak_general_r_gaussian_one
+/-- **`thm:gen_rank_weight_svdstack` under Gaussian noise**, at one spike per table. -/
+theorem thm_gen_rank_weight_svdstack_general_r_gaussian_one
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r fun _ => 1)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin 1 → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -571,11 +571,11 @@ theorem thm_gen_rank_weight_svdstak_general_r_gaussian_one
             omega⟩ →
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R (rank_le_card_of_rank_BBlock hrankB) :=
-  m.thm_gen_rank_weight_svdstak_general_r_of_rank c β hc hβdef hr hrankB
+  m.thm_gen_rank_weight_svdstack_general_r_of_rank c β hc hβdef hr hrankB
     (m.tableLawR_of_gaussian hc hreg hG) hG.indepNoise
 
 /-- The same on the paper's own quantity, at `W⋆` and at the canonical frame. -/
-theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian_one
+theorem thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian_one
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r fun _ => 1)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin 1 → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -587,7 +587,7 @@ theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian_one
         (topEigMat (m.isHermitian_gramWG (optWG β) N ω) hrp)
         (topEigVal (m.isHermitian_gramWG (optWG β) N ω) hrp))ᵀ * m.V N))
       (limitOptG β m.R hrp) :=
-  m.thm_gen_rank_weight_svdstak_general_r_frobenius_eig c β hc hβdef hr hrp hrankB
+  m.thm_gen_rank_weight_svdstack_general_r_frobenius_eig c β hc hβdef hr hrp hrankB
     (m.tableLawR_of_gaussian hc hreg hG) hG.indepNoise
 
 end UnalignedModelR
@@ -734,7 +734,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-- `Ṽ_W V → W B_{β,R}` entrywise in probability. Each entry is a fixed real linear
 combination of the entries of `Ṽ V` (`VtVWG_eq`), and `VtV_tendsto_general` gives those
-limits. The same step runs inline in `thm_gen_rank_weight_svdstak_general_r_conv`
+limits. The same step runs inline in `thm_gen_rank_weight_svdstack_general_r_conv`
 (`RankR/GeneralMain.lean`); it is named here for the component clause of
 `thm:rank_r_svdstack`. As `VtV_tendsto_general` does, this needs no independence across
 tables, so `hG : m.IndepNoise` does not appear. Mirror: `gramRWG` above. -/

@@ -1,5 +1,5 @@
 #!/bin/bash
-# check_kernel.sh - gate 7: replay every module of the package through the Lean kernel a
+# check_kernel.sh - gate 6: replay every module of the package through the Lean kernel a
 # second time, with the toolchain's own `leanchecker` (Lean v4.28 and later; before that the
 # separate lean4checker, now archived).
 #
@@ -145,7 +145,7 @@ if [ "$status" != "0" ] || grep -q 'leanchecker found a problem' "$out"; then
   exit 1
 fi
 if [ "${targets[*]}" = "StackedSVD" ]; then
-  n_ole=$(find "$build_lib/StackedSVD" "$build_lib/StackedSVD.olean" -name '*.olean' | wc -l)
+  n_ole=$(find "$build_lib/StackedSVD" "$build_lib/StackedSVD.olean" -name '*.olean' | wc -l | tr -d ' ')
   if [ "$n_rep" != "$n_ole" ]; then
     echo "check_kernel: FAIL - $n_rep modules replayed but the package has $n_ole oleans ($secs s)."
     exit 1

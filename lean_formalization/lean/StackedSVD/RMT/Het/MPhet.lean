@@ -10,7 +10,7 @@ import StackedSVD.RMT.MP
 # Item MP-het: the scalar layer of the heteroscedastic Marchenko-Pastur law
 
 Task H1 of `notes/archive/plan_heterolaw_A.md` (sections 2.2 to 2.4 and 3.5). The weighted stack
-`X_stack(w) = [w_1 X_1; ...; w_M X_M]` of `main_paper.tex:1350` has block heteroscedastic
+`X_stack(w) = [w_1 X_1; ...; w_M X_M]` (proof of `thm:stacksvd_weighted`) has block heteroscedastic
 noise `Σ^{1/2} E`, `Σ = diag(w_i² I_{n_i})`. Its noise Gram matrix has the Silverstein law:
 the `d`-side trace `s(z)` solves `z = zfun s := -1/s + ∑_i c_i w_i²/(1 + w_i² s)`. Everything
 here is real algebra on the physical branch of this equation, in the style of `RMT/MP.lean`.
@@ -32,11 +32,11 @@ here is real algebra on the physical branch of this equation, in the style of `R
 
 ## Results
 
-`assumption4_iff_branch` (`eq:assumption4`, `main_paper.tex:1368`, is exactly the branch
+`assumption4_iff_branch` (`eq:assumption4` is exactly the branch
 condition `-1/γ₁ ∈ (sStar, 0)`), `bHet_lt_rhoHet`, `one_add_F_eq` (`1 + F(z) = (γ/z)
 secular θ w γ` with `γ = -1/sPhys z`), `one_add_F_rhoHet` and `one_add_F_eq_zero_iff` (the
 outlier is the unique root above the edge), `overlap_identity_het` (`1/(ρ F'(ρ)) = L(w)`,
-the paper's `L(w)` of `main_paper.tex:1433`), `bHet_le_bSF`, and the `M = 1` reduction to
+the paper's `L(w)` after `eq:weighted_norm`), `bHet_le_bSF`, and the `M = 1` reduction to
 `RMT/MP.lean` (`sStar_single`, `bHet_single`, `sPhys_single`, `rhoHet_single`).
 
 ## Junk conventions
@@ -583,7 +583,7 @@ theorem sPhysDeriv_tendsto_atTop {c w : Fin M → ℝ} (hc : ∀ i, 0 < c i) (hw
       exact zfunDeriv_pos hc hw (sStar_lt_sPhys hc hw hz) (sPhys_neg hc hw hz)
   exact (tendsto_inv_nhdsGT_zero.comp h1).congr fun z => rfl
 
-/-! ### The outlier `rhoHet` and the branch lemma (`eq:assumption4`, `main_paper.tex:1368`) -/
+/-! ### The outlier `rhoHet` and the branch lemma (`eq:assumption4`) -/
 
 theorem exists_w_ne_zero_of_root {θ w : Fin M → ℝ} (h : ∃ g, IsGammaTop θ w g) :
     ∃ i, w i ≠ 0 := by
@@ -788,7 +788,7 @@ theorem one_add_F_eq_zero_iff {θ c w : Fin M → ℝ} (hc : ∀ i, 0 < c i) (h4
   · rintro rfl
     exact one_add_F_rhoHet hc h4
 
-/-! ### The overlap identity `1/(ρ F'(ρ)) = L(w)` (`main_paper.tex:1433`) -/
+/-! ### The overlap identity `1/(ρ F'(ρ)) = L(w)` (after `eq:weighted_norm`) -/
 
 /-- `ρ F'(ρ) = LwDen/η₁`, the sum identity of plan section 2.4 in the `Lean` closed forms. -/
 theorem rhoHet_mul_FhetDeriv {θ c w : Fin M → ℝ} (hc : ∀ i, 0 < c i)

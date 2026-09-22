@@ -19,8 +19,8 @@ import StackedSVD.LinAlg.Eigen
 # Stage E8bd: deterministic lemmas for the heteroscedastic bulk step
 
 Track E, stage E8b, deterministic part. Six items of linear algebra that the bulk branch of
-`thm:rank_r_stacksvd` (`main_paper.tex:2337`, heteroscedastic, rank `r`) reads at one sample
-point. The rank-one mirror is `thm:stacksvd_weighted` (`:463`). No
+`thm:rank_r_stacksvd` (heteroscedastic, rank `r`) reads at one sample
+point. The rank-one mirror is `thm:stacksvd_weighted`. No
 probability except the two almost-sure statements of section 3, which only reindex the
 simplicity facts of stage E5 (`RankR/Het/Simplicity.lean`) and of stage E6
 (`RankR/Het/Deloc.lean`).
@@ -43,13 +43,13 @@ simplicity facts of stage E5 (`RankR/Het/Simplicity.lean`) and of stage E6
    `overlapIdx X a y ≤ ‖P_a(X Xᵀ) (X y)‖² / μ₀` when `μ₀ ≤ λ_a(Xᵀ X)` and `0 < μ₀`.
 
 Paper labels: items 4 to 6 are the deterministic half of the bulk branch of
-`thm:rank_r_stacksvd` (`main_paper.tex:2337`, Appendix E, `sec:rank_r`), whose rank-one
-mirror is `thm:stacksvd_weighted` (`:463`). Item 1 carries no paper label. It is
+`thm:rank_r_stacksvd` (Appendix E, `sec:rank_r`), whose rank-one
+mirror is `thm:stacksvd_weighted`. Item 1 carries no paper label. It is
 Courant-Fischer monotonicity of the sorted eigenvalues under a positive semidefinite
 addition, a generic linear-algebra step, and the paper proves nothing of the kind at this
-point: `lem:general_rank_delocalization` (`main_paper.tex:1948`, Appendix D) is the
-svdstack delocalization lemma, its proof (`:1957` to `:1974`) has no interlacing step, and
-Weyl's inequality enters later, at `:1984`, inside the proof of
+point: `lem:general_rank_delocalization` (Appendix D) is the
+svdstack delocalization lemma, its proof has no interlacing step, and
+Weyl's inequality enters later, inside the proof of
 `prop:general_rank_unweighted_svdstack`. Rank-1 mirrors in Lean are `SVDStack/Gram.lean`
 (gram duality) and `RMT/R6.lean` (the subcritical align bound).
 

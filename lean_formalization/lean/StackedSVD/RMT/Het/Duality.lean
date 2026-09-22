@@ -23,8 +23,8 @@ cross the gap:
 * `overlap_eq_inv_lam_qform2`: `overlap X v = 1 / (λ · qᵀ G₀(λ)² q)` on the event
   `λ_max(W₀') < λ`, the identity that replaces R5's numerator bracket.
 
-Paper: `main_paper.tex` lines 1409 to 1440. Plan check (seed 20260830): `0.60025` both ways.
-
+Paper: `lem:secular_equation` through `eq:weighted_norm` to the proof of `prop:stacksvd_general`.
+Plan check (seed 20260830): `0.60025` both ways.
 STATUS 2026-08-30: `lake env lean -j 3 StackedSVD/RMT/Het/Duality.lean` exit 0; 0 `sorry`.
 -/
 

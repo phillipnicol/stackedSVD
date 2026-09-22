@@ -30,11 +30,11 @@ Contents, in the order of the originals:
 1. `prop_general_rank_unweighted_svdstack_general_gaussian` (`RankR/GeneralMain.lean:603`)
 2. `prop_general_rank_unweighted_svdstack_general_frobenius_eig_gaussian`
    (`RankR/GeneralFrob.lean:271`)
-3. `thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian`
+3. `thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian`
    (`RankR/GeneralFrob.lean:419`)
-4. `thm_gen_rank_weight_svdstak_general_r_of_rank_gaussian` (`RankR/GeneralFrob.lean:456`)
-5. `thm_gen_rank_weight_svdstak_general_r_paper_gaussian` (`RankR/GeneralFrob.lean:478`)
-6. `thm_gen_rank_weight_svdstak_general_r_full_gaussian` (`RankR/WeightedUpperG.lean:447`)
+4. `thm_gen_rank_weight_svdstack_general_r_of_rank_gaussian` (`RankR/GeneralFrob.lean:456`)
+5. `thm_gen_rank_weight_svdstack_general_r_paper_gaussian` (`RankR/GeneralFrob.lean:478`)
+6. `thm_gen_rank_weight_svdstack_general_r_full_gaussian` (`RankR/WeightedUpperG.lean:447`)
 7. `thm_rank_r_svdstack_aggregate_gaussian` (`RankR/WeightedUpperG.lean:638`)
 8. `thm_rank_r_svdstack_component_gaussian` and
    `thm_rank_r_svdstack_component_of_model_gaussian` (`RankR/AlignedMain.lean`, Track D
@@ -56,8 +56,8 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### 1. `prop:general_rank_unweighted_svdstack` -/
 
-/-- **`prop:general_rank_unweighted_svdstack` under Gaussian noise, at general `r_i`**
-(`main_paper.tex:799`). No `TableLawR` hypothesis: `hreg` and `hG` produce it through
+/-- **`prop:general_rank_unweighted_svdstack` under Gaussian noise, at general `r_i`**.
+No `TableLawR` hypothesis: `hreg` and `hG` produce it through
 `UnalignedModelR.tableLawR_of_gaussian_rk` (task C10). The `rk = 1` instance is
 `prop_general_rank_unweighted_svdstack_general_gaussian_one`
 (`RankR/GeneralFrob.lean:498`). -/
@@ -92,13 +92,13 @@ theorem prop_general_rank_unweighted_svdstack_general_frobenius_eig_gaussian
   m.prop_general_rank_unweighted_svdstack_general_frobenius_eig c β hc hβdef hrp hgap
     (m.tableLawR_of_gaussian_rk hc hreg hG) hG.indepNoise
 
-/-! ### 2. `thm:gen_rank_weight_svdstak` -/
+/-! ### 2. `thm:gen_rank_weight_svdstack` -/
 
-/-- **`thm:gen_rank_weight_svdstak`, first display** (`main_paper.tex:893`) under Gaussian
+/-- **`thm:gen_rank_weight_svdstack`, first display** under Gaussian
 noise, at general `r_i`, on the paper's own quantity `‖V̂_svdstack(W⋆)ᵀ V‖_F²` and at the
 canonical frame of `Ṽ_{W⋆} Ṽ_{W⋆}ᵀ`. The `rk = 1` instance is
-`thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian_one`. -/
-theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian
+`thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian_one`. -/
+theorem thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -110,13 +110,13 @@ theorem thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian
         (topEigMat (m.isHermitian_gramWG (optWG β) N ω) hrp)
         (topEigVal (m.isHermitian_gramWG (optWG β) N ω) hrp))ᵀ * m.V N))
       (limitOptG β m.R hrp) :=
-  m.thm_gen_rank_weight_svdstak_general_r_frobenius_eig c β hc hβdef hr hrp hrankB
+  m.thm_gen_rank_weight_svdstack_general_r_frobenius_eig c β hc hβdef hr hrp hrankB
     (m.tableLawR_of_gaussian_rk hc hreg hG) hG.indepNoise
 
 /-- **Finding C1 under Gaussian noise, at general `r_i`**: the two conclusions of
-`thm:gen_rank_weight_svdstak` with no `hrr : r ≤ r̃` (the bound sits inside `hrankB`) and no
+`thm:gen_rank_weight_svdstack` with no `hrr : r ≤ r̃` (the bound sits inside `hrankB`) and no
 `TableLawR` hypothesis. -/
-theorem thm_gen_rank_weight_svdstak_general_r_of_rank_gaussian
+theorem thm_gen_rank_weight_svdstack_general_r_of_rank_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -132,13 +132,13 @@ theorem thm_gen_rank_weight_svdstak_general_r_of_rank_gaussian
             omega⟩ →
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R (rank_le_card_of_rank_BBlock hrankB) :=
-  m.thm_gen_rank_weight_svdstak_general_r_of_rank c β hc hβdef hr hrankB
+  m.thm_gen_rank_weight_svdstack_general_r_of_rank c β hc hβdef hr hrankB
     (m.tableLawR_of_gaussian_rk hc hreg hG) hG.indepNoise
 
 /-- **Finding C3, the paper-literal corollary, under Gaussian noise at general `r_i`**: the
-paper's own two hypotheses (`main_paper.tex:757, 893`), `β_ij > 0` at every spike and
-`Rank(∑_i R_i R_iᵀ) = r`, plus the proportional regime and the joint Gaussian law. -/
-theorem thm_gen_rank_weight_svdstak_general_r_paper_gaussian
+paper's own two hypotheses (`assum:unaligned`, `thm:gen_rank_weight_svdstack`), `β_ij > 0` at every
+spike and `Rank(∑_i R_i R_iᵀ) = r`, plus the proportional regime and the joint Gaussian law. -/
+theorem thm_gen_rank_weight_svdstack_general_r_paper_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -157,16 +157,16 @@ theorem thm_gen_rank_weight_svdstak_general_r_paper_gaussian
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R
             (rank_le_card_of_rank_BBlock (rank_BBlock_of_paper m.R hβpos hrank)) :=
-  m.thm_gen_rank_weight_svdstak_general_r_paper c β hc hβdef hr hβpos hrank
+  m.thm_gen_rank_weight_svdstack_general_r_paper c β hc hβdef hr hβpos hrank
     (m.tableLawR_of_gaussian_rk hc hreg hG) hG.indepNoise
 
 /-- **Item E2 under Gaussian noise, at general `r_i`.** The three conclusions of
-`thm_gen_rank_weight_svdstak_general_r_full` with no hypothesis on `rank B_R` and no
+`thm_gen_rank_weight_svdstack_general_r_full` with no hypothesis on `rank B_R` and no
 `TableLawR` hypothesis: the performance at `W⋆` tends to `L⋆`, every admissible `W` tends to a
 limit at most `L⋆`, and with probability tending to one no weight matrix beats `L⋆ + ε`. The
-`rk = 1` instance is `thm_gen_rank_weight_svdstak_general_r_full_gaussian_one`
+`rk = 1` instance is `thm_gen_rank_weight_svdstack_general_r_full_gaussian_one`
 (`RankR/WeightedUpperG.lean:560`). -/
-theorem thm_gen_rank_weight_svdstak_general_r_full_gaussian
+theorem thm_gen_rank_weight_svdstack_general_r_full_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -182,7 +182,7 @@ theorem thm_gen_rank_weight_svdstak_general_r_full_gaussian
           limitRGW W β m.R ≤ limitOptG β m.R (by simpa using hrr)) ∧
       ∀ ε > 0, Tendsto (fun N => μ N {ω | ∃ W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ,
         limitOptG β m.R (by simpa using hrr) + ε ≤ m.perfRGW W N ω}) atTop (𝓝 0) :=
-  m.thm_gen_rank_weight_svdstak_general_r_full c β hc hβdef hr hrr
+  m.thm_gen_rank_weight_svdstack_general_r_full c β hc hβdef hr hrr
     (m.tableLawR_of_gaussian_rk hc hreg hG) hG.indepNoise
 
 end UnalignedModelR
@@ -194,8 +194,8 @@ namespace UnalignedModelR
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {M : ℕ} {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ} {r : ℕ}
 
-/-- **`thm:rank_r_svdstack`, aggregate clause, under Gaussian noise** (`main_paper.tex:2401`,
-Track D item D3). Under the exactly aligned rank-`r` model with Gaussian noise and the
+/-- **`thm:rank_r_svdstack`, aggregate clause, under Gaussian noise** (Track D item D3).
+Under the exactly aligned rank-`r` model with Gaussian noise and the
 proportional regime, the weighted svdstack performance at `W⋆` converges in probability to
 `∑_j S_j / (S_j + 1)`, `S_j = ∑_i β_ij² / (1 - β_ij²)`. No `TableLawR` hypothesis. -/
 theorem thm_rank_r_svdstack_aggregate_gaussian [∀ N, IsProbabilityMeasure (μ N)]
@@ -211,8 +211,8 @@ theorem thm_rank_r_svdstack_aggregate_gaussian [∀ N, IsProbabilityMeasure (μ 
 
 /-! ### 4. Track D item D4: the component clause -/
 
-/-- **`thm:rank_r_svdstack`, component clause, under Gaussian noise** (`main_paper.tex:2405`,
-Track D item D4). `v̂_j` is column `j` of `V̂_svdstack(W⋆)` at the canonical top-`r` eigenframe
+/-- **`thm:rank_r_svdstack`, component clause, under Gaussian noise** (Track D item D4).
+`v̂_j` is column `j` of `V̂_svdstack(W⋆)` at the canonical top-`r` eigenframe
 of `Ṽ_{W⋆} Ṽ_{W⋆}ᵀ`. `hS` is the paper's hypothesis (b) `S_j ≠ S_k`, in the sorted form; the
 model makes it redundant, which is `thm_rank_r_svdstack_component_of_model_gaussian`. No
 `TableLawR` hypothesis. -/

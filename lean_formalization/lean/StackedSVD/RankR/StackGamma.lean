@@ -14,13 +14,13 @@ import StackedSVD.RankR.Subspace
 
 Track D item D1 of `notes/RANK_R_PLAN.md`. The review note is
 `notes/archive/rankr_D1_statement.md`; this file carries the definitions and the facts that need no
-probability limit. The limit theorem `thm:rank_r_stacksvd` (`main_paper.tex:2337`) is item D2
+probability limit. The limit theorem `thm:rank_r_stacksvd` is item D2
 and is not stated here.
 
 ## The paper
 
 In the exactly aligned rank-`r` model `X_i = ∑_j θ_ij u_ij v_jᵀ + E_i`
-(`eq:rank_r_model`, `main_paper.tex:2298`) the paper builds one weighted stack per component
+(`eq:rank_r_model`) the paper builds one weighted stack per component
 `j` (`eq:stacksvd_app_wij` to `eq:stacksvd_gammak`):
 
 ```
@@ -30,7 +30,7 @@ w_ij = θ_ij / √(θ_ij² + c_i),        X_stack^(j) = [w_1j X_1; …; w_Mj X_M
 ```
 
 The estimator `v̂_{j,stacksvd}` is the `ℓ_j`-th right singular vector of `X_stack^(j)`, where
-`ℓ_j` is the rank of `θ̃_jj` among `{θ̃_jk}_k` in decreasing order (line
+`ℓ_j` is the rank of `λ_jj` among `{λ_jk}_k` (`eq:stacksvd_lambda`) in decreasing order (line
 `alg_line:stacksvd_rank` of `alg:rank_r_stacksvd`).
 
 ## The four definitions here
@@ -38,8 +38,8 @@ The estimator `v̂_{j,stacksvd}` is the `ℓ_j`-th right singular vector of `X_s
 * `Scalars.wStackR θ c j = optWstack (θ · j) c`, the paper's `w_·j`.
 * `Scalars.thetaTildeSq θ c j k`, the paper's `θ̃_jk²`.
 * `Scalars.gammaR θ c j = stackSVDLimitW (θ · j) c`, the paper's `γ_j`.
-* `Scalars.ellR θ c j`, the paper's `ℓ_j`, as a **0-based** index: the number of components
-  whose strength under the `j`-th weighting is strictly above `θ̃_jj`.
+* `Scalars.ellR θ c j`, a **0-based** index: the number of components `k` with `θ̃_jk² > θ̃_jj²`.
+  Inside the model class it is `j`, which is the paper's `ℓ_j` there (`ellR_thetaAligned`).
 
 `γ_j` is **total**: `Scalars.stackSVDLimitW` returns `0` when no root exists, that is when
 `∑_i θ_ij⁴/c_i ≤ 1`. This is `paper_edits.md` E3, and it matches the rank-1 weighted result
@@ -106,7 +106,7 @@ component `k` under the `j`-th weighting. -/
 noncomputable def thetaTildeSq (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (j k : Fin r) : ℝ :=
   ∑ i, θ i j ^ 2 * θ i k ^ 2 / (θ i j ^ 2 + c i)
 
-/-- The paper's reading of `θ̃_jk²` (`main_paper.tex:2376`): `∑_i w_ij² θ_ik²`. -/
+/-- The paper's reading of `θ̃_jk²` (the text before `alg:rank_r_stacksvd`): `∑_i w_ij² θ_ik²`. -/
 theorem thetaTildeSq_eq_sum_wStackR_sq {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ}
     (hc : ∀ i, 0 < c i) (j k : Fin r) :
     thetaTildeSq θ c j k = ∑ i, wStackR θ c j i ^ 2 * θ i k ^ 2 := by
@@ -159,14 +159,14 @@ theorem gammaR_pos {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} (hc : ∀ 
     (hthr : 1 < ∑ i, θ i j ^ 4 / c i) : 0 < gammaR θ c j :=
   (gammaR_spec hc hthr).1.1
 
-/-- `ℓ_j` of `alg:rank_r_stacksvd`, as a **0-based** sorted index: the number of components
-`k` whose strength `θ̃_jk²` under the `j`-th weighting is strictly above `θ̃_jj²`. The paper's
-1-based rank is `ellR + 1`. `eigenvalues₀` is antitone, so `ellR` is the index that
-`overlapIdx` consumes. -/
+/-- The Lean index `ellR`, **0-based**: the number of components `k` whose strength `θ̃_jk²`
+under the `j`-th weighting is strictly above `θ̃_jj²`. Inside the model class it is `j`, the
+paper's `ℓ_j` there (`ellR_thetaAligned`). `eigenvalues₀` is antitone, so `ellR` is the index
+that `overlapIdx` consumes. -/
 noncomputable def ellR (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (j : Fin r) : ℕ :=
   (Finset.univ.filter fun k => thetaTildeSq θ c j j < thetaTildeSq θ c j k).card
 
-/-- `ℓ_j < r`: the index `j` itself never enters the filter. -/
+/-- `ellR < r`: the index `j` itself never enters the filter. -/
 theorem ellR_lt (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (j : Fin r) : ellR θ c j < r := by
   have hj : j ∉ Finset.univ.filter fun k => thetaTildeSq θ c j j < thetaTildeSq θ c j k := by
     simp
@@ -176,7 +176,7 @@ theorem ellR_lt (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (j : Fin r) :
   have := Finset.card_lt_card hss
   simpa [ellR] using this
 
-/-- When `θ̃_jj²` is the strict maximum, the estimator is the top singular vector: `ℓ_j = 0`.
+/-- When `θ̃_jj²` is the strict maximum, the Lean index is the top one: `ellR = 0`.
 This is the paper's "if `θ_ij` follow the same ordering in each table then `ℓ_j = j`" at
 `j = 0`. -/
 theorem ellR_eq_zero_of_max {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} {j : Fin r}
@@ -190,7 +190,7 @@ theorem ellR_eq_zero_of_max {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} {
 /-- When every table orders its spikes the same way and one table has a positive strength at
 the weighting component `j`, the strength under weighting `j` is strictly decreasing in `k`.
 This is the paper's sentence "if `θ_ij` follow the same ordering in each table, then the
-ordering is preserved for each weighting" (`main_paper.tex:2370`). -/
+ordering is preserved for each weighting" (before `alg:rank_r_stacksvd`). -/
 theorem thetaTildeSq_strictAnti {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} (hc : ∀ i, 0 < c i)
     (hnn : ∀ i k, 0 ≤ θ i k) (hanti : ∀ i, StrictAnti (θ i)) {j : Fin r}
     (hex : ∃ i, 0 < θ i j) : StrictAnti (thetaTildeSq θ c j) := by
@@ -208,9 +208,9 @@ theorem thetaTildeSq_strictAnti {θ : Fin M → Fin r → ℝ} {c : Fin M → �
     rw [div_lt_div_iff₀ hden hden]
     nlinarith [mul_pos (mul_pos hj2 (sub_pos.mpr hsq)) hden]
 
-/-- **`ℓ_j = j` whenever the spike order is the same in every table.** The paper's remark at
-`main_paper.tex:2370`, and the reason the index machinery is only needed for unordered
-`θ_ij`. -/
+/-- **`ellR = j` whenever the spike order is the same in every table.** With the paper's remark
+before `alg:rank_r_stacksvd` (same order gives `ℓ_j = j`), this makes `ellR` the paper's `ℓ_j`
+on this class. -/
 theorem ellR_eq_val {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} (hc : ∀ i, 0 < c i)
     (hnn : ∀ i k, 0 ≤ θ i k) (hanti : ∀ i, StrictAnti (θ i)) {j : Fin r}
     (hex : ∃ i, 0 < θ i j) : ellR θ c j = (j : ℕ) := by
@@ -222,11 +222,11 @@ theorem ellR_eq_val {θ : Fin M → Fin r → ℝ} {c : Fin M → ℝ} (hc : ∀
     exact StrictAnti.lt_iff_gt hsa
   rw [ellR, hset, Fin.card_Iio]
 
-/-! #### The paper's worked example (`main_paper.tex:2374`)
+/-! #### The paper's worked example (after `thm:rank_r_stacksvd`)
 
 `θ_1 = (2, 1)`, `θ_2 = (1, 10)`, `c = (1, 1)`. Under the first weighting the strength of `v_1`
-is `16/5 + 1/2 = 3.7` and the strength of `v_2` is `4/5 + 100/2 = 50.8`, so `ℓ_1 = 1` in the
-0-based index (the paper's second position). -/
+is `16/5 + 1/2 = 3.7` and the strength of `v_2` is `4/5 + 100/2 = 50.8`, so `ellR` is `1` at
+the first component (0-based, the second position). -/
 
 example : thetaTildeSq (M := 2) (r := 2) ![![2, 1], ![1, 10]] ![1, 1] 0 0 = 3.7 := by
   norm_num [thetaTildeSq, Fin.sum_univ_two]
@@ -317,8 +317,8 @@ spikes strictly, and `hθnn` makes them nonnegative, so on the exactly aligned f
 paper's index is `ℓ_j = j` once component `j` carries a signal. The unordered case of
 `alg:rank_r_stacksvd` (the worked example `θ_1 = (2,1)`, `θ_2 = (1,10)`) is therefore **not**
 an `UnalignedModelR` with `R_i = 1`: it needs a permutation `R_i`, or a model without
-`hθanti`. `Scalars.ellR` is kept general so that the statement does not have to change when
-the model class is widened. The hypothesis `hex` is what the paper's `ℓ_j` needs: at least one
+`hθanti`. Outside this class `Scalars.ellR` (the rank of `θ̃_jj`) and the paper's `ℓ_j` (the
+rank of `λ_jj`) need not agree. The hypothesis `hex` is what `ellR_eq_val` needs: at least one
 table carries component `j` (F8, 2026-09-05). -/
 theorem ellR_thetaAligned (m : UnalignedModelR μ M n d r (alignedRk M r)) (c : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) {j : Fin r} (hex : ∃ i, 0 < (m.tbl i).θ j) :
@@ -418,7 +418,7 @@ theorem stackOverlapJ_eq_inner_sq (m : UnalignedModelR μ M n d r (alignedRk M r
   exact normSq_specProjIdx_eq_inner_sq hs _
 
 /-- `‖Vᵀ V̂_stacksvd‖_F² = ∑_j ∑_k ⟪v̂_j, v_k⟫²`, the aggregate of the corollary
-(`main_paper.tex:2344`), written on the entries so that no `d × r` matrix is built. -/
+(`thm:rank_r_stacksvd`), written on the entries so that no `d × r` matrix is built. -/
 noncomputable def frobSqStackR (m : UnalignedModelR μ M n d r (alignedRk M r))
     (c : Fin M → ℝ) (N : ℕ) (ω : Ω N) : ℝ :=
   ∑ j : Fin r, ∑ k : Fin r, ⟪m.vhatStackR c j N ω, m.colVecG N k⟫_ℝ ^ 2
@@ -452,9 +452,9 @@ field per thing `thm:rank_r_stacksvd` reads. Every field is a statement about th
 weighted stacks `X_stack^(j)` of `eq:stacksvd_appXstack`.
 
 `align` is the first display of the corollary in projector form. `crossProj` is the paper's
-sentence "the columns of `V̂` will be asymptotically orthogonal" (`main_paper.tex:2318`),
-which the second display needs and which `align` does not give. `simpleIdxJ` is what turns
-the projector overlap into the paper's `⟪v̂_j, v_j⟫²`.
+sentence "the columns of `V̂` will be asymptotically orthogonal" (Section
+`sec:fullySharedRankr_stacksvd`), which the second display needs and which `align` does not give.
+`simpleIdxJ` is what turns the projector overlap into the paper's `⟪v̂_j, v_j⟫²`.
 
 Two shape choices (D1 choice 11, Track E plan section 1.2, audit changes 3 and 4).
 
@@ -467,7 +467,7 @@ Two shape choices (D1 choice 11, Track E plan section 1.2, audit changes 3 and 4
   `LinAlg/SpecIdxPerturb.lean:484`), not `SimpleSpec` at `ℓ_j + 1`. The old field also ruled
   out a tie between two components above `θ̃_jj`, which no theorem here reads.
 
-The paper's separation hypothesis `θ̃_jj ≠ θ̃_jk` for `k ≠ j` (`eq:stacksvd_apptildTheta`),
+The paper's separation hypothesis `λ_jj ≠ λ_jk` for `k ≠ j` (`eq:stacksvd_lambda`),
 `0 < c_i` and `R_i = 1` are what make these three fields true; they are not read by any
 theorem below, so they sit on a future Gaussian facade, not here. -/
 structure HeteroLawR (m : UnalignedModelR μ M n d r (alignedRk M r)) (c : Fin M → ℝ) :

@@ -586,16 +586,16 @@ theorem prop_stacksvd_subspace_general {Ω : ℕ → Type*} [∀ N, MeasurableSp
       (limitStackRG (fun i => (m.tbl i).θ) m.R cc) :=
   StackedSVD.UnalignedModelR.prop_stacksvd_subspace_general_gaussian m hG cc hreg hc
 
-/-! ## 6.4 `thm:gen_rank_weight_svdstak` -/
+/-! ## 6.4 `thm:gen_rank_weight_svdstack` -/
 
-/-- **`thm:gen_rank_weight_svdstak`** (`docs/THEOREMS.md` 6.4), uniform in the weight matrix
+/-- **`thm:gen_rank_weight_svdstack`** (`docs/THEOREMS.md` 6.4), uniform in the weight matrix
 `W` (finding E2). Proved by
-`UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian`
+`UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian`
 (`RankR/GeneralGaussian.lean`). Weighted SVDstack at general per-table rank `r_i`: the optimal
 weight matrix attains the best limit `limitOptG`, every admissible `W` tends to a limit at
 most `limitOptG`, and with probability tending to one no weight matrix beats it by more than
 `ε`. -/
-theorem thm_gen_rank_weight_svdstak {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)]
+theorem thm_gen_rank_weight_svdstack {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)]
     {μ : ∀ N, Measure (Ω N)} {M : ℕ} {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ} {r : ℕ} {rk : Fin M → ℕ}
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ) (hc : ∀ i, 0 < c i)
@@ -612,7 +612,7 @@ theorem thm_gen_rank_weight_svdstak {Ω : ℕ → Type*} [∀ N, MeasurableSpace
           limitRGW W β m.R ≤ limitOptG β m.R (by simpa using hrr)) ∧
       ∀ ε > 0, Tendsto (fun N => μ N {ω | ∃ W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ,
         limitOptG β m.R (by simpa using hrr) + ε ≤ m.perfRGW W N ω}) atTop (𝓝 0) :=
-  StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian m c β hc
+  StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian m c β hc
     hβdef hreg hr hrr hG
 
 /-! ## 6.5 The worked example of Section 7 -/

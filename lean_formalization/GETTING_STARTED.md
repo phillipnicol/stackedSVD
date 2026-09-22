@@ -5,11 +5,8 @@ compiles (i.e., the proof checker accepts it with no errors).
 
 No prior Lean experience is required.
 
-Written by Phillip Nicol (2026-09-09, as `example.md` on the branch `pnicol_edits`); moved
-here and updated on 2026-09-10 with the numbers of a fresh clone-and-build test on a Linux
-server. The theorem text below is the source of
-`lean/StackedSVD/Main.lean` at that date; if the line numbers drift, `grep -n
-thm_svdstack_weighted lean/StackedSVD/Main.lean` finds it.
+The theorem text below is the source of `lean/StackedSVD/Main.lean`. If the line numbers
+drift, `grep -n thm_svdstack_weighted lean/StackedSVD/Main.lean` finds it.
 
 ---
 
@@ -60,8 +57,8 @@ lake build
 
 This compiles all 230 modules of the project (210 source files of ours and 20 vendored
 ones). The first build takes a while. A fresh clone built in 13 min 21 s on 6 cores of a
-Linux server on 2026-09-10 (8975 Lake jobs, before the three modules of the count proof
-were added the same day; the tree of commit `416ab9d` has 8978 jobs); expect 20 to 30 minutes on a laptop with 4
+Linux server on 2026-09-10 (8975 Lake jobs; the tree of commit `416ab9d` has 8978 jobs).
+Expect 20 to 30 minutes on a laptop with 4
 cores. Subsequent builds are fast because Lake caches compiled modules, and a build with no
 source change replays in under a minute. The compiled files take about 10 GB of disk under
 `lean/.lake/` (7.1 GB of them the unpacked Mathlib cache).
@@ -79,8 +76,8 @@ in Gaussian noise. Some tables have a strong enough signal to be detectable abov
 floor (the BBP threshold); call those the "active" tables. The paper's main question is: what
 is the best way to combine these M tables to recover the shared signal direction v?
 
-The answer given by `thm:svdstack_weighted` (the second theorem of Section 4 of the paper,
-`main_paper.tex` line 499) is: stack the tables with the optimal weights
+The answer given by `thm:svdstack_weighted` (the second theorem of Section 4 of the paper)
+is: stack the tables with the optimal weights
 
 ```
 w_i = θ_i √((θ_i² + 1) / (θ_i² + c_i))   if θ_i⁴ > c_i  (active table)
@@ -162,7 +159,7 @@ the imports takes 10 s to 30 s; the check itself is instant.
 **Every theorem at once.** `lean/StackedSVD/Main.lean` is the statement file: 40
 theorems, one per paper result, each proved by one call into the tree. `docs/THEOREMS.md`
 quotes each one next to the paper's LaTeX statement and explains its hypotheses in words.
-The eight gate scripts of `scripts/` (`scripts/README.md`) check, among other things, that
+The seven gate scripts of `scripts/` (`scripts/README.md`) check, among other things, that
 no proof is left open and that no axiom beyond Lean's three standard ones is used.
 
 ---

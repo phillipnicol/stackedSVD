@@ -13,8 +13,8 @@ import StackedSVD.Prob.GaussianMatrix
 # Rank-`r` heteroscedastic resolvent forms (campaign E, stage E4)
 
 The `r × r` resolvent-form limits of the weighted column split of `RankR/Het/Split.lean`.
-Paper: `thm:rank_r_stacksvd` (`main_paper.tex:2337`, Appendix E, `sec:rank_r`); the
-rank-one mirror is `thm:stacksvd_weighted` (`:463`). This file is the heteroscedastic twin of
+Paper: `thm:rank_r_stacksvd` (Appendix E, `sec:rank_r`); the
+rank-one mirror is `thm:stacksvd_weighted`. This file is the heteroscedastic twin of
 `RankR/RMT/Forms.lean`. The rank-one counterpart in Lean is the model section of
 `RMT/Het/R2het.lean` (`MultiTableModel.tendstoInProb_qform_u0Het` and its five siblings) and
 the structure `ResolventLimitsHet` (`RMT/Het/R4het.lean:58`).
@@ -1081,8 +1081,8 @@ end RealForms
 `R_i = 1`, `d N = p N + r`, the edge as a raw hypothesis (stage E3 supplies it). The limits
 are `Φ_k = MPhet.Phihet (θ_·k) c w`, `Ψ = MPhet.Psihet c w` and their derivatives. The
 rank-one mirror is `MultiTableModel.resolventLimitsHet_of_gaussian` (`RMT/Het/R5het.lean`).
-Paper: `thm:rank_r_stacksvd` (`main_paper.tex:2337`); the rank-one mirror is
-`thm:stacksvd_weighted` (`:463`). -/
+Paper: `thm:rank_r_stacksvd`; the rank-one mirror is
+`thm:stacksvd_weighted`. -/
 theorem resolventLimitsHetR_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r (alignedRk M r)) (w c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hw : ∃ i, w i ≠ 0) (hR : ∀ i, m.R i = 1) (hreg : ∀ i, (m.tbl i).Regime (c i))
@@ -1225,8 +1225,8 @@ theorem tendstoInProb_gHetCol_dotProduct_ne {k l : Fin r} (hkl : k ≠ l) :
 include hw hR hreg hG hpd in
 /-- **The column Gram limit of `Q`**: `Q_k ⬝ᵥ Q_l → δ_kl (∑ w_i² θ_ik² + ∑ w_i² c_i)`.
 Paper: the normalization `Qᵀ Q → diag` of the weighted rank-`r` estimator of
-`thm:rank_r_stacksvd` (`main_paper.tex:2337`); the rank-one mirror is
-`thm:stacksvd_weighted` (`:463`) and `MultiTableModel.tendstoInProb_qHet_norm`
+`thm:rank_r_stacksvd`; the rank-one mirror is
+`thm:stacksvd_weighted` and `MultiTableModel.tendstoInProb_qHet_norm`
 (`RMT/Het/R5het.lean`). -/
 theorem tendstoInProb_dotProduct_QmatHetR_col (k l : Fin r) :
     TendstoInProb μ (fun N ω =>

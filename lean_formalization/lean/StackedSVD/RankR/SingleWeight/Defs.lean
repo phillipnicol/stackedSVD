@@ -10,10 +10,10 @@ import StackedSVD.RankR.StackGamma
 
 Unit M1 of `notes/archive/singleweight_plan.md` section 4.2. Namespace `StackedSVD.UnalignedModelR`.
 
-The paper (`main_paper.tex:2089`) defines `V̂_stacksvd(w)` as the top `r` eigenvectors of
-`∑_i w_i² X_iᵀ X_i`, and measures it by `‖V̂_stacksvd(w)ᵀ V‖_F²`. The model side needs no new
-object: `m.stackXW w` (`RankR/StackGamma.lean:258`) already scales block row `i` by the single
-scalar `w i`, and `m.stackGramW w` is its Gram matrix `∑_i w_i² X_iᵀ X_i`
+The paper (Section `sec:insufficiency_of_global_weights_stacksvd`) defines `V̂_stacksvd(w)` as the
+top `r` eigenvectors of `∑_i w_i² X_iᵀ X_i`, and measures it by `‖V̂_stacksvd(w)ᵀ V‖_F²`. The model
+side needs no new object: `m.stackXW w` (`RankR/StackGamma.lean:258`) already scales block row `i`
+by the single scalar `w i`, and `m.stackGramW w` is its Gram matrix `∑_i w_i² X_iᵀ X_i`
 (`stackGramW_eq_sum`).
 
 ## The two definitions
@@ -41,9 +41,9 @@ namespace UnalignedModelR
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {M : ℕ} {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ} {r : ℕ} {rk : Fin M → ℕ}
 
-/-- The performance of single-weight stacksvd (`main_paper.tex:2089`): `‖V̂_stacksvd(w)ᵀ V‖_F²`
-in index projector form, `∑_l ∑_k overlapIdx (X_stack(w)) l v_k`. At a simple `l`-th
-eigenvalue each summand is `(v̂_lᵀ v_k)²` (`perfSW_eq_inner_sq`). -/
+/-- The performance `‖V̂_stacksvd(w)ᵀ V‖_F²` of single-weight stacksvd, in index projector form
+`∑_l ∑_k overlapIdx (X_stack(w)) l v_k` (Section `sec:insufficiency_of_global_weights_stacksvd`).
+At a simple `l`-th eigenvalue each summand is `(v̂_lᵀ v_k)²` (`perfSW_eq_inner_sq`). -/
 noncomputable def perfSW (m : UnalignedModelR μ M n d r rk) (w : Fin M → ℝ) (N : ℕ)
     (ω : Ω N) : ℝ :=
   ∑ l : Fin r, ∑ k : Fin r, overlapIdx (m.stackXW w N ω) (l : ℕ) (m.colVecG N k)

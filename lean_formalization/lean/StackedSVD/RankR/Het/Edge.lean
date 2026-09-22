@@ -50,7 +50,7 @@ law of `RankR/StackGamma.lean:489` back from the shifted model; its two limit fi
 properties and its almost sure field `simpleIdxJ` enters as an argument, exactly as
 `SingleTableLaw.of_shift` (`RMT/TailShift.lean:129`) handles `topSimple`.
 
-Paper: `main_paper.tex:2294` (`eq:rank_r_model`), `:2325` (`eq:stacksvd_appXstack`).
+Paper: `eq:rank_r_model`, `eq:stacksvd_appXstack`.
 
 No `sorry`.
 -/
@@ -112,8 +112,8 @@ the fixed `γ⋆ = -1/s⋆`, which is admissible because `γ⋆ > max_i w_i²`
 is `MPhet.edgeObjective c w γ⋆ = MPhet.bHet c w` by `p N / d N → 1` and `n_i/d → c_i`. The
 rank-one mirror is `MultiTableModel.heteroEdge_of_gaussian` (`RMT/Het/EdgeSharp.lean:786`);
 only the column count of the block changes, from `d N - 1` to `p N`. Paper: the bulk edge
-`b(c, w)` of `thm:stacksvd_weighted` (`main_paper.tex:463`), read at rank `r` for
-`thm:rank_r_stacksvd` (`:2337`) under `assum:general_noise` (`:246`). -/
+`b(c, w)` of `thm:stacksvd_weighted`, read at rank `r` for
+`thm:rank_r_stacksvd` under `assum:general_noise`. -/
 theorem heteroEdgeR_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r rk) (w c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hw : ∃ i, w i ≠ 0) (hreg : ∀ i, (m.tbl i).Regime (c i)) (hG : m.JointGaussianNoise)
@@ -330,7 +330,7 @@ theorem HeteroEdgeR.of_shift {m : UnalignedModelR μ M n d r rk} {w c : Fin M �
 
 /-- **The edge for Gaussian noise, through the shift** (the form stage E9 asks for). The
 side condition `d N = p N + r` of `heteroEdgeR_of_gaussian` is met after a shift, because
-`d N → ∞`. Paper: the bulk edge `b(c, w)` of `thm:stacksvd_weighted` (`main_paper.tex:463`)
+`d N → ∞`. Paper: the bulk edge `b(c, w)` of `thm:stacksvd_weighted`
 at rank `r`. -/
 theorem heteroEdgeR_of_gaussian_shift [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r rk) (w c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
@@ -345,7 +345,7 @@ theorem heteroEdgeR_of_gaussian_shift [NeZero M] [∀ N, IsProbabilityMeasure (�
 `heteroEdgeR_of_gaussian` and the shift of `heteroEdgeR_of_gaussian_shift` both disappear:
 the shift is applied and then removed by `HeteroEdgeR.of_shift`. This is the statement a
 consumer should cite. Paper: the bulk edge `b(c, w)` of `thm:stacksvd_weighted`
-(`main_paper.tex:463`) at rank `r`. -/
+at rank `r`. -/
 theorem heteroEdgeR_of_gaussian_tail [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r rk) (w c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hw : ∃ i, w i ≠ 0) (hreg : ∀ i, (m.tbl i).Regime (c i)) (hG : m.JointGaussianNoise) :

@@ -8,17 +8,17 @@ import StackedSVD.LinAlg.Eigen
 import StackedSVD.LinAlg.KyFan
 
 /-!
-# `thm:gen_rank_weight_svdstak`: weighted svdstack in the unaligned setting, at `r_i = 1`
+# `thm:gen_rank_weight_svdstack`: weighted svdstack in the unaligned setting, at `r_i = 1`
 
 STATUS 2026-08-30: proved, 0 `sorry` (task T5b of `notes/RANK_R_PLAN.md`, proofs under
 decisions D15 and D16 of `notes/FLAGGED.md`; the Layer 2 corollaries of section 7 under task
-`rank_r_weighted_gaussian`). The review note is `notes/archive/thm_gen_rank_weight_svdstak.md`; the
+`rank_r_weighted_gaussian`). The review note is `notes/archive/thm_gen_rank_weight_svdstack.md`; the
 reports are `notes/archive/agent_reports/rank_r_t5b_proofs.md` and
 `notes/archive/agent_reports/rank_r_weighted_gaussian.md`.
 
-`main_paper.tex:889` defines `V̂_svdstack(W)` as the top `r` right singular vectors of
-`W Ṽ`, with a **matrix** weight `W ∈ ℝ^{r̃ × r̃}`, and `thm:gen_rank_weight_svdstak`
-(`main_paper.tex:893`) says that the optimum over all such `W` is attained by the diagonal
+The text before `thm:gen_rank_weight_svdstack` defines `V̂_svdstack(W)` as the top `r` right
+singular vectors of `W Ṽ`, with a **matrix** weight `W ∈ ℝ^{r̃ × r̃}`, and
+`thm:gen_rank_weight_svdstack` says that the optimum over all such `W` is attained by the diagonal
 `W⋆ = diag(1/√(1 - β_ij²)) = D^{-1/2}`, with value
 `L⋆ = r - ∑_{ℓ=1}^{r} λ_{r̃+1-ℓ}(A_{β,R}^{-1/2} D A_{β,R}^{-1/2})`.
 
@@ -36,22 +36,22 @@ This file takes the same `r_i = 1` slice as `RankR/Defs.lean`, so `r̃ = ∑_i r
    `Rank(∑_i R_i R_iᵀ) = r` is `(Rstack R).rank = r`.
 3. `optWR β = D^{-1/2} = diagonal (optW β)`, the paper's `W⋆`. Its defining property is
    `optWR_mul_Dmat_mul_optWR : W⋆ D W⋆ᵀ = 1`, and its entries are the rank-one optimal
-   weights `optW` of `SVDStack/Defs.lean` (`main_paper.tex:521`).
+   weights `optW` of `SVDStack/Defs.lean` (`eq:svdstack.weight`).
 4. `abetaRSqrt β R = A_{β,R}^{1/2}` from `CFC.sqrt`, `DcongR β R = A^{-1/2} D A^{-1/2}`, and
    the optimal value `limitROpt β R hr = r - ∑_{k < r} λ_{rev k}(A^{-1/2} D A^{-1/2})`.
    `Fin.rev` is the index form of `KyFan.lean`: `k = ℓ - 1` gives the paper's `λ_{r̃+1-ℓ}`.
-5. `UnalignedModel.VtW`, `gramW`, `VtVW` and the weighted performance `perfRW`, the trace
-   form of `‖V̂_svdstack(W)ᵀ V‖_F²` (the paper's own first display at `main_paper.tex:2016`,
+5. `UnalignedModel.VtW`, `gramW`, `VtVW` and the weighted performance `perfRW`, the trace form
+   of `‖V̂_svdstack(W)ᵀ V‖_F²` (the display after `eq:weighted_eigengap`,
    with `X^{(d)} = Wᵀ Q_r Λ_r^{-1/2}` and `X^{(d)} (X^{(d)})ᵀ = Wᵀ specInvTop(W Ṽ Ṽᵀ Wᵀ) W`).
 6. The results: `limitRW_le_opt` (step 1 of the paper's proof, Ky Fan), `limitRW_optWR`
-   (step 2, attainment, with no eigengap hypothesis), `thm_gen_rank_weight_svdstak_general`
-   (the limit of `perfRW W` for one admissible `W`), `thm_gen_rank_weight_svdstak` (the
-   theorem at `W⋆`), `thm_gen_rank_weight_svdstak_opt` (no admissible `W` beats `L⋆`) and
-   `thm_gen_rank_weight_svdstak_max` (both halves in one declaration, with the convergence
+   (step 2, attainment, with no eigengap hypothesis), `thm_gen_rank_weight_svdstack_general`
+   (the limit of `perfRW W` for one admissible `W`), `thm_gen_rank_weight_svdstack` (the
+   theorem at `W⋆`), `thm_gen_rank_weight_svdstack_opt` (no admissible `W` beats `L⋆`) and
+   `thm_gen_rank_weight_svdstack_max` (both halves in one declaration, with the convergence
    at every admissible `W`, which is what the paper claims). `topGap_optWR_of_rankBR` carries
    the eigengap check for `W⋆`, and
    `topGap_optWR_of_rank` states it in the paper's own hypotheses.
-   `thm_gen_rank_weight_svdstak_gaussian` and `thm_gen_rank_weight_svdstak_max_gaussian`
+   `thm_gen_rank_weight_svdstack_gaussian` and `thm_gen_rank_weight_svdstack_max_gaussian`
    (section 7) are the Layer 2 forms of the last two: the `SingleTableLaw` hypothesis is
    replaced by the proportional regime `Regime (c i)` of each table.
 7. The general spectral, rank and frame facts that Mathlib lacks on this pin moved to
@@ -72,20 +72,20 @@ Step 1, `limitRW_le_opt`. Under `hgapW` and `hposW` the paper's frame
 Step 2, `limitRW_optWR`. No eigengap hypothesis is needed. `optWR_mul_Dmat_mul_optWR` gives
 `W⋆ A_{β,R} W⋆ᵀ = W⋆ B_R B_Rᵀ W⋆ᵀ + 1`, so the top `r` eigenvectors of `A_{W⋆}` are those of
 `W⋆ B_R B_Rᵀ W⋆ᵀ` and `tr(Λ^{-1/2} Qᵀ W⋆ B_R B_Rᵀ W⋆ᵀ Q Λ^{-1/2}) = tr(1_r - Λ^{-1})`. The
-eigenvalues of `A_{W⋆}` and of `A^{-1/2} D A^{-1/2}` are reciprocal in reverse order, because
-`D^{1/2} A^{-1} D^{1/2} = (D^{1/2}A^{-1/2})(D^{1/2}A^{-1/2})ᵀ` has the spectrum of
-`(D^{1/2}A^{-1/2})ᵀ(D^{1/2}A^{-1/2}) = A^{-1/2} D A^{-1/2}` (`main_paper.tex:2120`).
+eigenvalues of `A_{W⋆}` and of `A^{-1/2} D A^{-1/2}` are reciprocal in reverse order (end of the
+proof of `thm:gen_rank_weight_svdstack`): `D^{1/2} A^{-1} D^{1/2}` is `P Pᵀ` with
+`P = D^{1/2}A^{-1/2}`, so it has the spectrum of `Pᵀ P = A^{-1/2} D A^{-1/2}`.
 
 Steps 3 and 4, the two probabilistic statements. `gramW_eq` and `VtVW_eq` write the two
 random matrices as `W (Ṽ Ṽᵀ) Wᵀ` and `W (Ṽ V)`, whose entries are polynomials in the entries
 of `Ṽ Ṽᵀ` and `Ṽ V`. `gramR` and `VtV_tendsto` of `RankR/Defs.lean` give the entrywise
 limits, and `continuousAt_trace_specInvTop` of `LinAlg/SpecProjPerturb.lean` composed with
 that polynomial map is the continuous function that `TendstoInProbPi.comp_continuous`
-consumes. `thm_gen_rank_weight_svdstak` is the general form at `W⋆`, with
+consumes. `thm_gen_rank_weight_svdstack` is the general form at `W⋆`, with
 `topGap_optWR_of_rank` for the gap, `limitRW_optWR` for the value, and
 `abetaRW_optWR_posDef` for `hposW`.
 
-`thm_gen_rank_weight_svdstak_general` through `_max_gaussian` moved to
+`thm_gen_rank_weight_svdstack_general` through `_max_gaussian` moved to
 `RankR/WeightedMain.lean` (F28, 2026-09-08).
 -/
 
@@ -96,14 +96,14 @@ namespace StackedSVD
 
 /-! ### 1. The weighted matrices and the weighted limit
 
-This file is the slice `r_i = 1`, where `r̃ = ∑_i r_i = M` (`main_paper.tex:766`), so the
+This file is the slice `r_i = 1`, where `r̃ = ∑_i r_i = M` (after `assum:unaligned`), so the
 paper's eigenvalue index `r̃ + 1 - ℓ` is `Fin.rev` at `ℓ = k + 1` on
 `Fin (Fintype.card (Fin M))`, which is the index form of `LinAlg/KyFan.lean`. -/
 
 variable {M r : ℕ}
 
 /-- `A_{β,R,W} = W A_{β,R} Wᵀ`, the limit of the weighted Gram matrix `(W Ṽ)(W Ṽ)ᵀ`. The
-paper writes `W A_{β,R} Wᵀ` throughout the proof (`main_paper.tex:2011`). -/
+paper writes `W A_{β,R} Wᵀ` throughout the proof of `thm:gen_rank_weight_svdstack`. -/
 noncomputable def AbetaRW (W : Matrix (Fin M) (Fin M) ℝ) (β : Fin M → ℝ)
     (R : Fin M → EuclideanSpace ℝ (Fin r)) : Matrix (Fin M) (Fin M) ℝ :=
   W * AbetaR β R * Wᵀ
@@ -127,7 +127,7 @@ theorem brW_one (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) 
 
 /-- The limit of the weighted performance, in the trace form of `limitR`:
 `tr((W B_R)ᵀ (specInvTop (W A_{β,R} Wᵀ) r) (W B_R))`. It is the paper's `‖Xᵀ B_R‖_F²` at
-`X = Wᵀ Q_r(A_W) Λ_r^{-1/2}(A_W)` (`main_paper.tex:2029`). -/
+`X = Wᵀ Q_r(A_W) Λ_r^{-1/2}(A_W)` (the proof of `thm:gen_rank_weight_svdstack`). -/
 noncomputable def limitRW (W : Matrix (Fin M) (Fin M) ℝ) (β : Fin M → ℝ)
     (R : Fin M → EuclideanSpace ℝ (Fin r)) : ℝ :=
   Matrix.trace ((BRW W β R)ᵀ * specInvTop (AbetaRW W β R) (isHermitian_AbetaRW W β R) r *
@@ -144,7 +144,7 @@ theorem limitRW_one (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin 
 `Rstack`, `Rstack_transpose_mul` and `rank_sum_vecMulVec` moved to `LinAlg/Eigen.lean` in
 cleanup wave 2; only the bridge to `BR` stays here. -/
 
-/-- `B_R = diag(β) R_stack` (`main_paper.tex:1951`). -/
+/-- `B_R = diag(β) R_stack` (`lem:general_rank_delocalization`). -/
 theorem BR_eq_diagonal_mul_Rstack (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     BR β R = Matrix.diagonal β * Rstack R := by
   ext i k
@@ -152,8 +152,8 @@ theorem BR_eq_diagonal_mul_Rstack (β : Fin M → ℝ) (R : Fin M → EuclideanS
 
 /-! ### 3. The paper's weights `W⋆ = D^{-1/2}` -/
 
-/-- `W⋆ = D^{-1/2} = diag(1/√(1 - β_i²))` (`main_paper.tex:895`). The diagonal entries are the
-rank-one optimal weights `optW` of `SVDStack/Defs.lean` (`main_paper.tex:521`), which is the
+/-- `W⋆ = D^{-1/2} = diag(1/√(1 - β_i²))` (`thm:gen_rank_weight_svdstack`). The diagonal entries are
+the rank-one optimal weights `optW` of `SVDStack/Defs.lean` (`eq:svdstack.weight`), which is the
 paper's statement that the optimal weighting does not depend on `R_i`. -/
 noncomputable def optWR (β : Fin M → ℝ) : Matrix (Fin M) (Fin M) ℝ :=
   Matrix.diagonal (optW β)
@@ -173,7 +173,7 @@ theorem optW_mul_one_sub_mul {β : Fin M → ℝ} {i : Fin M} (h : β i ^ 2 < 1)
   rw [key, hsq, div_self hpos.ne']
 
 /-- The defining property of `W⋆`: `D^{-1/2} D D^{-1/2} = I`. Step 2 of the paper's proof uses
-it as `W⋆ A_{β,R} W⋆ᵀ = W⋆ B_R B_Rᵀ W⋆ᵀ + I` (`main_paper.tex:2103`). -/
+it as `W⋆ A_{β,R} W⋆ᵀ = W⋆ B_R B_Rᵀ W⋆ᵀ + I` (proof of `thm:gen_rank_weight_svdstack`). -/
 theorem optWR_mul_Dmat_mul_optWR {β : Fin M → ℝ} (hβ : ∀ i, β i ^ 2 < 1) :
     optWR β * Dmat β * (optWR β)ᵀ = 1 := by
   rw [transpose_optWR, optWR, Dmat, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal,
@@ -226,7 +226,7 @@ theorem isUnit_det_abetaRSqrt {β : Fin M → ℝ} (R : Fin M → EuclideanSpace
   exact hdet.ne' hmul.symm
 
 /-- `A_{β,R}^{-1/2} D A_{β,R}^{-1/2}`, the matrix whose bottom `r` eigenvalues give the paper's
-`L⋆` (`main_paper.tex:897`). -/
+`L⋆` (`thm:gen_rank_weight_svdstack`). -/
 noncomputable def DcongR (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     Matrix (Fin M) (Fin M) ℝ :=
   (abetaRSqrt β R)⁻¹ * Dmat β * (abetaRSqrt β R)⁻¹
@@ -239,7 +239,7 @@ theorem isHermitian_DcongR (β : Fin M → ℝ) (R : Fin M → EuclideanSpace �
   isHermitian_inv_mul_mul_inv (isHermitian_Dmat β) (transpose_abetaRSqrt β R)
 
 /-- `L⋆ = r - ∑_{ℓ=1}^{r} λ_{r̃+1-ℓ}(A_{β,R}^{-1/2} D A_{β,R}^{-1/2})`
-(`main_paper.tex:897`). The paper's index `r̃ + 1 - ℓ` at `ℓ = k + 1` is `Fin.rev` on
+(`thm:gen_rank_weight_svdstack`). The paper's index `r̃ + 1 - ℓ` at `ℓ = k + 1` is `Fin.rev` on
 `Fin (Fintype.card (Fin M))`, the index form of `kyFan_min` in `LinAlg/KyFan.lean`. The
 argument `hr` is a `Prop`, so the value does not depend on which proof is supplied. -/
 noncomputable def limitROpt (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r))
@@ -254,7 +254,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
   {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ}
 
 /-- `Ṽ_W = W Ṽ`, the matrix whose top `r` right singular vectors are `V̂_svdstack(W)`
-(`main_paper.tex:889`). -/
+(before `thm:gen_rank_weight_svdstack`). -/
 noncomputable def VtW (m : UnalignedModel μ M n d r) (W : Matrix (Fin M) (Fin M) ℝ) (N : ℕ)
     (ω : Ω N) : Matrix (Fin M) (Fin (d N)) ℝ :=
   W * m.Vt N ω
@@ -274,8 +274,8 @@ noncomputable def VtVW (m : UnalignedModel μ M n d r) (W : Matrix (Fin M) (Fin 
   m.VtW W N ω * m.V N
 
 /-- Performance of weighted svdstack: `tr((Ṽ_W V)ᵀ (specInvTop (Ṽ_W Ṽ_Wᵀ) r) (Ṽ_W V))`, which
-equals `‖V̂_svdstack(W)ᵀ V‖_F²` whenever `λ_r(Ṽ_W Ṽ_Wᵀ) > 0`. The paper's own first display
-(`main_paper.tex:2016`) writes `V̂_svdstack(W) = Ṽᵀ X^{(d)}` with
+equals `‖V̂_svdstack(W)ᵀ V‖_F²` whenever `λ_r(Ṽ_W Ṽ_Wᵀ) > 0`. The paper's display after
+`eq:weighted_eigengap` writes `V̂_svdstack(W) = Ṽᵀ X^{(d)}` with
 `X^{(d)} = Wᵀ Q_r(W Ṽ Ṽᵀ Wᵀ) Λ_r^{-1/2}(W Ṽ Ṽᵀ Wᵀ)`, and
 `X^{(d)} (X^{(d)})ᵀ = Wᵀ (specInvTop (W Ṽ Ṽᵀ Wᵀ) r) W`, so this is the same number. At `W = 1`
 it is `perfR` (`perfRW_one`). -/
@@ -312,21 +312,21 @@ end UnalignedModel
 /-! ### 6. The statements
 
 `hgapW` is the paper's admissibility condition `λ_r(W A_{β,R} Wᵀ) > λ_{r+1}(W A_{β,R} Wᵀ)`
-(`eq:weighted_eigengap`, `main_paper.tex:2010`, and the footnote at `main_paper.tex:890`
+(`eq:weighted_eigengap`, and the footnote before `thm:gen_rank_weight_svdstack`
 which excludes every other `W`). `hposW` says that the top `r` eigenvalues of `W A_{β,R} Wᵀ`
 are positive, which the paper needs for `Λ_r^{-1/2}(W A_{β,R} Wᵀ)` to exist.
 
 Cleanup wave 2 kept `hposW` on `limitRW_le_opt` and on
-`thm_gen_rank_weight_svdstak_general`, against the audit's request to drop it. It excludes
+`thm_gen_rank_weight_svdstack_general`, against the audit's request to drop it. It excludes
 only `rank W < r`, where the bound still holds numerically
 (`notes/archive/audit_rank_r_weighted_post_2026-08-30.md`, finding 4.2, worst excess -8.0e-4 over
 4000 draws), but both proofs read it, not only the statement: `limitRW_le_opt` builds the
 frame `X = Wᵀ Q_r Λ_r^{-1/2}` through `exists_topFrame`, whose `Λ_r^{-1/2}` needs
-`0 < λ_{r-1}`, and `thm_gen_rank_weight_svdstak_general` needs the same bound inside
+`0 < λ_{r-1}`, and `thm_gen_rank_weight_svdstack_general` needs the same bound inside
 `continuousAt_trace_specInvTop`. A route without `Λ_r^{-1/2}` is a separate task. -/
 
-/-- `W⋆ A_{β,R} W⋆ᵀ = (W⋆ B_R)(W⋆ B_R)ᵀ + I` (`main_paper.tex:2103`), the identity that step 2
-of the paper's proof starts from. -/
+/-- `W⋆ A_{β,R} W⋆ᵀ = (W⋆ B_R)(W⋆ B_R)ᵀ + I` (proof of `thm:gen_rank_weight_svdstack`), the identity
+that step 2 of the paper's proof starts from. -/
 theorem abetaRW_optWR_eq {β : Fin M → ℝ} (R : Fin M → EuclideanSpace ℝ (Fin r))
     (h1 : ∀ i, β i ^ 2 < 1) :
     AbetaRW (optWR β) β R = BRW (optWR β) β R * (BRW (optWR β) β R)ᵀ + 1 := by
@@ -343,7 +343,7 @@ theorem abetaRW_optWR_posDef {β : Fin M → ℝ} (R : Fin M → EuclideanSpace 
     (by simpa using Matrix.posSemidef_self_mul_conjTranspose (BRW (optWR β) β R))
     Matrix.PosDef.one
 
-/-- **Step 1 of `thm:gen_rank_weight_svdstak`** (`main_paper.tex:2062`): no admissible weight
+/-- **Step 1 of `thm:gen_rank_weight_svdstack`**: no admissible weight
 matrix beats `L⋆`. The paper's supremum over `{X : Xᵀ A_{β,R} X = I_r}` of `‖Xᵀ B_R‖_F²` is
 `r - inf tr(Xᵀ D X)`, and the infimum is Ky Fan's minimum principle in the congruence form
 `kyFan_min_congr`. -/
@@ -424,7 +424,7 @@ theorem limitRW_le_opt (W : Matrix (Fin M) (Fin M) ℝ) (β : Fin M → ℝ)
   rw [limitROpt, hlim, hsplit]
   linarith
 
-/-- **Step 2 of `thm:gen_rank_weight_svdstak`** (`main_paper.tex:2101`): `W⋆ = D^{-1/2}`
+/-- **Step 2 of `thm:gen_rank_weight_svdstack`**: `W⋆ = D^{-1/2}`
 attains `L⋆`. The eigengap of `W⋆ A_{β,R} W⋆ᵀ` is **not** needed: `W⋆ A_{β,R} W⋆ᵀ` has the
 shape `C Cᵀ + I` with `C` of `r` columns, so a boundary tie sits at the eigenvalue `1` and
 contributes nothing (`trace_specInvTop_add_one`). This drops the hypothesis `hgap` of the
@@ -528,13 +528,13 @@ theorem limitRW_optWR (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fi
 
 /-! ### 6b. The eigengap at `W⋆`
 
-The paper's check (`main_paper.tex:2103`): `W⋆ A_{β,R} W⋆ᵀ = (W⋆ B_R)(W⋆ B_R)ᵀ + I`, and the
-positive semidefinite `(W⋆ B_R)(W⋆ B_R)ᵀ` has exactly `r` nonzero eigenvalues when `B_R` has
-rank `r`. `rank B_R = r` is what the proof needs; the paper's `β_ij > 0` plus
-`Rank(∑ R_i R_iᵀ) = r` is one sufficient condition for it (`rank_BR_of_ne_zero`), and it is
-strictly stronger: at `M = 3`, `r = 2`, `R = (e₁, e₂, e₁)` and `β = (0.5, 0, 0.5)` the paper's
-rank condition holds, `β ≠ 0` fails for one index, and the gap is exactly `0` (numeric row H3,
-`notes/archive/agent_reports/rank_r_t5b_proofs.md`). -/
+The paper's check (proof of `thm:gen_rank_weight_svdstack`):
+`W⋆ A_{β,R} W⋆ᵀ = (W⋆ B_R)(W⋆ B_R)ᵀ + I`, and the positive semidefinite `(W⋆ B_R)(W⋆ B_R)ᵀ` has
+exactly `r` nonzero eigenvalues when `B_R` has rank `r`. `rank B_R = r` is what the proof needs; the
+paper's `β_ij > 0` plus `Rank(∑ R_i R_iᵀ) = r` is one sufficient condition for it
+(`rank_BR_of_ne_zero`), and it is strictly stronger: at `M = 3`, `r = 2`, `R = (e₁, e₂, e₁)` and
+`β = (0.5, 0, 0.5)` the paper's rank condition holds, `β ≠ 0` fails for one index, and the gap is
+exactly `0` (numeric row H3, `notes/archive/agent_reports/rank_r_t5b_proofs.md`). -/
 
 /-- `rank B_R = r` from `β_i ≠ 0` and the paper's rank condition on `R_stack`. -/
 theorem rank_BR_of_ne_zero {β : Fin M → ℝ} (R : Fin M → EuclideanSpace ℝ (Fin r))
@@ -591,7 +591,7 @@ theorem topGap_optWR_of_rankBR {β : Fin M → ℝ} (R : Fin M → EuclideanSpac
     eigenvalues₀_pos_of_lt_rank hP hnn (le_of_eq hPrank.symm) hk
   linarith
 
-/-- The eigengap check of step 2 (`main_paper.tex:2103`) in the paper's own hypotheses:
+/-- The eigengap check of step 2 of `thm:gen_rank_weight_svdstack` in the paper's own hypotheses:
 `diag(β)` is invertible (`hβpos`, the paper's `β_ij > 0`) and `R_stack` has rank `r` (`hrank`,
 the rank condition of `assum:unaligned`). -/
 theorem topGap_optWR_of_rank (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r))

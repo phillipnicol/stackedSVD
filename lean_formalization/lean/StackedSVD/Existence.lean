@@ -12,10 +12,10 @@ import StackedSVD.StackSVD.Main
 # The paper's existential claims, with the model built rather than assumed
 
 Three statements of the paper are existential: `prop:binarystacksvd_inadmissable`
-(`main_paper.tex:660`, "for any `ε ∈ (0,1)`, there exists a problem instance"), and the two
-remarks `remark:stack_outperform_svd` (`main_paper.tex:566`, unweighted stacksvd *can*
+("for any `ε ∈ (0,1)`, there exists a problem instance"), and the two
+remarks `remark:stack_outperform_svd` (unweighted stacksvd *can*
 outperform optimally weighted svdstack) and `remark:svd_outperform_stack`
-(`main_paper.tex:588`, unweighted svdstack *can* outperform binary-weighted stacksvd). The
+(unweighted svdstack *can* outperform binary-weighted stacksvd). The
 facades of `RMT/Het/Sup.lean`, `SVDStack/Inad.lean`, `Remarks.lean` and `RemarksUniform.lean`
 take a model `m` with the instance's `θ`, regime and Gaussian noise as hypotheses. This file
 supplies the model: the concrete Gaussian construction `Sat.Rank1.model` of `Sat.lean`, with
@@ -50,7 +50,7 @@ namespace MultiTableModel
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {M : ℕ} {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ}
 
-/-- `prop:binarystacksvd_inadmissable` (`main_paper.tex:660`) on a model of the instance
+/-- `prop:binarystacksvd_inadmissable` on a model of the instance
 `θ_i = 1`, `c_i = 2i + 1` with Gaussian noise and `M ≥ e^{-γ} e^{2/ε}`: the five limits of
 the proposition in one statement. In order: optimally weighted stacksvd tends to its limit,
 which is above `1 - ε`; every binary weighting of stacksvd (every nonempty `S`) tends to `0`;
@@ -114,7 +114,7 @@ theorem inadModel_regime (M : ℕ) (i : Fin M) :
 theorem inadModel_joint (M : ℕ) : (inadModel M).JointGaussianNoise :=
   model_joint (inadK M) 1 (inadK_pos M) one_pos (fun _ => 1) (fun _ => zero_le_one)
 
-/-- **`prop:binarystacksvd_inadmissable`** (`main_paper.tex:660`) as the paper states it: for
+/-- **`prop:binarystacksvd_inadmissable`** as the paper states it: for
 every `ε ∈ (0,1)` there is a size `M = ⌈e^{-γ} e^{2/ε}⌉` and a problem instance of `M` tables
 (a Gaussian model, `inadModel M`, with `θ_i = 1` and `c_i = 2i + 1`) on which optimally
 weighted stacksvd tends in probability to a value above `1 - ε`, while every binary weighting
@@ -171,7 +171,7 @@ theorem oneModel_regime (M : ℕ) (i : Fin M) : ((oneModel M).tbl i).Regime 1 :=
 theorem oneModel_joint (M : ℕ) : (oneModel M).JointGaussianNoise :=
   model_joint (fun _ => 1) 1 (fun _ => one_pos) one_pos (fun _ => 1) (fun _ => zero_le_one)
 
-/-- **`remark:stack_outperform_svd`** (`main_paper.tex:566`) with the model built: for every
+/-- **`remark:stack_outperform_svd`** with the model built: for every
 `M ≥ 2` there is a problem instance of `M` tables (a Gaussian model, `oneModel M`, with
 `θ_i = c_i = 1`) on which unweighted stacksvd tends in probability to `1 - 2/(M+1) > 0`,
 unweighted svdstack tends to `0`, and with probability tending to one no nonzero weighting of
@@ -233,7 +233,7 @@ theorem twoModel_regime (i : Fin 2) : (twoModel.tbl i).Regime (![1, 38.4] i) :=
 theorem twoModel_joint : twoModel.JointGaussianNoise :=
   model_joint twoK 5 twoK_pos (by norm_num) ![Real.sqrt 5, 4] twoTheta_nonneg
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:588`) with the model built: there is a
+/-- **`remark:svd_outperform_stack`** with the model built: there is a
 problem instance of two tables (a Gaussian model, `twoModel`, with `θ = (√5, 4)` and
 `c = (1, 38.4)`, so `β_1² = β_2² = 4/5`) on which every binary weighting of stacksvd (every
 nonempty `S`, the unweighted stack included at `S = univ`) tends in probability to a value at

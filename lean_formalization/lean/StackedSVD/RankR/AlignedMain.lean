@@ -11,7 +11,7 @@ import StackedSVD.LinAlg.SpecIdxPerturb
 # The component clause of `thm:rank_r_svdstack`
 
 Track D item D4, steps 4 to 6 of `notes/archive/rankr_D4_plan.md`. Paper statement
-`main_paper.tex:2405`: under the exactly aligned rank-`r` model,
+`thm:rank_r_svdstack`: under the exactly aligned rank-`r` model,
 `(v_jᵀ v̂_{j,svdstack})² → S_j / (S_j + 1)` for every component `j`, with
 `S_j = ∑_i β_ij² / (1 - β_ij²)`. The companion aggregate clause is item D3
 (`UnalignedModelR.thm_rank_r_svdstack_aggregate`, `RankR/WeightedUpperG.lean`).
@@ -172,7 +172,7 @@ theorem frameCol_VtVWG (m : UnalignedModelR μ M n d r rk)
     (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ) (N : ℕ) (ω : Ω N) (k : Fin r) :
     frameCol (m.VtVWG W N ω) k = m.VtVWGcol W N ω k := rfl
 
-/-- **The paper's frame quantity, squared** (`main_paper.tex:2405`). The diagonal entry `j` of
+/-- **The paper's frame quantity, squared** (`thm:rank_r_svdstack`). The diagonal entry `j` of
 `V̂_svdstack(W)ᵀ V` is `(√λ_j)^{-1} ⟪q_j, y_j⟫` with `q_j` column `j` of the frame and `y_j`
 column `j` of `Ṽ_W V`, so its square is `⟪q_j, y_j⟫² / λ_j`. The identity also holds at
 `λ_j = 0`, where both sides are `0`. -/
@@ -220,7 +220,7 @@ theorem VtVWG_tendsto_aligned (m : UnalignedModelR μ M n d r (alignedRk M r))
   have h := m.VtVRWG c β (optWG β) hβdef law p k
   rwa [hRe] at h
 
-/-- **`thm:rank_r_svdstack`, component clause, frame free** (`main_paper.tex:2405`, Track D
+/-- **`thm:rank_r_svdstack`, component clause, frame free** (Track D
 item D4). `compRGW` is `‖P_j y_j‖² / λ_j`, the paper's `(v_jᵀ v̂_j)²` written with no choice of
 eigenframe; `thm_rank_r_svdstack_component_eig_of_sep` reads it at the canonical frame.
 
@@ -338,8 +338,8 @@ theorem thm_rank_r_svdstack_component (m : UnalignedModelR μ M n d r (alignedRk
     TendstoInProb μ (fun N ω => m.compRGW (optWG β) j N ω) (Sagg β j / (Sagg β j + 1)) :=
   m.thm_rank_r_svdstack_component_of_sep c β hc hβdef hR hM (Sagg_sep_of_strictAnti hS) law hG j
 
-/-- **`thm:rank_r_svdstack`, component clause at the canonical frame** (`main_paper.tex:2405`,
-Track D item D4). `v̂_j` is column `j` of `V̂_svdstack(W⋆) = Ṽ_{W⋆}ᵀ Q_r Λ_r^{-1/2}` at the
+/-- **`thm:rank_r_svdstack`, component clause at the canonical frame** (Track D item D4).
+`v̂_j` is column `j` of `V̂_svdstack(W⋆) = Ṽ_{W⋆}ᵀ Q_r Λ_r^{-1/2}` at the
 canonical top-`r` eigenframe `(Q_r, Λ_r) = (topEigMat, topEigVal)` of `Ṽ_{W⋆} Ṽ_{W⋆}ᵀ`, whose
 columns are ordered by decreasing eigenvalue by construction. No frame hypothesis appears.
 
@@ -483,7 +483,7 @@ theorem thm_rank_r_svdstack_component_of_model
     (m.saggSep_of_model c β hc hβdef) law hG j
 
 /-- **`thm:rank_r_svdstack`, component clause at any measurable sorted frame**
-(`main_paper.tex:2405`, Track D item D4). `IsTopEigFrame` alone does not order the columns of
+(Track D item D4). `IsTopEigFrame` alone does not order the columns of
 `Q`, so a component-labelled statement needs the extra conjunct `lam N ω k = λ_k` in the good
 event (modeling choice M3 of `notes/archive/rankr_D4_plan.md`). The canonical frame satisfies both
 conjuncts with no hypothesis; that is

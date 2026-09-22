@@ -15,8 +15,8 @@ existence statement are `RankR/SingleWeight/Existence.lean`.
 
 ## The instance
 
-`main_paper.tex:2171` to `:2194`. Two tables, `M = 2`, `r = 2`, one spike each
-(`r_1 = r_2 = 1`), with
+Section `sec:appendix_insufficiency_single_weights_stacksvd`. Two tables, `M = 2`, `r = 2`, one
+spike each (`r_1 = r_2 = 1`), with
 
 ```
 R_1 = (1, 0)ᵀ,   R_2 = (0, 1)ᵀ,   Θ_1 = Θ_2 = θ_0,   θ_0⁴ > c_0,   c_1 = c_2 = c_0.
@@ -24,18 +24,18 @@ R_1 = (1, 0)ᵀ,   R_2 = (0, 1)ᵀ,   Θ_1 = Θ_2 = θ_0,   θ_0⁴ > c_0,   c_1
 
 Optimally weighted svdstack (which is unweighted svdstack here) reaches `2 β_0²` with
 `β_0² = betaSq θ_0 c_0`. Every single weighting of stacksvd stays strictly below it. The
-paper's closed form is the display at `main_paper.tex:2190` to `:2191`.
+paper's closed form is the last display of `sec:appendix_insufficiency_single_weights_stacksvd`.
 
 ## The three branches
 
 `secMat` is diagonal in this instance, so the two secular roots are the scalar roots
 `γ_ℓ = w_ℓ²(1 + θ_0²)` with `z_ℓ = e_ℓ`. Each root is **detectable** when it lies above every
-`w_i²` and its threshold sum of `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2106`) is
+`w_i²` and its threshold sum of `assum:gen_rank_stacksvd_eig_sep` is
 below `1`; that is `DetectableEx` below. `swLimitEx` is total in `w`: it is the sum of the two
 terms when both roots are detectable, the one term when exactly one is, and `0` when neither
-is. The paper covers the last two cases by the sentence at `main_paper.tex:2187`
+is. The paper covers the last two cases by the sentence before the closed-form display
 ("at least one component is undetectable and the performance is bounded above by `β_0²`") and
-the sentence at `main_paper.tex:2194` (`w_1 = w_2`, where the two roots tie and the value is
+the sentence after it (`w_1 = w_2`, where the two roots tie and the value is
 `2 betaSq θ_0 (2 c_0)`; scan 2.4 of the plan measured the tied point to agree with the general
 formula to 1.1e-16, so it is inside branch 1 and not a corner).
 
@@ -58,10 +58,10 @@ namespace SingleWeight
 def other (l : Fin 2) : Fin 2 := if l = 0 then 1 else 0
 
 /-- `γ_ℓ = w_ℓ²(1 + θ_0²)`, the `ℓ`-th secular root of the instance
-(`main_paper.tex:2190`). -/
+(the last display of `sec:appendix_insufficiency_single_weights_stacksvd`). -/
 noncomputable def gammaEx (θ₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : ℝ := w l ^ 2 * (1 + θ₀ ^ 2)
 
-/-- The `ℓ`-th summand of the display at `main_paper.tex:2190` to `:2191`:
+/-- The `ℓ`-th summand of the last display of `sec:appendix_insufficiency_single_weights_stacksvd`:
 
 ```
 (θ_0⁴ - c_0 - c_0 w_j⁴ θ_0⁴/(w_ℓ²(1+θ_0²) - w_j²)²) / (θ_0²(1 + θ_0²)),      j = other ℓ.
@@ -76,7 +76,7 @@ noncomputable def swTermEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : 
       (gammaEx θ₀ w l - w (other l) ^ 2) ^ 2) / (θ₀ ^ 2 * (1 + θ₀ ^ 2))
 
 /-- Root `ℓ` of the instance is detectable: `γ_ℓ = w_ℓ²(1 + θ_0²)` lies above every `w_i²`,
-and the threshold sum of `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2106`) is below
+and the threshold sum of `assum:gen_rank_stacksvd_eig_sep` is below
 `1`. The two clauses are `IsSecularRoot`'s first clause and `EigSep.thresh` at `c = c_0`,
 written on the instance. -/
 def DetectableEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : Prop :=
@@ -84,12 +84,12 @@ def DetectableEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : Prop :=
     ∑ i, c₀ * w i ^ 4 / (gammaEx θ₀ w l - w i ^ 2) ^ 2 < 1
 
 open Classical in
-/-- The closed form of the instance, total in `w` (`main_paper.tex:2190` to `:2191`). Three
-branches, in this order.
+/-- The closed form of the instance, total in `w` (the last display of
+`sec:appendix_insufficiency_single_weights_stacksvd`). Three branches, in this order.
 
 1. Both roots detectable: the sum of the two terms of the paper's display.
 2. Exactly one root detectable: that one term. The other component sits in the bulk and
-   contributes nothing (`main_paper.tex:2187`).
+   contributes nothing (the sentence before that display).
 3. Neither root detectable: `0`.
 
 The `if` conditions are `DetectableEx θ₀ c₀ w 0` and `DetectableEx θ₀ c₀ w 1`, in that
@@ -126,10 +126,10 @@ private theorem swTermEx_lt (w : Fin 2 → ℝ) (l : Fin 2) (hj : 0 < w (other l
   rw [div_lt_iff₀ (by norm_num : (0:ℝ) < (8 / 5 : ℝ) ^ 2 * (1 + (8 / 5 : ℝ) ^ 2))]
   nlinarith [hpen]
 
-/-- The scalar half of **`prop:singleweight_suboptimality`** (`main_paper.tex:915`): at
+/-- The scalar half of **`prop:singleweight_suboptimality`**: at
 `θ_0 = 8/5` and `c_0 = 1` every single weighting of stacksvd with both weights positive stays
 strictly below `2 β_0² = 39/32`, the value of unweighted svdstack
-(`main_paper.tex:2191`).
+(the last display of `sec:appendix_insufficiency_single_weights_stacksvd`).
 
 `8/5` keeps every constant rational: `θ_0² = 64/25`, `θ_0⁴ = 4096/625`, `β_0² = 39/64` and
 `2 β_0² = 39/32`. The bound holds on all three branches of `swLimitEx`: on branch 1 each term
@@ -191,12 +191,12 @@ theorem swTerm_ex (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (hθ : 0 < θ₀) (hw :
     ring
 
 /-- On the two-root branch the closed form of the instance is the general limit `swLimit` of
-`main_paper.tex:2119`, read at `γ_ℓ = w_ℓ²(1 + θ_0²)`, `z_ℓ = e_ℓ`,
+`prop:gen_rank_stacksvd_singleweight`, read at `γ_ℓ = w_ℓ²(1 + θ_0²)`, `z_ℓ = e_ℓ`,
 `R = Rone (RankR.Example.Rex 0)` (that is `R_1 = (1,0)ᵀ` and `R_2 = (0,1)ᵀ`, since
 `sin 0 = 0` and `cos 0 = 1`), `Θ_i = θ_0` and `c_i = c_0`.
 
-This is the step that lets `prop_gen_rank_stacksvd_singleweight` deliver the instance: it says
-the general layer, specialized, is the paper's display at `main_paper.tex:2190` to `:2191`. -/
+This is the step that lets `prop_gen_rank_stacksvd_singleweight` deliver the instance: the general
+layer, specialized, is the last display of `sec:appendix_insufficiency_single_weights_stacksvd`. -/
 theorem swLimitEx_eq_swLimit (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (hθ : 0 < θ₀) (hw : ∀ i, 0 < w i)
     (h0 : DetectableEx θ₀ c₀ w 0) (h1 : DetectableEx θ₀ c₀ w 1) :
     swLimitEx θ₀ c₀ w

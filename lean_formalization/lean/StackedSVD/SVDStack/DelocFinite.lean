@@ -10,7 +10,7 @@ import StackedSVD.RMT.Symmetry
 # Item F1: the finite-`d` form of `lem:delocalization`
 
 `lem_delocalization` (`SVDStack/Gram.lean`) proves the paper's limit
-(`main_paper.tex:1111`): for `i ≠ j` the perpendicular part `⟪v̂_i, (I - v vᵀ) v̂_j⟫` tends to
+(`lem:delocalization`): for `i ≠ j` the perpendicular part `⟪v̂_i, (I - v vᵀ) v̂_j⟫` tends to
 `0` in probability. It chains two finite-`N` facts and then throws the constant away. This
 file keeps the constant.
 
@@ -20,7 +20,7 @@ Under Gaussian noise, for `i ≠ j`, every `d_N ≥ 2` and every `ε > 0`,
 
 The bound reads no `θ`, no `n_i`, no `c` and no `M`. It answers the referee question about a
 rate at the one place where the paper leans on an external asymptotic theorem
-(`main_paper.tex:1138`, Theorem 1 part 2 of `liu2023asymptotic`).
+(the proof of `lem:delocalization`, Theorem 1 part 2 of `liu2023asymptotic`).
 
 ## Route
 

@@ -15,11 +15,11 @@ import StackedSVD.RankR.StackMain
 Track E, stage E9 (`notes/archive/rankr_TrackE_plan.md`, step 8). This file closes the track. It
 discharges the hypothesis structure `HeteroLawR` (`RankR/StackGamma.lean:489`) on the exactly
 aligned rank-`r` family with Gaussian noise, and it restates the paper's corollary
-`thm:rank_r_stacksvd` (`main_paper.tex:2337`) with no hypothesis structure left.
+`thm:rank_r_stacksvd` with no hypothesis structure left.
 
 ## The paper
 
-`main_paper.tex:2337`. On the exactly aligned rank-`r` model, rank-`r` weighted stacksvd
+`thm:rank_r_stacksvd`. On the exactly aligned rank-`r` model, rank-`r` weighted stacksvd
 satisfies
 
 ```
@@ -27,7 +27,7 @@ satisfies
 ‖Vᵀ V̂_stacksvd‖_F²     →p ∑_j γ_j.
 ```
 
-The paper's separation hypothesis `θ̃_jj ≠ θ̃_jk` (`eq:stacksvd_apptildTheta`) is **not** a
+The paper's separation hypothesis `λ_jj ≠ λ_jk` (`eq:stacksvd_lambda`) is **not** a
 hypothesis below. Inside this model class `SpikedModelR.hθanti` orders the strengths strictly
 in every table, so the separation holds by `Scalars.rhoHet_lt_of_lt`
 (`RankR/Het/Scalars.lean:384`). The two hypotheses that do appear are `0 < c_i` and
@@ -55,10 +55,10 @@ sorted index the estimator reads.
 F8 (2026-09-05). The tables need not carry every component: `SpikedModelR.hθnn` allows
 `θ_ij = 0` for the last components of a table. The endpoints assume `hnz`, that at least one
 table carries each component `j`. When `hnz` fails at `j`, every weight `wStackR … j i` is
-`0`, so `X_stack^(j) = 0` and the paper's own side condition `θ̃_jj ≠ θ̃_jk`
-(`main_paper.tex:2338`, with `θ̃_jk = ∑_i w_ij² θ_ik²`) fails as well (for `r ≥ 2`; at
-`r = 1` the side condition is empty, and the paper's `γ_1` is undefined, since its equation
-reads `0 = 1`); `hnz` is therefore implied by the paper's hypothesis and adds nothing. The
+`0`, so `X_stack^(j) = 0` and the paper's own side condition `λ_jj ≠ λ_jk` (the hypothesis of
+`thm:rank_r_stacksvd`; `λ_jk = max_i w_ij² = 0` by `eq:stacksvd_lambda`) fails as well (for
+`r ≥ 2`; at `r = 1` the side condition is empty, and the paper's `γ_1` is undefined, since its
+equation reads `0 = 1`); `hnz` is therefore implied by the paper's hypothesis and adds nothing. The
 proof drops the tables with `θ_ij = 0` through the sub-model of `RankR/Het/Sub.lean` (route
 D of `notes/archive/F8_zero_spikes.md`).
 
@@ -130,14 +130,12 @@ third field is a statement about one `N` at a time, so stage E5 supplies it dire
 discharge.
 
 Scope. `SpikedModelR.hθnn` and `hθanti` order the spikes strictly in every table and keep
-them nonnegative. On this family the paper's index is `ℓ_j = j` (`main_paper.tex:2369`) at
-every component that `hnz` covers. The paper (`main_paper.tex:2306`, with the
-condition and the conclusion at `:2368` and `:2369`) allows an unordered `θ`, where `ℓ_j` can
-differ from the outlier index; that case needs a permutation `R_i`, or a model class without
-`hθanti` (`notes/FLAGGED.md` item 17 (7)). More than generality is at stake there: with the
-paper's own `ℓ_j` the first display of `thm:rank_r_stacksvd` is false on an explicit
-`M = 2`, `r = 2` instance, where index 0 carries `0.571 ± 0.008` and the paper's index 1
-carries `0.011 ± 0.003` at `d = 1200` (`paper_edits.md` finding E7). -/
+them nonnegative. On this family the paper's index is `ℓ_j = j` (the text before
+`alg:rank_r_stacksvd`) at every component that `hnz` covers. The paper (the text after
+`assum:rank_r`, with the condition and the conclusion before `alg:rank_r_stacksvd`) allows an
+unordered `θ` and ranks `λ_jj` among `{λ_jk}` (`eq:stacksvd_lambda`). That case needs a
+permutation `R_i`, or a model class without `hθanti` (`notes/FLAGGED.md` item 17 (7)).
+-/
 theorem heteroLawR_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r (alignedRk M r)) (c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hR : ∀ i, m.R i = 1) (hreg : ∀ i, (m.tbl i).Regime (c i)) (hG : m.JointGaussianNoise)
@@ -151,7 +149,7 @@ theorem heteroLawR_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
 
 /-! ### 3. The corollary of the paper, with no hypothesis structure -/
 
-/-- The first display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) for Gaussian noise,
+/-- The first display of **`thm:rank_r_stacksvd`** for Gaussian noise,
 in projector form: the squared overlap of `v_j` with the `ℓ_j`-th right singular subspace of
 `X_stack^(j)` tends to `γ_j`. This form carries no simplicity side condition. Layer 1 mirror:
 `thm_rank_r_stacksvd_proj` (`RankR/StackMain.lean:155`). -/
@@ -163,7 +161,7 @@ theorem thm_rank_r_stacksvd_proj_gaussian [NeZero M] [∀ N, IsProbabilityMeasur
       (Scalars.gammaR m.thetaAligned c j) :=
   m.thm_rank_r_stacksvd_proj c (m.heteroLawR_of_gaussian c hc hR hreg hG hnz) j
 
-/-- The first display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) for Gaussian noise,
+/-- The first display of **`thm:rank_r_stacksvd`** for Gaussian noise,
 in the paper's inner-product form: `(v_jᵀ v̂_{j,stacksvd})² →p γ_j`. Layer 1 mirror:
 `thm_rank_r_stacksvd_inner` (`RankR/StackMain.lean:166`). -/
 theorem thm_rank_r_stacksvd_inner_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -174,7 +172,7 @@ theorem thm_rank_r_stacksvd_inner_gaussian [NeZero M] [∀ N, IsProbabilityMeasu
       (Scalars.gammaR m.thetaAligned c j) :=
   m.thm_rank_r_stacksvd_inner c (m.heteroLawR_of_gaussian c hc hR hreg hG hnz) j
 
-/-- The second display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) for Gaussian
+/-- The second display of **`thm:rank_r_stacksvd`** for Gaussian
 noise: `‖Vᵀ V̂_stacksvd‖_F² →p ∑_j γ_j`. Layer 1 mirror: `thm_rank_r_stacksvd_frobenius`
 (`RankR/StackMain.lean:181`). -/
 theorem thm_rank_r_stacksvd_frobenius_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -185,7 +183,7 @@ theorem thm_rank_r_stacksvd_frobenius_gaussian [NeZero M] [∀ N, IsProbabilityM
       (∑ j : Fin r, Scalars.gammaR m.thetaAligned c j) :=
   m.thm_rank_r_stacksvd_frobenius c (m.heteroLawR_of_gaussian c hc hR hreg hG hnz)
 
-/-- **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) for Gaussian noise, with no hypothesis
+/-- **`thm:rank_r_stacksvd`** for Gaussian noise, with no hypothesis
 structure: on the exactly aligned rank-`r` family, rank-`r` weighted stacksvd satisfies both
 displays of the corollary,
 
@@ -197,24 +195,21 @@ displays of the corollary,
 Where the paper's hypotheses sit. `assum:rank_r` is the model class
 `UnalignedModelR … (alignedRk M r)` with `R_i = 1` (`hR`), and `assum:general_noise` is
 `hG` together with the per-table regime `hreg` and `0 < c_i` (`hc`). The separation
-`θ̃_jj ≠ θ̃_jk` of the corollary is not a hypothesis: `SpikedModelR.hθanti` orders the
+`λ_jj ≠ λ_jk` of the corollary is not a hypothesis: `SpikedModelR.hθanti` orders the
 strengths strictly in every table, so it holds inside the class
 (`Scalars.rhoHet_lt_of_lt`). See `notes/FLAGGED.md` items 16 and 17. `hnz` asks that at least
 one table carries each component `j` (F8, 2026-09-05). It is implied by the paper's own
-separation: at an all-zero component every weight `w_ij` is `0`, so `θ̃_jj = θ̃_jk = 0`.
+separation: at an all-zero component every weight `w_ij` is `0`, so `λ_jj = λ_jk = 0`.
 
 Scope. `SpikedModelR.hθnn` and `hθanti` order the spikes strictly in every table and keep
-them nonnegative. On this family the paper's index is `ℓ_j = j` (`main_paper.tex:2369`) at
-every component that `hnz` covers. The paper (`main_paper.tex:2306`, with the
-condition and the conclusion at `:2368` and `:2369`) allows an unordered `θ`, where `ℓ_j` can
-differ from the outlier index; that case is not an `UnalignedModelR` with `R_i = 1`. It needs
-a permutation `R_i`, or a model class without `hθanti` (`Scalars.ellR` is stated generally so
-that the statement survives the widening).
-More than generality is at stake there: with the paper's own `ℓ_j` the first display of
-`thm:rank_r_stacksvd` is false on an explicit `M = 2`, `r = 2` instance, where index 0
-carries `0.571 ± 0.008` and the paper's index 1 carries `0.011 ± 0.003` at `d = 1200`
-(`paper_edits.md` finding E7). See `notes/FLAGGED.md` item 17 (7) and
-`RankR/StackGamma.lean:304` (section 3 header). -/
+them nonnegative. On this family the paper's index is `ℓ_j = j` (the text before
+`alg:rank_r_stacksvd`) at every component that `hnz` covers. The paper (the text after
+`assum:rank_r`, with the condition and the conclusion before `alg:rank_r_stacksvd`) allows an
+unordered `θ` and ranks `λ_jj` among `{λ_jk}` (`eq:stacksvd_lambda`). That case is not an
+`UnalignedModelR` with `R_i = 1`. It needs a permutation `R_i`, or a model class without
+`hθanti` (`Scalars.ellR` is stated generally so that the statement survives the widening).
+See `notes/FLAGGED.md` item 17 (7) and `RankR/StackGamma.lean:304` (section 3 header).
+-/
 theorem thm_rank_r_stacksvd_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     (m : UnalignedModelR μ M n d r (alignedRk M r)) (c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hR : ∀ i, m.R i = 1) (hreg : ∀ i, (m.tbl i).Regime (c i)) (hG : m.JointGaussianNoise)

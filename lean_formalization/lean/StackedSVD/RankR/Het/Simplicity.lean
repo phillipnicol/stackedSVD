@@ -201,8 +201,8 @@ theorem wStackR_thetaAligned_ne_zero (m : UnalignedModelR μ M n d r (alignedRk 
 /-- **The `simpleIdxJ` field of `HeteroLawR` for Gaussian noise** (audit change 4). At the
 `j`-th weighting every weight is nonzero, so `simpleSpec_ae_stackGramW` holds at `k = r`, and
 `ℓ_j < r` (`Scalars.ellR_lt`) puts the index the estimator reads inside that range. Paper:
-the well-defined estimator `v̂_{j,stacksvd}` of `thm:rank_r_stacksvd` (`main_paper.tex:2337`);
-the rank-one mirror is the simple top eigenvalue of `thm:stacksvd_weighted` (`:463`). -/
+the well-defined estimator `v̂_{j,stacksvd}` of `thm:rank_r_stacksvd`;
+the rank-one mirror is the simple top eigenvalue of `thm:stacksvd_weighted`. -/
 theorem simpleIdxJ_of_gaussian [NeZero M] (m : UnalignedModelR μ M n d r (alignedRk M r))
     {c : Fin M → ℝ} (hc : ∀ i, 0 < c i) (hG : m.JointGaussianNoise) {j : Fin r}
     (hposj : ∀ i, 0 < (m.tbl i).θ j) (N : ℕ) :

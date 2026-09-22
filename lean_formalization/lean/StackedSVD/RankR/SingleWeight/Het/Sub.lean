@@ -10,7 +10,7 @@ import StackedSVD.RankR.SingleWeight.Scalars
 /-!
 # Track G, item F18c: drop the tables of weight zero
 
-`prop:gen_rank_stacksvd_singleweight` (`main_paper.tex:2112`) puts no condition on the
+`prop:gen_rank_stacksvd_singleweight` puts no condition on the
 weights `w_i`. The Gaussian chain of Track G met the paper's statement except in one place:
 the almost sure simplicity of the weighted stack Gram matrix (`simpleSpec_ae_stackGramW`,
 `RankR/Het/Simplicity.lean`) needs a nonzero weight in every table, and the first version of

@@ -10,7 +10,7 @@ import StackedSVD.SVDStack.Rayleigh
 # Two remark instances that need `SVDStack/Rayleigh.lean`
 
 `StackedSVD/Remarks.lean` states the explicit instances of `remark:stack_outperform_svd` and
-`remark:svd_outperform_stack` (`main_paper.tex:566` and `main_paper.tex:588`). Two of them do
+`remark:svd_outperform_stack`. Two of them do
 not fit in that file, and they live here.
 
 ## Content
@@ -51,7 +51,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### `remark:stack_outperform_svd`, instance (i)(c): every weighting has performance `0` -/
 
-/-- **`remark:stack_outperform_svd`** (`main_paper.tex:566`), instance (i)(c): at
+/-- **`remark:stack_outperform_svd`**, instance (i)(c): at
 `θ_i = c_i = 1` every table sits at its own detection threshold `θ_i⁴ = c_i`, so `β = 0` and
 `S = 0`. With probability tending to one no nonzero weight vector `w`, data dependent or not,
 gives weighted SVDstack a performance of `ε` or more. The optimal weighting is one such `w`,
@@ -80,7 +80,7 @@ section Two
 
 variable {n₂ : Fin 2 → ℕ → ℕ}
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:610`), the unweighted SVDstack value of
+/-- **`remark:svd_outperform_stack`**, the unweighted SVDstack value of
 the paper's two-table example, which `remark_svd_outperform_stack_two` of `Remarks.lean` does
 not record (D33 audit, finding F5; choice 4 of `notes/archive/remark_facades.md`). With
 `θ = (√5, 4)` and `c = (1, 38.4)` both tables have `β² = 4/5`, so `A_β` has equal entries and

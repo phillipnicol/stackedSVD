@@ -10,13 +10,13 @@ import StackedSVD.Scalars
 # The block-diagonal Woodbury identity of the exactly aligned model
 
 Task D3det of the D32 campaign, item 1 of `paper_edits.md` section E4. The corollary
-`thm:rank_r_svdstack` (`main_paper.tex:2391-2414`) reads the rank-`r` svdstack limit off the
+`thm:rank_r_svdstack` reads the rank-`r` svdstack limit off the
 scalars
 
     β_ij² = (θ_ij⁴ - c_i) / (θ_ij⁴ + θ_ij²) · 1{θ_ij⁴ ≥ c_i},   S_j = Σ_i β_ij² / (1 - β_ij²).
 
 The aggregate clause `‖Vᵀ V̂_svdstack‖_F² → Σ_j S_j/(S_j+1)` is a corollary of the E2 form of
-`thm:gen_rank_weight_svdstak`, which delivers the limit as `tr(B_Rᵀ A_{β,R}⁻¹ B_R)`. This file
+`thm:gen_rank_weight_svdstack`, which delivers the limit as `tr(B_Rᵀ A_{β,R}⁻¹ B_R)`. This file
 proves the deterministic identity that connects the two:
 
     tr(B_Rᵀ A_{β,R}⁻¹ B_R) = Σ_j S_j / (S_j + 1)   in the exactly aligned model.
@@ -36,7 +36,7 @@ table is the shared direction `v_j`. In the block objects of `RankR/General.lean
 4. `trace_conj_inv_ABlock_aligned`: the two combine to `Σ_j S_j/(S_j+1)`.
 5. `trace_conj_inv_AbetaR_aligned`: the same statement on the `r_i = 1` objects `BR`, `AbetaR`
    of `RankR/Defs.lean` through the `rfl` bridges of `RankR/Flatten.lean`, which is the shape
-   the E2 form of `thm:gen_rank_weight_svdstak` reads.
+   the E2 form of `thm:gen_rank_weight_svdstack` reads.
 
 Everything here is deterministic linear algebra. No probability and no random matrix theory
 limit law enters.
@@ -152,7 +152,7 @@ theorem inv_DBlock {β : (i : Fin M) → Fin (rk i) → ℝ} (h1 : ∀ i j, β i
 /-! ### 3. The exactly aligned family
 
 `r_i = r` for every table and `R_i = 1`: the `j`-th spike of table `i` is the shared direction
-`v_j`. This is the model of `thm:rank_r_svdstack` (`main_paper.tex:2391`). -/
+`v_j`. This is the model of `thm:rank_r_svdstack`. -/
 
 /-- Every table carries `r` spikes. -/
 abbrev alignedRk (M r : ℕ) : Fin M → ℕ := fun _ => r
@@ -161,7 +161,7 @@ abbrev alignedRk (M r : ℕ) : Fin M → ℕ := fun _ => r
 def alignedR (M r : ℕ) : (i : Fin M) → Matrix (Fin r) (Fin (alignedRk M r i)) ℝ := fun _ => 1
 
 /-- `S_j = Σ_i β_ij² / (1 - β_ij²)`, the paper's aggregate signal strength of component `j`
-(`main_paper.tex:2395`). At `r = 1` this is `Sval` of `SVDStack/Defs.lean`. -/
+(before `thm:rank_r_svdstack`). At `r = 1` this is `Sval` of `SVDStack/Defs.lean`. -/
 noncomputable def Sagg (β : Fin M → Fin r → ℝ) (j : Fin r) : ℝ :=
   ∑ i, β i j ^ 2 / (1 - β i j ^ 2)
 
@@ -214,7 +214,7 @@ theorem transpose_mul_inv_DBlock_mul_aligned (β : Fin M → Fin r → ℝ)
     · rw [if_neg hkj, zero_mul, zero_mul]
 
 /-- **The block-diagonal Woodbury identity** (`paper_edits.md` E4 item 1). In the exactly
-aligned model of `thm:rank_r_svdstack` (`main_paper.tex:2391`),
+aligned model of `thm:rank_r_svdstack`,
 `tr(B_Rᵀ A_{β,R}⁻¹ B_R) = Σ_j S_j / (S_j + 1)`. -/
 theorem trace_conj_inv_ABlock_aligned (β : Fin M → Fin r → ℝ) (h0 : ∀ i j, 0 ≤ β i j)
     (h1 : ∀ i j, β i j < 1) :
@@ -243,7 +243,7 @@ theorem trace_conj_inv_ABlock_aligned (β : Fin M → Fin r → ℝ) (h0 : ∀ i
 
 /-- The same identity on the `r_i = 1` objects `BR`, `AbetaR` of `RankR/Defs.lean`, through the
 `rfl` bridges `BBlock_eq_BR` and `ABlock_eq_AbetaR` of `RankR/Flatten.lean`. The E2 form of
-`thm:gen_rank_weight_svdstak` is stated in these objects and reads this directly. -/
+`thm:gen_rank_weight_svdstack` is stated in these objects and reads this directly. -/
 theorem trace_conj_inv_AbetaR_aligned (β : Fin M → Fin r → ℝ) (h0 : ∀ i j, 0 ≤ β i j)
     (h1 : ∀ i j, β i j < 1) :
     Matrix.trace ((BR (betaFlat (rk := alignedRk M r) β) (Rcol (alignedR M r)))ᵀ *

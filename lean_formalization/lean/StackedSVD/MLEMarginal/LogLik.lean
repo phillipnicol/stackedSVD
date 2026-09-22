@@ -10,7 +10,7 @@ import StackedSVD.MLEMarginal.Defs
 
 `reLogLik_eq`: at the observed matrices `(m.tbl i).X N ω`,
 `log reDensity = mleLogLik (c_i = n_i / d) - (∑ᵢ n_i) d / 2 · log(2π)`. This is the
-paper's "up to constants independent of `v`" (`main_paper.tex:1660`), made explicit. The
+paper's "up to constants independent of `v`" (`app:wstacksvd_mle`), made explicit. The
 identity holds for every `v`; the unit norm enters only in `MLEMarginal/Main.lean`.
 -/
 

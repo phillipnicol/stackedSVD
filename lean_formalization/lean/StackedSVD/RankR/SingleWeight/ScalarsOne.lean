@@ -9,8 +9,8 @@ import StackedSVD.RankR.SingleWeight.Scalars
 # The rank-one reduction of the single-weight scalar layer
 
 Unit S3 of `notes/archive/singleweight_plan.md` section 4.1. At `r = 1`, `r_i = 1` and `R_i = 1` the
-matrix secular equation of `main_paper.tex:2115` is a `1 × 1` determinant, so it is the scalar
-secular equation of `lem:secular_equation`, and the limit of `main_paper.tex:2119` is the
+matrix secular equation of `prop:gen_rank_stacksvd_singleweight` is a `1 × 1` determinant, so it is
+the scalar secular equation of `lem:secular_equation`, and the limit of that proposition is the
 paper's `L(w)` (`thm:stacksvd_weighted`). The two theorems here tie the new layer to the proved
 rank-one tree of `StackSVDWeighted.lean`.
 
@@ -35,7 +35,7 @@ private theorem sigMat_one {M : ℕ} (θ : Fin M → ℝ) (i : Fin M) :
   unfold sigMat
   rw [Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
 
-/-- At `r = 1`, `r_i = 1` and `R_i = 1` the matrix secular equation of `main_paper.tex:2115`
+/-- At `r = 1`, `r_i = 1`, `R_i = 1`, the secular equation of `prop:gen_rank_stacksvd_singleweight`
 is the scalar one of `lem:secular_equation`: `det(I₁ - secMat) = 1 - ∑_i θ_i² w_i²/(γ - w_i²)`
 is `Scalars.secular θ w γ`. So a root of one is a root of the other, above `max_i w_i²`. -/
 theorem isSecularRoot_one_iff {M : ℕ} (θ w : Fin M → ℝ) (γ : ℝ) :
@@ -64,8 +64,8 @@ theorem isSecularRoot_one_iff {M : ℕ} (θ w : Fin M → ℝ) (γ : ℝ) :
   unfold IsSecularRoot Scalars.IsGammaTop
   rw [hdet]
 
-/-- At `r = 1`, `r_i = 1` and `R_i = 1` the limit of `main_paper.tex:2119` is the paper's
-`L(w)` of `thm:stacksvd_weighted` (`Scalars.Lw`, `StackSVDWeighted.lean:386`).
+/-- At `r = 1`, `r_i = 1` and `R_i = 1` the limit of `prop:gen_rank_stacksvd_singleweight` is the
+paper's `L(w)` of `thm:stacksvd_weighted` (`Scalars.Lw`, `StackSVDWeighted.lean:386`).
 
 `h4 : Scalars.Assumption4 θ c w` is needed because `Scalars.Lw` is `0` below the
 detectability threshold `eq:assumption4` while `swLimit` has no such branch. That shape

@@ -219,9 +219,9 @@ theorem align_inner (m : MultiTableModel μ M n d) (c : Fin M → ℝ)
 
 /-! ### Consequences of the single-table laws -/
 
-/-- `lem:delocalization` (`main_paper.tex:1111`), signed: for `i ≠ j`,
+/-- `lem:delocalization`, signed: for `i ≠ j`,
 `⟪v̂_i, v̂_j⟫ → β_i β_j`. The paper splits
-`v̂_iᵀ v̂_j = v̂_iᵀ v vᵀ v̂_j + v̂_iᵀ (I - v vᵀ) v̂_j` (`main_paper.tex:1123`). The first term
+`v̂_iᵀ v̂_j = v̂_iᵀ v vᵀ v̂_j + v̂_iᵀ (I - v vᵀ) v̂_j` (in its proof). The first term
 tends to `β_i β_j` by `prop:single_table` part 1 and the sign convention of `vhat`; the second
 tends to `0` by `delocUniform` of table `i` applied to the random direction of table `j`,
 which needs Fubini over the product law, hence `hI`. -/

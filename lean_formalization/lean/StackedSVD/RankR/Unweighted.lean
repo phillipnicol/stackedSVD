@@ -91,8 +91,8 @@ theorem inner_vhat_perp_tendsto (m : UnalignedModel μ M n d r) {ci : ℝ} {i : 
 
 /-- `⟪v̂_i, y_N⟫ → β_i a` for a deterministic family `y` of norm at most one with
 `⟪v_i, y_N⟫ = a` for every `N`. The split is the paper's
-`y = (v_i v_iᵀ) y + (I - v_i v_iᵀ) y` (`main_paper.tex:1961`): the first half is
-`align_inner`, the second is `inner_vhat_perp_tendsto`. -/
+`y = (v_i v_iᵀ) y + (I - v_i v_iᵀ) y` (the proof of `lem:general_rank_delocalization`): the first
+half is `align_inner`, the second is `inner_vhat_perp_tendsto`. -/
 theorem align_inner_det (m : UnalignedModel μ M n d r) {ci : ℝ} {i : Fin M}
     (law : (m.tbl i).SingleTableLaw ci) (y : (N : ℕ) → EuclideanSpace ℝ (Fin (d N))) (a : ℝ)
     (ha : ∀ N, ⟪(m.tbl i).v N, y N⟫_ℝ = a) (hy : ∀ N, ‖y N‖ ≤ 1) :
@@ -114,7 +114,7 @@ theorem align_inner_det (m : UnalignedModel μ M n d r) {ci : ℝ} {i : Fin M}
 
 /-! ### 4. The statements -/
 
-/-- `lem:general_rank_delocalization` (`main_paper.tex:1948`), off-diagonal half, signed: for
+/-- `lem:general_rank_delocalization`, off-diagonal half, signed: for
 `i ≠ j`, `⟪v̂_i, v̂_j⟫ → β_i β_j ⟪R_i, R_j⟫`. The rank-`r` twin of
 `MultiTableModel.lem_delocalization`. The paper splits
 `v̂_iᵀ v̂_j = v̂_iᵀ v_i v_iᵀ v̂_j + v̂_iᵀ (I - v_i v_iᵀ) v̂_j`; the first term needs
@@ -215,7 +215,7 @@ theorem VtV_tendsto (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
   filter_upwards with ω
   exact (m.VtV_eq_inner N ω i k).symm
 
-/-- `prop:general_rank_unweighted_svdstack` (`main_paper.tex:799`) at `r_i = 1`, Layer 1 form.
+/-- `prop:general_rank_unweighted_svdstack` at `r_i = 1`, Layer 1 form.
 The paper's hypothesis that each `Θ_i` has `r_i` distinct entries is vacuous here. `hgap` is
 the paper's `λ_r(A_{β,R}) - λ_{r+1}(A_{β,R}) > 0` with its convention `λ_{r̃+1} := -∞`, which
 `TopGap` encodes by quantifying over the indices. `hc` gives `0 ≤ β_i < 1`, so

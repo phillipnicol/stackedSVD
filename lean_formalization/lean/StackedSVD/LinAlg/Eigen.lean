@@ -19,8 +19,8 @@ Mathlib v4.33.0 has none of these on this pin. The three groups are:
 1. **Sorted eigenvalues.** `eigenvalues₀_eq_of_charpoly` reads the sorted list off the
    characteristic polynomial and carries every other fact of the group:
    `eigenvalues₀_eq_of_charpoly_eq` (equal charpoly gives equal spectrum, which with
-   `Matrix.charpoly_mul_comm` is the `B Bᵀ` versus `Bᵀ B` rule), `eigenvalues₀_inv` (the
-   spectrum of `A⁻¹` is the reciprocal set in reverse order, `main_paper.tex:2120`) and
+   `Matrix.charpoly_mul_comm` is the `B Bᵀ` versus `Bᵀ B` rule), `eigenvalues₀_inv` (the spectrum
+   of `A⁻¹` is the reciprocal set in reverse order, proof of `thm:gen_rank_weight_svdstack`) and
    `eigenvalues₀_add_one` (`A + I` shifts every sorted eigenvalue by one).
 2. **Rank and the spectrum.** `card_nz_eigenvalues₀`, `eigenvalues₀_eq_zero_of_rank_le` and
    `eigenvalues₀_pos_of_lt_rank`: a positive semidefinite matrix of rank `ρ` has `λ_k > 0`
@@ -121,7 +121,7 @@ theorem inv_conj {U D E : Matrix (Fin p) (Fin p) ℝ} (hUU : star U * U = 1)
     _ = 1 := by rw [hUU, Matrix.mul_one, hDE, Matrix.mul_one, hUU']
 
 /-- The sorted eigenvalues of the inverse of a positive definite matrix are the reciprocals in
-reverse order (`main_paper.tex:2120`). Mathlib has no such rule on this pin. -/
+reverse order (proof of `thm:gen_rank_weight_svdstack`). Mathlib has no such rule on this pin. -/
 theorem eigenvalues₀_inv {A : Matrix (Fin p) (Fin p) ℝ} (hA : A.IsHermitian)
     (hApos : ∀ k, 0 < hA.eigenvalues₀ k) (hAi : (A⁻¹).IsHermitian) (k) :
     hAi.eigenvalues₀ k = (hA.eigenvalues₀ k.rev)⁻¹ := by
@@ -325,20 +325,20 @@ end TraceForm
 
 /-! ### 2. `R_stack` and the rank bridge
 
-`Rstack` is the vertical concatenation of the `R_iᵀ` (`main_paper.tex:797`). It carries no
-model and no probability, so it lives here with the rank lemma that reads it. -/
+`Rstack` is the vertical concatenation of the `R_iᵀ` (Section `sec:subsec_unweighted_unaligned123`).
+It carries no model and no probability, so it lives here with the rank lemma that reads it. -/
 
 section RankBridge
 
 variable {M r : ℕ}
 
-/-- `R_stack ∈ ℝ^{r̃ × r}`, the vertical concatenation of the `R_iᵀ` (`main_paper.tex:797`).
-At `r_i = 1` row `i` is the unit vector `R_i`. -/
+/-- `R_stack ∈ ℝ^{r̃ × r}`, the vertical concatenation of the `R_iᵀ` (Section
+`sec:subsec_unweighted_unaligned123`). At `r_i = 1` row `i` is the unit vector `R_i`. -/
 noncomputable def Rstack (R : Fin M → EuclideanSpace ℝ (Fin r)) : Matrix (Fin M) (Fin r) ℝ :=
   Matrix.of fun i k => R i k
 
 /-- `R_stackᵀ R_stack = ∑_i R_i R_iᵀ`, the matrix of the paper's rank condition
-`Rank(∑_i R_i R_iᵀ) = r` (`assum:unaligned`, `main_paper.tex:757`). Over `ℝ` that rank equals
+`Rank(∑_i R_i R_iᵀ) = r` (`assum:unaligned`). Over `ℝ` that rank equals
 `(Rstack R).rank`, which is the form the statements below use. -/
 theorem Rstack_transpose_mul (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     (Rstack R)ᵀ * Rstack R
@@ -346,8 +346,8 @@ theorem Rstack_transpose_mul (R : Fin M → EuclideanSpace ℝ (Fin r)) :
   ext k l
   simp [Rstack, Matrix.mul_apply, Matrix.sum_apply, Matrix.vecMulVec_apply]
 
-/-- The rank bridge: the paper's `Rank(∑_i R_i R_iᵀ) = r` (`assum:unaligned`,
-`main_paper.tex:757`) and the Lean form `(Rstack R).rank = r` are the same condition, by
+/-- The rank bridge: the paper's `Rank(∑_i R_i R_iᵀ) = r` (`assum:unaligned`)
+and the Lean form `(Rstack R).rank = r` are the same condition, by
 `Matrix.rank_transpose_mul_self`. -/
 theorem rank_sum_vecMulVec (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     (∑ i, Matrix.vecMulVec (WithLp.ofLp (R i)) (WithLp.ofLp (R i))).rank = (Rstack R).rank := by
@@ -358,8 +358,8 @@ end RankBridge
 
 /-! ### 3. The top-`r` eigenframe
 
-Step 1 of the proof (`main_paper.tex:2029`) needs, for a weight matrix with a top-`r` gap and a
-positive `λ_{r-1}`, an `r`-column frame `Q` of eigenvectors with `Qᵀ Q = I`,
+Step 1 of the proof of `thm:gen_rank_weight_svdstack` needs, for a weight matrix with a top-`r` gap
+and a positive `λ_{r-1}`, an `r`-column frame `Q` of eigenvectors with `Qᵀ Q = I`,
 `Qᵀ A_W Q = Λ_r` and `specInvTop A_W r = Q Λ_r^{-1} Qᵀ`. `exists_topFrame` builds it once.
 -/
 

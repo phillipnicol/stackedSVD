@@ -41,7 +41,7 @@ This file mirrors, at general rank `r`, the scalar layer of `RMT/Het/MPhet.lean`
 
 `hc : ∀ i, 0 < c i`, `hw : ∃ i, w i ≠ 0`, `hγ : Scalars.wSqMax w < γ`,
 `hη : ∑ i, c i * w i ^ 4 / (γ - w i ^ 2) ^ 2 < 1` (the detectability threshold of
-`main_paper.tex:2106`), `hznorm : ‖z‖ = 1` and `hz : secMat θ R w γ *ᵥ z = z`.
+`assum:gen_rank_stacksvd_eig_sep`), `hznorm : ‖z‖ = 1` and `hz : secMat θ R w γ *ᵥ z = z`.
 `hw` is not implied by `hγ` and `hη`: at `w = 0` the junk value of `MPhet.sPhys` breaks
 `gamHet_swRho`. `exists_w_ne_zero_of_isSecularRoot` supplies `hw` from `IsSecularRoot`.
 
@@ -534,7 +534,7 @@ theorem swNu_pos {θ : (i : Fin M) → Fin (rk i) → ℝ}
   exact div_pos (mul_pos hγ0 hK) (mul_pos hη0 hρ0)
 
 /-- **The overlap identity.** `1/(ρ_ℓ ν_ℓ) = swTerm θ R w c γ_ℓ z_ℓ`, the summand of
-`main_paper.tex:2119`. Rank-`r` twin of `MPhet.overlap_identity_het`
+the limit in `prop:gen_rank_stacksvd_singleweight`. Rank-`r` twin of `MPhet.overlap_identity_het`
 (`RMT/Het/MPhet.lean:842`). Numeric check 3 of `notes/archive/trackG_specs/check_trackG.py`:
 0.8869271 versus 0.8869271 and 0.8505194 versus 0.8505194. -/
 theorem one_div_swRho_mul_swNu {θ : (i : Fin M) → Fin (rk i) → ℝ}

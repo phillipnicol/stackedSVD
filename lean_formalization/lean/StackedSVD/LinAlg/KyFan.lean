@@ -23,7 +23,7 @@ Let `M` be a real symmetric `p × p` matrix with sorted eigenvalues
 
 The bottom sum is written `∑ k : Fin r, hM.eigenvalues₀ (Fin.castLE hr k).rev`. `Fin.rev`
 sends the index `k` to `p - 1 - k`, so the `k = 0` term is the smallest eigenvalue. That is the
-paper's `∑_{ℓ=1}^{r} λ_{p+1-ℓ}` in `thm:gen_rank_weight_svdstak`, at `ℓ = k + 1`.
+paper's `∑_{ℓ=1}^{r} λ_{p+1-ℓ}` in `thm:gen_rank_weight_svdstack`, at `ℓ = k + 1`.
 
 ## Route
 
@@ -490,7 +490,7 @@ theorem kyFan_min_isLeast (hM : M.IsHermitian) (hr : r ≤ Fintype.card (Fin p))
 
 end Attainment
 
-/-! ### 7. The congruence form, for `thm:gen_rank_weight_svdstak` (task T5b)
+/-! ### 7. The congruence form, for `thm:gen_rank_weight_svdstack` (task T5b)
 
 The paper needs the extremes of `tr(Xᵀ D X)` under the constraint `Xᵀ A X = I_r`, with `A`
 positive definite. The substitution `Y = S X`, where `S` is a symmetric invertible square root
@@ -561,7 +561,7 @@ theorem kyFan_max_congr {A D S : Matrix (Fin p) (Fin p) ℝ} (hS : Sᵀ = S) (hS
   rw [traceSet_congr_eq hS hSA hSu]
   exact kyFan_max_isGreatest hM hr
 
-/-- **Ky Fan, congruence form, minimum.** This is the half that `thm:gen_rank_weight_svdstak`
+/-- **Ky Fan, congruence form, minimum.** This is the half that `thm:gen_rank_weight_svdstack`
 uses: `min { tr(Xᵀ D X) : Xᵀ A X = I_r } = ∑_{ℓ=1}^{r} λ_{p+1-ℓ}(S⁻¹ D S⁻¹)`. -/
 theorem kyFan_min_congr {A D S : Matrix (Fin p) (Fin p) ℝ} (hS : Sᵀ = S) (hSA : S * S = A)
     (hSu : IsUnit S.det) (hM : (S⁻¹ * D * S⁻¹).IsHermitian) (hr : r ≤ Fintype.card (Fin p)) :

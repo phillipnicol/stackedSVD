@@ -10,12 +10,12 @@ import StackedSVD.RankR.StackGamma
 
 Track D item D2 of `notes/RANK_R_PLAN.md`. The review note is
 `notes/archive/rankr_D1_statement.md`; `RankR/StackGamma.lean` (item D1) carries the scalars
-`γ_j`, `θ̃_jk²`, `ℓ_j` and the model objects `X_stack^(j)`, `v̂_j`, `(v_jᵀ v̂_j)²`,
+`γ_j`, `θ̃_jk²`, the index `ellR` and the model objects `X_stack^(j)`, `v̂_j`, `(v_jᵀ v̂_j)²`,
 `‖Vᵀ V̂‖_F²`.
 
 ## The paper
 
-`main_paper.tex:2337`, Corollary `thm:rank_r_stacksvd`. On the exactly aligned rank-`r`
+Corollary `thm:rank_r_stacksvd`. On the exactly aligned rank-`r`
 model, rank-`r` weighted stacksvd satisfies
 
 ```
@@ -33,8 +33,8 @@ field per thing the corollary reads:
   first display, in the form that carries no simplicity side condition.
 * `crossProj`: every off-diagonal projector overlap `overlapIdx X_stack^(j) ℓ_j v_k`,
   `k ≠ j`, tends to `0`. The paper states this as "the columns of `V̂` will be
-  asymptotically orthogonal" (`main_paper.tex:2318`). It does **not** follow from `align`,
-  and the second display needs it.
+  asymptotically orthogonal" (Section `sec:fullySharedRankr_stacksvd`). It does **not** follow from
+  `align`, and the second display needs it.
 * `simpleIdxJ`: the `ℓ_j`-th eigenvalue of the Gram matrix of `X_stack^(j)` is almost surely
   simple **at that one index** (`SimpleIdx`), which turns the projector overlap into the
   paper's `⟪v̂_j, v_j⟫²`.
@@ -49,7 +49,7 @@ plus `hong2023optimally`).
 ## Hypotheses that are absent on purpose
 
 The draft of `notes/archive/rankr_D1_statement.md` carried `hc : ∀ i, 0 < c i`, `hR : ∀ i, m.R i =
-1` and the paper's separation `θ̃_jj ≠ θ̃_jk`. None of the three is read by the implication below,
+1` and a separation `θ̃_jj ≠ θ̃_jk`. None of the three is read by the implication below,
 so rule 5 of `CLAUDE.md` (hypothesis necessity) removes them (coordinator decision,
 `notes/FLAGGED.md` item 16). They are what makes `HeteroLawR` satisfiable, not what the implication
 needs, and they belong on the future Gaussian facade that discharges `HeteroLawR`. The rank-1
@@ -132,7 +132,7 @@ theorem HeteroLawR.cross {m : UnalignedModelR μ M n d r (alignedRk M r)} {c : F
 
 /-! ### 3. The first display -/
 
-/-- The first display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) in projector form.
+/-- The first display of **`thm:rank_r_stacksvd`** in projector form.
 This one is `law.align` and needs no simplicity. Rank-1 mirror:
 `thm_stacksvd_weighted_general` (`StackSVDWeighted.lean:1277`). -/
 theorem thm_rank_r_stacksvd_proj (m : UnalignedModelR μ M n d r (alignedRk M r))
@@ -141,7 +141,7 @@ theorem thm_rank_r_stacksvd_proj (m : UnalignedModelR μ M n d r (alignedRk M r)
       (Scalars.gammaR m.thetaAligned c j) :=
   law.align j
 
-/-- The first display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`) in the paper's
+/-- The first display of **`thm:rank_r_stacksvd`** in the paper's
 inner-product form: `(v_jᵀ v̂_{j,stacksvd})² →p γ_j`. Route:
 `stackOverlapJ_eq_inner_sq` (`RankR/StackGamma.lean:412`) on the almost sure event
 `law.simpleIdxJ j N`, transferred by `TendstoInProb.congr`. Rank-1 mirror:
@@ -156,7 +156,7 @@ theorem thm_rank_r_stacksvd_inner (m : UnalignedModelR μ M n d r (alignedRk M r
 
 /-! ### 4. The second display -/
 
-/-- The second display of **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`):
+/-- The second display of **`thm:rank_r_stacksvd`**:
 `‖Vᵀ V̂_stacksvd‖_F² →p ∑_j γ_j`. Route: `frobSqStackR_diag` (`RankR/StackGamma.lean:433`)
 on the almost sure event where every `ℓ_j`-th eigenvalue is simple at its index (`ae_all_iff`
 over the countable `Fin r`), then the `r` diagonal limits (`law.align`) plus the `r(r-1)`
@@ -190,28 +190,28 @@ theorem thm_rank_r_stacksvd_frobenius (m : UnalignedModelR μ M n d r (alignedRk
 
 /-! ### 5. The corollary -/
 
-/-- **`thm:rank_r_stacksvd`** (`main_paper.tex:2337`), Layer 1 form: under `HeteroLawR` the
+/-- **`thm:rank_r_stacksvd`**, Layer 1 form: under `HeteroLawR` the
 rank-`r` weighted stacksvd estimator satisfies both displays of the corollary,
 `(v_jᵀ v̂_j)² →p γ_j` for every `j` and `‖Vᵀ V̂‖_F² →p ∑_j γ_j`.
 
-`hc : ∀ i, 0 < c i`, `hR : ∀ i, m.R i = 1` and the separation `θ̃_jj ≠ θ̃_jk` are not
+`hc : ∀ i, 0 < c i`, `hR : ∀ i, m.R i = 1` and the paper's separation `λ_jj ≠ λ_jk` are not
 hypotheses here: the implication does not read them (`notes/FLAGGED.md` item 16). They are
 conditions for `HeteroLawR` to hold and belong on a Gaussian facade.
 
-Scope. The spectral index of the statement is `Scalars.ellR m.thetaAligned c j`, the paper's
-`ℓ_j`, everywhere: in `stackOverlapJ` and `vhatStackR` (`RankR/StackGamma.lean:346, :362`)
-and in the `crossProj` and `simpleIdxJ` fields of `HeteroLawR`. It equals the outlier index
-`j` by `ellR_thetaAligned` (`RankR/StackGamma.lean:323`), which needs `hc : ∀ i, 0 < c i` and
-`hex : ∃ i, 0 < θ_ij`. This theorem assumes neither, so read the index of the statement as
-the paper's `ℓ_j`. `SpikedModelR.hθnn` and `hθanti` order the spikes strictly in every table
-and keep them nonnegative, so on that family the paper's index is `ℓ_j = j`
-(`main_paper.tex:2369`) at every component that some table carries (F8). The paper
-(`main_paper.tex:2306`, with the condition and the conclusion at `:2368` and `:2369`) allows
-an unordered `θ`, where `ℓ_j` can differ from the outlier index; that case needs a
-permutation `R_i`, or a model class without `hθanti` (`notes/FLAGGED.md` item 17 (7)). More
-than generality is at stake there: with the paper's own `ℓ_j` the first display is false on
-an explicit `M = 2`, `r = 2` instance, where index 0 carries `0.571 ± 0.008` and the paper's
-index 1 carries `0.011 ± 0.003` at `d = 1200` (`paper_edits.md` finding E7). -/
+Scope. The spectral index of the statement is `Scalars.ellR m.thetaAligned c j` everywhere:
+in `stackOverlapJ` and `vhatStackR` (`RankR/StackGamma.lean:346, :362`) and in the
+`crossProj` and `simpleIdxJ` fields of `HeteroLawR`. `ellR` ranks `θ̃_jj` among the `θ̃_jk`.
+It equals `j` by `ellR_thetaAligned` (`RankR/StackGamma.lean:323`), which needs
+`hc : ∀ i, 0 < c i` and `hex : ∃ i, 0 < θ_ij`. This theorem assumes neither.
+`SpikedModelR.hθnn` and `hθanti` order the spikes strictly in every table and keep them
+nonnegative. On that family the paper's `ℓ_j` (the rank of `λ_jj` among the `λ_jk`,
+`eq:stacksvd_lambda`) is `j` by the paper's remark before `alg:rank_r_stacksvd`, so there
+`ellR` is the paper's index at every component that some table carries (F8). The paper
+(Section `sec:rank_r`) allows an unordered `θ` under `λ_jj ≠ λ_jk`. That case needs a
+permutation `R_i`, or a model class without `hθanti` (`notes/FLAGGED.md` item 17 (7)).
+Outside the ordered class, `ellR` and the paper's `ℓ_j` need not agree, so the index of
+the statement is not claimed to be the paper's `ℓ_j` there.
+-/
 theorem thm_rank_r_stacksvd (m : UnalignedModelR μ M n d r (alignedRk M r))
     (c : Fin M → ℝ) (law : m.HeteroLawR c) :
     (∀ j : Fin r, TendstoInProb μ

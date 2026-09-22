@@ -32,7 +32,7 @@ them. Item H1 landed (`RMT/Het/MPhet.lean`); `MPhet.hetScalarFacts_of_assumption
 `PhihetDeriv`, `PsihetDeriv` at `rho = rhoHet` and any `b` with `bHet ≤ b < rhoHet`. The
 parameters stay so that the analytic core is model-free, as `R5.lean` is.
 
-Paper: `main_paper.tex` lines 1409 to 1440 (`thm:stacksvd_weighted`, `eq:assumption4`).
+Paper: `lem:secular_equation` to `eq:weighted_norm` (`thm:stacksvd_weighted`, `eq:assumption4`).
 
 STATUS 2026-08-30: `lake env lean -j 3 StackedSVD/RMT/Het/R4het.lean` exit 0; the interface
 only, no `sorry`. The H4 targets are in `R5het.lean`; the H11 targets

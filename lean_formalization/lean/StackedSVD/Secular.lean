@@ -11,7 +11,7 @@ import StackedSVD.StackSVDWeighted
 
 STATUS 2026-08-30: see `notes/archive/agent_reports/polish_frobenius_secular.md`.
 
-`main_paper.tex:1378` states, for `Σ = diag(w_1², …, w_1², …, w_M², …, w_M²)` with block `i`
+`lem:secular_equation` states, for `Σ = diag(w_1², …, w_1², …, w_M², …, w_M²)` with block `i`
 repeated `n_i` times and `ũ₀` the block vector `(θ_i w_i u_i)_i` with `‖u_i‖ = 1`:
 
 1. at least `n_i - 1` eigenvalues of `R` equal `w_i²`;
@@ -58,7 +58,7 @@ block nonempty (`0 < n_i`), since an empty block contributes no diagonal entry `
 
 The tie to a model is not formalized. No declaration here says that
 `Rmat (sigmaStack ν w) (u0Stack θ w u)` is `E[X_stack X_stackᵀ]` of a `MultiTableModel`, and
-nothing connects the paper's `η₁ (ũ₀ᵀ ξ₁)²/γ₁` (`main_paper.tex:1414`) to `Scalars.Lw`. The
+nothing connects the paper's `η₁ (ũ₀ᵀ ξ₁)²/γ₁` (`eq:weighted_norm`) to `Scalars.Lw`. The
 file is a self-contained spectral statement about a diagonal matrix plus a rank one, with
 `σ` and `q` supplied by the caller; `sigmaStack` and `u0Stack` only put them in the paper's
 block shape. Nothing outside this file reads it (audit of the unaudited pieces, 2026-08-31,
@@ -132,7 +132,7 @@ theorem R4secular_diagonal {σ q : Fin nn → ℝ} {z : ℝ} (hz : ∀ i, σ i �
   rw [div_eq_inv_mul, sq]
   ring
 
-/-- **`lem:secular_equation`, the determinant identity** (`main_paper.tex:1392`):
+/-- **`lem:secular_equation`, the determinant identity**:
 `det(ũ₀ũ₀ᵀ + Σ - λI) = det(Σ - λI) (1 + ũ₀ᵀ(Σ - λI)⁻¹ũ₀)`. -/
 theorem det_Rmat_sub (σ q : Fin nn → ℝ) {lam : ℝ} (hlam : ∀ i, σ i ≠ lam) :
     (Rmat σ q - lam • (1 : Matrix (Fin nn) (Fin nn) ℝ)).det

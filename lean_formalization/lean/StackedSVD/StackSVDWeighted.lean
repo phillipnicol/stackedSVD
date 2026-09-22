@@ -13,7 +13,7 @@ STATUS 2026-08-30: proved. `HeteroLaw` (black box 2) stays a hypothesis; everyth
 proved from it. The review note is `notes/archive/thm_stacksvd_weighted.md`, the adversarial audit
 `notes/archive/audit_weighted_stacksvd_2026-08-30.md`.
 
-## What the paper does (`main_paper.tex:1350`, `app:weightedStackSVDProof`)
+## What the paper does (`app:weightedStackSVDProof`)
 
 The weighted stack is `X_stack(w) = [w_1 X_1; ...; w_M X_M] = ũ_0 vᵀ + Σ^{1/2} E` with
 `ũ_0` the block vector `(θ_i w_i u_i)_i` and `Σ = diag(w_1²,...,w_1²,...,w_M²,...,w_M²)`,
@@ -33,11 +33,11 @@ which is `HeteroLaw` here.
 3. `Scalars.pOf`, the change of variables `p_j = θ_j²w_j²/(γ₁ - w_j²)` of
    `eq:var_change_wstacksvd`, with `sum_pOf` (`∑ p_j = 1`), `LwDen_eq`
    (`γ₁∑θ_j²w_j²/(γ₁-w_j²)² = 1 + ∑p_j²/θ_j²`) and `sum_c_pOf_le`, the zero-signal reduction
-   of `main_paper.tex:1504`.
+   in the proof of `thm:stacksvd_weighted`.
 4. `Scalars.optWstack θ c i = θ_i/√(θ_i²+c_i)`, the paper's optimal weights, and the three
    scalar results: `L_le_opt` (the simplex optimization: no weighting beats `w⋆`),
    `L_optW_eq` (`L(w⋆)` is the root of `gW = 1`) and `assumption4_optW_iff` (the threshold
-   equivalence of `main_paper.tex:1602`).
+   equivalence in the proof of `thm:stacksvd_weighted`).
 5. `MultiTableModel.stackW`, the weighted stack as a `SpikedModel`, and `stackW_X`, the
    stacking lemma. `stackW_one` says `stackW 1 = stack`.
 6. `MultiTableModel.HeteroLaw`, the hypothesis structure, and the theorems
@@ -412,7 +412,7 @@ theorem pOf_eq_zero {θ w : Fin M → ℝ} {j : Fin M} (hz : θ j = 0) : pOf θ 
   rw [hz]
   simp
 
-/-- `∑_j p_j = 1`, the simplex constraint of `main_paper.tex:1517`. -/
+/-- `∑_j p_j = 1`, the simplex constraint after `eq:var_change_wstacksvd`. -/
 theorem sum_pOf {θ w : Fin M → ℝ} (h : ∃ g, IsGammaTop θ w g) : ∑ j, pOf θ w j = 1 := by
   have hs := sum_secular_eq_neg_one h
   have hterm : ∀ j : Fin M,
@@ -423,8 +423,8 @@ theorem sum_pOf {θ w : Fin M → ℝ} (h : ∃ g, IsGammaTop θ w g) : ∑ j, p
   rw [Finset.sum_congr rfl fun j _ => hterm j, Finset.sum_neg_distrib, hs]
   ring
 
-/-- `γ₁ ∑_j θ_j²w_j²/(γ₁-w_j²)² = 1 + ∑_j p_j²/θ_j²` (`main_paper.tex:1536`). The junk value
-`0/0 = 0` covers the zero-signal tables, where `p_j = 0`. -/
+/-- `γ₁ ∑_j θ_j²w_j²/(γ₁-w_j²)² = 1 + ∑_j p_j²/θ_j²` (the proof of `thm:stacksvd_weighted`). The
+junk value `0/0 = 0` covers the zero-signal tables, where `p_j = 0`. -/
 theorem LwDen_eq {θ w : Fin M → ℝ} (h : ∃ g, IsGammaTop θ w g) :
     LwDen θ w = 1 + ∑ j, pOf θ w j ^ 2 / θ j ^ 2 := by
   have hterm : ∀ j : Fin M,
@@ -442,8 +442,8 @@ theorem LwDen_eq {θ w : Fin M → ℝ} (h : ∃ g, IsGammaTop θ w g) :
   rw [Finset.mul_sum, Finset.sum_congr rfl fun j _ => hterm j, Finset.sum_add_distrib,
     sum_pOf h]
 
-/-- The zero-signal reduction of `main_paper.tex:1504`. The tables with `θ_j = 0` do not
-enter the secular equation, so they leave `p` and the denominator of `L(w)` unchanged and
+/-- The zero-signal reduction in the proof of `thm:stacksvd_weighted`. The tables with `θ_j = 0` do
+not enter the secular equation, so they leave `p` and the denominator of `L(w)` unchanged and
 only add the nonnegative term `c_j w_j⁴/(γ₁-w_j²)²` to `∑_i c_i w_i⁴/(γ₁-w_i²)²`. Setting
 `w_j = 0` there (which `optWstack` does) therefore only increases `L(w)`. -/
 theorem sum_c_pOf_le {θ c w : Fin M → ℝ} (hc : ∀ i, 0 ≤ c i) (h : ∃ g, IsGammaTop θ w g) :
@@ -562,7 +562,7 @@ noncomputable def optWstack (θ c : Fin M → ℝ) : Fin M → ℝ :=
   fun i => θ i / Real.sqrt (θ i ^ 2 + c i)
 
 /-- `L(1_M)` is the unweighted limit of `prop:stacksvd_general`. With `γ₁ = 1 + ‖θ‖₂²` the
-formula collapses to `(‖θ‖₂⁴ - ‖c‖₁)/(‖θ‖₂²(‖θ‖₂² + 1))` (`main_paper.tex:1438`). The
+formula collapses to `(‖θ‖₂⁴ - ‖c‖₁)/(‖θ‖₂²(‖θ‖₂² + 1))` (the proof of `prop:stacksvd_general`). The
 degenerate case `θ = 0` gives `0` on both sides, so no hypothesis on `c` is needed. -/
 theorem Lw_one (θ c : Fin M → ℝ) : Lw θ c 1 = stackSVDLimit θ c := by
   by_cases hθ : ∃ i, θ i ≠ 0
@@ -864,8 +864,8 @@ theorem L_le_opt {θ c : Fin M → ℝ} (hc : ∀ i, 0 < c i) (w : Fin M → ℝ
     exact stackSVDLimitW_nonneg θ c
 
 /-- The optimal weights attain `stackSVDLimitW` above the threshold. With `r` the root of
-`gW θ c r = 1` the change of variables of `main_paper.tex:1600` gives `γ₁ = 1/(1-r)` and
-`p_j = θ_j⁴(1-r)/(c_j + rθ_j²)`, so `∑_j p_j = gW θ c r = 1`. -/
+`gW θ c r = 1` the change of variables in the proof of `thm:stacksvd_weighted` gives `γ₁ = 1/(1-r)`
+and `p_j = θ_j⁴(1-r)/(c_j + rθ_j²)`, so `∑_j p_j = gW θ c r = 1`. -/
 theorem assumption4_and_L_optW_of_thr {θ c : Fin M → ℝ} (hc : ∀ i, 0 < c i)
     (hthr : 1 < ∑ i, θ i ^ 4 / c i) :
     Assumption4 θ c (optWstack θ c) ∧ Lw θ c (optWstack θ c) = stackSVDLimitW θ c := by
@@ -1016,8 +1016,8 @@ theorem L_optW_eq {θ c : Fin M → ℝ} (hc : ∀ i, 0 < c i) :
     · rw [hz]
       exact Lw_nonneg θ c _
 
-/-- The threshold equivalence of `main_paper.tex:1602`: `eq:assumption4` holds at `w⋆` exactly
-when `∑_j θ_j⁴/c_j > 1`. The companion of `stackSVDLimitW_eq_zero`. -/
+/-- The threshold equivalence in the proof of `thm:stacksvd_weighted`: `eq:assumption4` holds at
+`w⋆` exactly when `∑_j θ_j⁴/c_j > 1`. The companion of `stackSVDLimitW_eq_zero`. -/
 theorem assumption4_optW_iff {θ c : Fin M → ℝ} (hc : ∀ i, 0 < c i) :
     Assumption4 θ c (optWstack θ c) ↔ 1 < ∑ i, θ i ^ 4 / c i := by
   constructor
@@ -1342,7 +1342,7 @@ theorem stackGramW_apply (m : MultiTableModel μ M n d) (w : Fin M → ℝ) (N :
 matrix: the discarded tables contribute zero rows.
 
 `[NeZero S.card]` runs through this group of results and excludes `S = ∅`, which the paper's
-maximum over `2^{[M]}` (`cor.2`, `main_paper.tex:442`) formally includes. The exclusion is
+maximum over `2^{[M]}` (after `cor.2`) formally includes. The exclusion is
 right: the empty stack is a `0 × d` matrix, it carries no data, its performance is the junk
 value of an empty model, and the paper's own display gives it the value `0`, which never
 attains the maximum (audit of the unaudited pieces, 2026-08-31, finding 3).
@@ -1440,7 +1440,7 @@ namespace StackedSVD.Scalars
 
 variable {M : ℕ}
 
-/-! ### The best binary weighting against the optimal weighting (`main_paper.tex:442`)
+/-! ### The best binary weighting against the optimal weighting (after `cor.2`)
 
 `binaryStackSVDLimitMax` is defined in `Scalars.lean`. The comparison with the optimally
 weighted stacksvd limit needs `Lw_binary` and `L_le_opt`, which live here: a binary weighting

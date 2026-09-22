@@ -15,7 +15,7 @@ import StackedSVD.LinAlg.SpecIdxMeas
 /-!
 # Track E, task E7: the outliers of the heteroscedastic rank-`r` Gram matrix
 
-Paper: `thm:rank_r_stacksvd` (the weighted rank-`r` stacked SVD, `main_paper.tex:2337`),
+Paper: `thm:rank_r_stacksvd` (the weighted rank-`r` stacked SVD),
 read through `thm:stacksvd_weighted` and `eq:assumption4`. This file lands the three
 Gaussian-discharged facts about the eigenvalues of `X_W X_Wᵀ` above a threshold `τ` that sits
 strictly above the bulk edge `MPhet.bHet c w`:
@@ -582,9 +582,9 @@ column `Q_l` on the eigenvalues of `X_W X_Wᵀ` above `τ` tends in probability 
 `1 / nuHet θ_l c w` when `l` satisfies `eq:assumption4` with `τ < rhoHet θ_l c w`, and to `0`
 otherwise (a subcritical `l`, or an outlier below `τ`). The `1 / ν` is the paper's
 `1 / (ρ F'(ρ))` before the factor `ρ`, the overlap of `thm:rank_r_stacksvd` read through
-`main_paper.tex:1433`; the column `Q_l` is not normalized, and its squared norm tends to
-`N_l = colGramLimit w c l`, which cancels inside this proof against the normalization of the
-unit vector. The consumer of the statement divides by the eigenvalue `λ_{ellSup}`, not by
+the overlap display after `eq:weighted_norm`; the column `Q_l` is not normalized, and its squared
+norm tends to `N_l = colGramLimit w c l`, which cancels inside this proof against the normalization
+of the unit vector. The consumer of the statement divides by the eigenvalue `λ_{ellSup}`, not by
 `N_l`.
 
 The route: the deterministic core `OutliersR.align_detG` is applied to the unit vector

@@ -186,7 +186,7 @@ theorem heteroLaw_binary_of_gaussian [∀ N, IsProbabilityMeasure (μ N)]
   exact m.heteroLaw_binary_of_singleTableLaw S c hlaw
 
 omit [NeZero M] in
-/-- **`cor.2`** (`main_paper.tex:429`), Layer 2: on a nonempty subset `S` the binary-weighted
+/-- **`cor.2`**, Layer 2: on a nonempty subset `S` the binary-weighted
 stacksvd performance converges to `Scalars.binaryStackSVDLimit S θ c`, with every random matrix
 theory hypothesis discharged. -/
 theorem stackPerfW_binary_tendsto_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -198,7 +198,7 @@ theorem stackPerfW_binary_tendsto_gaussian [NeZero M] [∀ N, IsProbabilityMeasu
   rwa [Scalars.Lw_binary] at h
 
 omit [NeZero M] in
-/-- The subset maximum of `cor.2` (`main_paper.tex:442`), Layer 2: some nonempty subset attains
+/-- The subset maximum after `cor.2`, Layer 2: some nonempty subset attains
 `Scalars.binaryStackSVDLimitMax`, and the binary-weighted stacksvd performance there converges
 to that maximum. -/
 theorem exists_binary_tendsto_max_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -214,7 +214,7 @@ theorem exists_binary_tendsto_max_gaussian [NeZero M] [∀ N, IsProbabilityMeasu
   exact m.stackPerfW_binary_tendsto_gaussian S c hc hreg hG
 
 omit [NeZero M] in
-/-- **`thm:stacksvd_binary_optimal_svd_stack`** (`main_paper.tex:626`), Gaussian noise: with
+/-- **`thm:stacksvd_binary_optimal_svd_stack`**, Gaussian noise: with
 every kept table at `c_i ≤ 1`, the binary weighting on `S`, the set of tables above their own
 threshold `c_i < θ_i⁴`, converges to `Scalars.binaryStackSVDLimit S θ c`, and that limit is
 at least optimally weighted svdstack. Every random matrix theory hypothesis is discharged by

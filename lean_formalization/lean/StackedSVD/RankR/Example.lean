@@ -13,7 +13,7 @@ Task T6 of `notes/RANK_R_PLAN.md`. Class (A): every result here is an identity o
 inequality between finitely many real numbers, or an identity between explicit `2 × 2`
 matrices. No probability appears and no random matrix theory input is used.
 
-The paper's example (`main_paper.tex:848`, `eq:psi_equation`) is
+The paper's example (`eq:psi_equation`) is
 
 ```
 R_1 = (1, 0)ᵀ,  R_2 = (sin ψ, cos ψ)ᵀ,  θ_1 = θ_2 = θ ≥ 1,  c_1 = c_2 = 1,  ψ ∈ [0, π/2),
@@ -28,7 +28,7 @@ states the two limits
                                                                      (eq:perf_rankr_ex_stacksvd)
 ```
 
-and analyzes both in `app:unaligned_example_proofs` (`main_paper.tex:2198`).
+and analyzes both in `app:unaligned_example_proofs`.
 
 ## Content
 
@@ -43,18 +43,18 @@ and analyzes both in `app:unaligned_example_proofs` (`main_paper.tex:2198`).
    (`abetaR_example_mulVec_add`, `abetaR_example_mulVec_sub`).
 3. `limitR_example`: `eq:perf_rankr_ex_svdstack`, `limitR` in closed form. `svdstackEx` is
    the right hand side; `hasDerivAt_svdstackEx` and `svdstackEx_strictAntiOn` are the
-   appendix's derivative and monotonicity claims (`main_paper.tex:2205`), and
+   appendix's derivative and monotonicity claims, and
    `svdstackEx_zero`, `svdstackEx_one` are its two degenerate cases.
 4. `Cex`: the core matrix `C = ∑_i R_i Θ_i² R_iᵀ` of `prop:stacksvd_subspace`, with the
-   eigenpairs `θ²(1 ± s)` at `R_1 ± R_2` (`main_paper.tex:2216`).
+   eigenpairs `θ²(1 ± s)` at `R_1 ± R_2` (`app:unaligned_example_proofs`).
 5. `hPerf`, `stacksvdEx`: `eq:perf_rankr_ex_stacksvd` (`stacksvdEx_eq_paper`), the link
    `h(λ) = betaSq (√λ) (2c)` to `prop:single_table` (`hPerf_eq_betaSq`), the kinks `sStar`
    and `sDag` with their locations, the four piecewise closed forms, the derivatives `h'`
    and `h''`, the two monotonicity claims, the continuity `continuousOn_stacksvdEx`, and the
    slope jump `2θ²/(1 + √(2c))` (`slope_jump_at_kink`).
 6. The endpoint `s = 0`: `svdstackEx_zero_s` gives `2β²`, `stacksvdEx_zero_s` gives
-   `2 betaSq θ (2c)`, and `stacksvdEx_lt_svdstackEx_zero` is the paper's strict comparison
-   (`main_paper.tex:866`), which needs `c < θ⁴` (below that threshold both sides are `0`).
+   `2 betaSq θ (2c)`, and `stacksvdEx_lt_svdstackEx_zero` is the paper's strict comparison (after
+   `eq:perf_rankr_ex_stacksvd`), which needs `c < θ⁴` (below that threshold both sides are `0`).
 7. `example_perfR_tendsto` and `example_perfR_tendsto_gaussian`: `eq:perf_rankr_ex_svdstack`
    as a limit theorem, `perfR →p svdstackEx β s`. This composes
    `prop:general_rank_unweighted_svdstack` (`RankR/Defs.lean`) with item 3. At `r = M = 2` the
@@ -69,9 +69,9 @@ convergence is `example_perfStackR_tendsto` of `RankR/Subspace.lean`, which hold
 hypothesis structure `SubspaceLaw` (`notes/archive/prop_stacksvd_subspace.md`).
 
 The svdstack limit is proved (item 7) with `perfR` of `RankR/Defs.lean` as the performance
-metric. `perfR` is the right side of the paper's own first display (`main_paper.tex:1982`);
-`RankR/Frobenius.lean` ties it to the left side `‖V̂_svdstackᵀ V‖_F²` through the definition
-`vhatSvdstack` and the identity `frobSq_vhatSvdstack`.
+metric. `perfR` is the right side of the first display in the proof of
+`prop:general_rank_unweighted_svdstack`; `RankR/Frobenius.lean` ties it to the left side
+`‖V̂_svdstackᵀ V‖_F²` through the definition `vhatSvdstack` and the identity `frobSq_vhatSvdstack`.
 
 Every closed form was checked with sympy (34 identities, all exact) and against a direct
 numpy evaluation of `limitR` at 20 random `(θ, ψ)` points (worst error 4.4e-16, seed
@@ -150,7 +150,7 @@ theorem limitR_eq_trace_inv {M r : ℕ} (β : Fin M → ℝ) (R : Fin M → Eucl
 
 /-! ### 2. The example's alignment vectors and the matrix `A_{β,R}` -/
 
-/-- `eq:psi_equation` (`main_paper.tex:848`): `R_1 = (1, 0)ᵀ` and `R_2 = (sin ψ, cos ψ)ᵀ`.
+/-- `eq:psi_equation`: `R_1 = (1, 0)ᵀ` and `R_2 = (sin ψ, cos ψ)ᵀ`.
 Both are unit vectors of `ℝ²` for every `ψ`, and `⟪R_1, R_2⟫ = sin ψ =: s`. -/
 noncomputable def Rex (ψ : ℝ) : Fin 2 → EuclideanSpace ℝ (Fin 2) :=
   ![WithLp.toLp 2 ![1, 0], WithLp.toLp 2 ![Real.sin ψ, Real.cos ψ]]
@@ -262,12 +262,12 @@ theorem limitR_example_gen (β : Fin 2 → ℝ) (ψ : ℝ)
     Matrix.trace_mul_comm, ← Matrix.mul_assoc, BBt_example, trace_two]
   field_simp
 
-/-- The right hand side of `eq:perf_rankr_ex_svdstack` (`main_paper.tex:859`), as a function
+/-- The right hand side of `eq:perf_rankr_ex_svdstack`, as a function
 of `β` and `s = sin ψ`. -/
 noncomputable def svdstackEx (b s : ℝ) : ℝ :=
   b ^ 2 * (1 + s) / (1 + s * b ^ 2) + b ^ 2 * (1 - s) / (1 - s * b ^ 2)
 
-/-- `eq:perf_rankr_ex_svdstack` (`main_paper.tex:859`): with `β_1 = β_2 = β`, the limit
+/-- `eq:perf_rankr_ex_svdstack`: with `β_1 = β_2 = β`, the limit
 `limitR` of `prop:general_rank_unweighted_svdstack` is
 `β²(1+s)/(1+sβ²) + β²(1-s)/(1-sβ²)`, `s = sin ψ`. -/
 theorem limitR_example (b ψ : ℝ) (hb : b ^ 2 < 1) :
@@ -300,10 +300,10 @@ theorem svdstackEx_eq_ratio (b s : ℝ) (h1 : 1 + s * b ^ 2 ≠ 0) (h2 : 1 - s *
   field_simp
   ring
 
-/-- Degenerate case `β = 0` of `main_paper.tex:2209`: the svdstack limit is identically `0`. -/
+/-- Degenerate case `β = 0` (`app:unaligned_example_proofs`): the svdstack limit is `0`. -/
 theorem svdstackEx_zero (s : ℝ) : svdstackEx 0 s = 0 := by simp [svdstackEx]
 
-/-- Degenerate case `β = 1` of `main_paper.tex:2209`: the svdstack limit is identically `2`
+/-- Degenerate case `β = 1` in `app:unaligned_example_proofs`: the svdstack limit is identically `2`
 on `s ∈ (-1, 1)`. -/
 theorem svdstackEx_one {s : ℝ} (h1 : s ≠ -1) (h2 : s ≠ 1) : svdstackEx 1 s = 2 := by
   have ha : (1 : ℝ) + s ≠ 0 := fun h => h1 (by linarith)
@@ -312,7 +312,7 @@ theorem svdstackEx_one {s : ℝ} (h1 : s ≠ -1) (h2 : s ≠ 1) : svdstackEx 1 s
   field_simp
   ring
 
-/-- `main_paper.tex:2205`: the derivative of `eq:perf_rankr_ex_svdstack` in `s` is
+/-- `app:unaligned_example_proofs`: the derivative of `eq:perf_rankr_ex_svdstack` in `s` is
 `β²(1-β²)[(1+sβ²)^{-2} - (1-sβ²)^{-2}]`. -/
 theorem hasDerivAt_svdstackEx (b : ℝ) {s : ℝ} (h1 : 1 + s * b ^ 2 ≠ 0)
     (h2 : 1 - s * b ^ 2 ≠ 0) :
@@ -336,7 +336,7 @@ theorem hasDerivAt_svdstackEx (b : ℝ) {s : ℝ} (h1 : 1 + s * b ^ 2 ≠ 0)
   field_simp
   ring
 
-/-- `main_paper.tex:2205`: for `β ∈ (0, 1)` the svdstack limit of the example is strictly
+/-- `app:unaligned_example_proofs`: for `β ∈ (0, 1)` the svdstack limit of the example is strictly
 decreasing in `s` on `[0, 1)`. -/
 theorem svdstackEx_strictAntiOn {b : ℝ} (hb0 : 0 < b) (hb1 : b < 1) :
     StrictAntiOn (svdstackEx b) (Set.Ico (0 : ℝ) 1) := by
@@ -364,16 +364,16 @@ theorem svdstackEx_strictAntiOn {b : ℝ} (hb0 : 0 < b) (hb1 : b < 1) :
 
 /-! ### 4. The core matrix `C` of `prop:stacksvd_subspace`
 
-`C = ∑_i R_i Θ_i² R_iᵀ` (`main_paper.tex:826`). In the example both `Θ_i` are the scalar `θ`,
-so `C = θ² (R_1 R_1ᵀ + R_2 R_2ᵀ)`. The paper computes its spectrum at
-`main_paper.tex:2216`. -/
+`C = ∑_i R_i Θ_i² R_iᵀ` (`eq:signal_cov`). In the example both `Θ_i` are the scalar `θ`,
+so `C = θ² (R_1 R_1ᵀ + R_2 R_2ᵀ)`. The paper computes its spectrum in
+`app:unaligned_example_proofs`. -/
 
 /-- The core matrix of the example. -/
 noncomputable def Cex (θ ψ : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   θ ^ 2 • ∑ i : Fin 2,
     Matrix.vecMulVec (WithLp.ofLp (Rex ψ i)) (WithLp.ofLp (Rex ψ i))
 
-/-- `main_paper.tex:2216`: `C = θ² [[1 + s², s cos ψ], [s cos ψ, cos²ψ]]`, with
+/-- `app:unaligned_example_proofs`: `C = θ² [[1 + s², s cos ψ], [s cos ψ, cos²ψ]]`, with
 `cos ψ = √(1 - s²)` on `[0, π/2)`. -/
 theorem cex_eq (θ ψ : ℝ) :
     Cex θ ψ = θ ^ 2 • !![1 + Real.sin ψ ^ 2, Real.sin ψ * Real.cos ψ;
@@ -422,14 +422,14 @@ theorem det_sub_smul_cex (θ ψ t : ℝ) :
 
 /-! ### 5. `eq:perf_rankr_ex_stacksvd`: the function `h`, the limit `F`, and the kinks
 
-`main_paper.tex:2219` defines `h(λ) = (λ² - 2c)/(λ(λ+1)) 1{λ > √(2c)}` and writes the
+`app:unaligned_example_proofs` defines `h(λ) = (λ² - 2c)/(λ(λ+1)) 1{λ > √(2c)}` and writes the
 stacksvd limit of the example as `F(s) = h(λ_+(s)) + h(λ_-(s))` with `λ_±(s) = θ²(1 ± s)`,
 the two eigenvalues of the core matrix. -/
 
 /-- The smooth branch of `h`: `(λ² - 2c)/(λ(λ+1))`. -/
 noncomputable def hSmooth (c lam : ℝ) : ℝ := (lam ^ 2 - 2 * c) / (lam * (lam + 1))
 
-/-- `h(λ) = (λ² - 2c)/(λ(λ+1)) 1{λ > √(2c)}` (`main_paper.tex:2219`). -/
+/-- `h(λ) = (λ² - 2c)/(λ(λ+1)) 1{λ > √(2c)}` (`app:unaligned_example_proofs`). -/
 noncomputable def hPerf (c lam : ℝ) : ℝ :=
   if Real.sqrt (2 * c) < lam then hSmooth c lam else 0
 
@@ -463,7 +463,7 @@ theorem hPerf_apply {c lam : ℝ} (hlam : 0 < lam) :
 
 /-- `h(λ) = betaSq (√λ) (2c)`: each term of `eq:perf_rankr_ex_stacksvd` is the rank-one
 performance of `prop:single_table` at spike `√λ` and aspect ratio `‖c‖₁ = 2c`
-(`main_paper.tex:838`). -/
+(`prop:stacksvd_subspace`). -/
 theorem hPerf_eq_betaSq {c lam : ℝ} (hlam : 0 < lam) :
     hPerf c lam = betaSq (Real.sqrt lam) (2 * c) := by
   have h2 : Real.sqrt lam ^ 2 = lam := Real.sq_sqrt hlam.le
@@ -472,7 +472,7 @@ theorem hPerf_eq_betaSq {c lam : ℝ} (hlam : 0 < lam) :
   simp only [hPerf_apply hlam, betaSq, h4, h2, gt_iff_lt]
 
 /-- `h(√(2c)) = 0` on the smooth branch as well: the performance vanishes continuously at the
-detection threshold (`main_paper.tex:2268`). -/
+detection threshold (after `eq:kink_location`). -/
 theorem hSmooth_sqrt {c : ℝ} (hc : 0 < c) : hSmooth c (Real.sqrt (2 * c)) = 0 := by
   rw [hSmooth, Real.sq_sqrt (by linarith : (0 : ℝ) ≤ 2 * c), sub_self, zero_div]
 
@@ -488,7 +488,7 @@ theorem hPerf_eq_max {c lam : ℝ} (hlam : 0 < lam) :
       max_eq_right (hSmooth_nonpos hlam (not_lt.mp fun hh => h (hiff.mpr hh)))]
 
 /-- `F(s) = h(θ²(1 + s)) + h(θ²(1 - s))`, the right hand side of
-`eq:perf_rankr_ex_stacksvd` (`main_paper.tex:860`). -/
+`eq:perf_rankr_ex_stacksvd`. -/
 noncomputable def stacksvdEx (θ c s : ℝ) : ℝ :=
   hPerf c (θ ^ 2 * (1 + s)) + hPerf c (θ ^ 2 * (1 - s))
 
@@ -507,11 +507,11 @@ theorem stacksvdEx_eq_paper {θ c s : ℝ} (hp : 0 < θ ^ 2 * (1 + s))
 
 /-! #### The kinks -/
 
-/-- `s⋆ = 1 - √(2c)/θ²`, the kink of the strong signal regime (`eq:kink_location`,
-`main_paper.tex:2242`). -/
+/-- `s⋆ = 1 - √(2c)/θ²`, the kink of the strong signal regime
+(`eq:kink_location`). -/
 noncomputable def sStar (θ c : ℝ) : ℝ := 1 - Real.sqrt (2 * c) / θ ^ 2
 
-/-- `s_† = √(2c)/θ² - 1`, the kink of the weak signal regime (`main_paper.tex:2281`). -/
+/-- `s_† = √(2c)/θ² - 1`, the kink of the weak signal regime (`app:unaligned_example_proofs`). -/
 noncomputable def sDag (θ c : ℝ) : ℝ := Real.sqrt (2 * c) / θ ^ 2 - 1
 
 /-- The kink `s⋆` is where component `2` leaves detection: `λ_-(s⋆) = √(2c)`. -/
@@ -539,7 +539,7 @@ private theorem sq_lt_sqrt_two_mul {θ c : ℝ} (h : θ ^ 4 < 2 * c) :
   (Real.lt_sqrt (sq_nonneg θ)).mpr (by nlinarith)
 
 /-- In the strong signal regime `θ⁴ > 2c` the kink `s⋆` is positive
-(`main_paper.tex:2240`). -/
+(`eq:kink_location`). -/
 theorem sStar_pos {θ c : ℝ} (hθ : 0 < θ) (hstrong : 2 * c < θ ^ 4) : 0 < sStar θ c := by
   rw [sStar, sub_pos, div_lt_one (pow_pos hθ 2)]
   exact sqrt_two_mul_lt_sq hθ hstrong
@@ -551,19 +551,19 @@ theorem sStar_lt_one {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c) : sStar θ c < 1 :
   exact div_pos h1 (pow_pos hθ 2)
 
 /-- In the weak signal regime `θ⁴ < 2c` the kink `s_†` is positive
-(`main_paper.tex:2281`). -/
+(`app:unaligned_example_proofs`). -/
 theorem sDag_pos {θ c : ℝ} (hθ : 0 < θ) (hweak : θ ^ 4 < 2 * c) : 0 < sDag θ c := by
   rw [sDag, sub_pos, lt_div_iff₀ (pow_pos hθ 2), one_mul]
   exact sq_lt_sqrt_two_mul hweak
 
-/-- `s_† < 1` when `θ⁴ > c/2` (`main_paper.tex:2284`). -/
+/-- `s_† < 1` when `θ⁴ > c/2` (`app:unaligned_example_proofs`). -/
 theorem sDag_lt_one {θ c : ℝ} (hθ : 0 < θ) (h : c / 2 < θ ^ 4) : sDag θ c < 1 := by
   have hθ2 : (0 : ℝ) < θ ^ 2 := pow_pos hθ 2
   rw [sDag, sub_lt_iff_lt_add, div_lt_iff₀ hθ2]
   exact (Real.sqrt_lt' (by linarith)).mpr (by nlinarith)
 
 /-- `θ⁴ ≤ c/2` puts the kink at or above `1`, and then the stacksvd limit is `0` on all of
-`[0, 1)` (`main_paper.tex:2284`). -/
+`[0, 1)` (`app:unaligned_example_proofs`). -/
 theorem one_le_sDag {θ c : ℝ} (hθ : 0 < θ) (h : θ ^ 4 ≤ c / 2) : 1 ≤ sDag θ c := by
   have hθ2 : (0 : ℝ) < θ ^ 2 := pow_pos hθ 2
   rw [sDag, le_sub_iff_add_le, le_div_iff₀ hθ2]
@@ -572,7 +572,7 @@ theorem one_le_sDag {θ c : ℝ} (hθ : 0 < θ) (h : θ ^ 4 ≤ c / 2) : 1 ≤ s
 /-! #### The piecewise closed form -/
 
 /-- Right of the kink in the strong signal regime `θ⁴ > 2c`: component `2` is at or below its
-detection threshold, so only `λ_+` contributes (`main_paper.tex:2251`). -/
+detection threshold, so only `λ_+` contributes (after `eq:kink_location`). -/
 theorem stacksvdEx_of_sStar_le {θ c s : ℝ} (hθ : 0 < θ) (hstrong : 2 * c < θ ^ 4)
     (hs : sStar θ c ≤ s) : stacksvdEx θ c s = hSmooth c (θ ^ 2 * (1 + s)) := by
   have hθ2 : (0 : ℝ) < θ ^ 2 := pow_pos hθ 2
@@ -589,7 +589,7 @@ theorem stacksvdEx_of_sStar_le {θ c s : ℝ} (hθ : 0 < θ) (hstrong : 2 * c < 
 
 /-- Left of the kink in the strong signal regime: both components are detected. At `s = s⋆`
 the second term is `h(√(2c)) = 0 = hSmooth c (√(2c))`, so the two branches agree there and
-the curve is continuous (`main_paper.tex:2268`). -/
+the curve is continuous (after `eq:kink_location`). -/
 theorem stacksvdEx_of_le_sStar {θ c s : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (hstrong : 2 * c < θ ^ 4) (hs0 : 0 ≤ s) (hs : s ≤ sStar θ c) :
     stacksvdEx θ c s = hSmooth c (θ ^ 2 * (1 + s)) + hSmooth c (θ ^ 2 * (1 - s)) := by
@@ -608,7 +608,7 @@ theorem stacksvdEx_of_le_sStar {θ c s : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     max_eq_left (hSmooth_nonneg hm (two_mul_le_sq_of_sqrt_le hgem))]
 
 /-- Below the weak-regime kink `s_†` nothing is detected and `F ≡ 0`
-(`main_paper.tex:2281`). -/
+(`app:unaligned_example_proofs`). -/
 theorem stacksvdEx_of_le_sDag {θ c s : ℝ} (hθ : 0 < θ) (hs0 : 0 ≤ s) (hs : s ≤ sDag θ c) :
     stacksvdEx θ c s = 0 := by
   have hθ2 : (0 : ℝ) < θ ^ 2 := pow_pos hθ 2
@@ -622,7 +622,7 @@ theorem stacksvdEx_of_le_sDag {θ c s : ℝ} (hθ : 0 < θ) (hs0 : 0 ≤ s) (hs 
     nlinarith
   simp only [stacksvdEx, hPerf, if_neg hp, if_neg hm, add_zero]
 
-/-- Above the weak-regime kink only component `1` is detected (`main_paper.tex:2282`). -/
+/-- Above the weak-regime kink only component `1` is detected (`app:unaligned_example_proofs`). -/
 theorem stacksvdEx_of_sDag_le {θ c s : ℝ} (hθ : 0 < θ) (hweak : θ ^ 4 < 2 * c)
     (hs0 : 0 ≤ s) (hs : sDag θ c ≤ s) (hs1 : s < 1) :
     stacksvdEx θ c s = hSmooth c (θ ^ 2 * (1 + s)) := by
@@ -640,14 +640,14 @@ theorem stacksvdEx_of_sDag_le {θ c s : ℝ} (hθ : 0 < θ) (hweak : θ ^ 4 < 2 
     add_zero]
 
 /-- In the lowest signal regime `θ⁴ ≤ c/2` no method has nonzero performance
-(`main_paper.tex:2285`). -/
+(`app:unaligned_example_proofs`). -/
 theorem stacksvdEx_eq_zero_of_very_weak {θ c s : ℝ} (hθ : 0 < θ) (h : θ ^ 4 ≤ c / 2)
     (hs0 : 0 ≤ s) (hs1 : s < 1) : stacksvdEx θ c s = 0 :=
   stacksvdEx_of_le_sDag hθ hs0 (le_trans hs1.le (one_le_sDag hθ h))
 
 /-! #### The calculus of `h` -/
 
-/-- `h'(λ) = (λ² + 4cλ + 2c)/(λ²(λ+1)²)` (`main_paper.tex:2246`). -/
+/-- `h'(λ) = (λ² + 4cλ + 2c)/(λ²(λ+1)²)` (after `eq:kink_location`). -/
 noncomputable def hSmoothD (c lam : ℝ) : ℝ :=
   (lam ^ 2 + 4 * c * lam + 2 * c) / (lam ^ 2 * (lam + 1) ^ 2)
 
@@ -665,7 +665,7 @@ theorem hasDerivAt_hSmooth (c : ℝ) {lam : ℝ} (hlam : 0 < lam) :
   field_simp
   ring
 
-/-- `h''(λ) = -2(λ³ + 6cλ² + 6cλ + 2c)/(λ³(λ+1)³)` (`main_paper.tex:2247`). -/
+/-- `h''(λ) = -2(λ³ + 6cλ² + 6cλ + 2c)/(λ³(λ+1)³)` (after `eq:kink_location`). -/
 theorem hasDerivAt_hSmoothD (c : ℝ) {lam : ℝ} (hlam : 0 < lam) :
     HasDerivAt (hSmoothD c)
       (-2 * (lam ^ 3 + 6 * c * lam ^ 2 + 6 * c * lam + 2 * c) / (lam ^ 3 * (lam + 1) ^ 3))
@@ -687,11 +687,11 @@ theorem hasDerivAt_hSmoothD (c : ℝ) {lam : ℝ} (hlam : 0 < lam) :
   field_simp
   ring
 
-/-- `h' > 0`: `h` is strictly increasing (`main_paper.tex:2246`). -/
+/-- `h' > 0`: `h` is strictly increasing (after `eq:kink_location`). -/
 theorem hSmoothD_pos {c lam : ℝ} (hc : 0 < c) (hlam : 0 < lam) : 0 < hSmoothD c lam :=
   div_pos (by nlinarith) (mul_pos (pow_pos hlam 2) (pow_pos (by linarith) 2))
 
-/-- `h'' < 0`: `h` is strictly concave (`main_paper.tex:2247`). -/
+/-- `h'' < 0`: `h` is strictly concave (after `eq:kink_location`). -/
 theorem hSmoothDD_neg {c lam : ℝ} (hc : 0 < c) (hlam : 0 < lam) :
     -2 * (lam ^ 3 + 6 * c * lam ^ 2 + 6 * c * lam + 2 * c) / (lam ^ 3 * (lam + 1) ^ 3) < 0 :=
   div_neg_of_neg_of_pos (by nlinarith) (mul_pos (pow_pos hlam 3) (pow_pos (by linarith) 3))
@@ -706,7 +706,7 @@ theorem hSmooth_strictMonoOn {c : ℝ} (hc : 0 < c) : StrictMonoOn (hSmooth c) (
     exact hSmoothD_pos hc hx
 
 /-- `h'` is strictly decreasing on `(0, ∞)`, the concavity that drives the left branch
-(`main_paper.tex:2249`). -/
+(after `eq:kink_location`). -/
 theorem hSmoothD_strictAntiOn {c : ℝ} (hc : 0 < c) :
     StrictAntiOn (hSmoothD c) (Set.Ioi 0) := by
   refine strictAntiOn_of_deriv_neg (convex_Ioi 0) ?_ ?_
@@ -726,7 +726,7 @@ private theorem hasDerivAt_lamNeg (θ s : ℝ) :
     HasDerivAt (fun t : ℝ => θ ^ 2 * (1 - t)) (-θ ^ 2) s := by
   simpa using ((hasDerivAt_id s).const_sub (1 : ℝ)).const_mul (θ ^ 2)
 
-/-- Slope of the right branch: `d/ds h(λ_+(s)) = θ² h'(λ_+(s))` (`main_paper.tex:2255`). -/
+/-- Slope of the right branch: `d/ds h(λ_+(s)) = θ² h'(λ_+(s))` (after `eq:kink_location`). -/
 private theorem hasDerivAt_Fright (θ c : ℝ) {s : ℝ} (hp : 0 < θ ^ 2 * (1 + s)) :
     HasDerivAt (fun t : ℝ => hSmooth c (θ ^ 2 * (1 + t)))
       (θ ^ 2 * hSmoothD c (θ ^ 2 * (1 + s))) s := by
@@ -736,7 +736,7 @@ private theorem hasDerivAt_Fright (θ c : ℝ) {s : ℝ} (hp : 0 < θ ^ 2 * (1 +
   rw [Function.comp_def] at h
   exact h.congr_deriv (by ring)
 
-/-- Slope of the left branch: `F'(s) = θ²[h'(λ_+(s)) - h'(λ_-(s))]` (`main_paper.tex:2262`). -/
+/-- Slope of the left branch: `F'(s) = θ²[h'(λ_+(s)) - h'(λ_-(s))]` (after `eq:kink_location`). -/
 private theorem hasDerivAt_Fleft (θ c : ℝ) {s : ℝ} (hp : 0 < θ ^ 2 * (1 + s))
     (hm : 0 < θ ^ 2 * (1 - s)) :
     HasDerivAt (fun t : ℝ => hSmooth c (θ ^ 2 * (1 + t)) + hSmooth c (θ ^ 2 * (1 - t)))
@@ -750,7 +750,7 @@ private theorem hasDerivAt_Fleft (θ c : ℝ) {s : ℝ} (hp : 0 < θ ^ 2 * (1 + 
   rw [Function.comp_def] at h1 h2
   exact (h1.add h2).congr_deriv (by ring)
 
-/-- Right of the kink `F` has the slope `θ² h'(λ_+(s))` (`main_paper.tex:2255`). -/
+/-- Right of the kink `F` has the slope `θ² h'(λ_+(s))` (after `eq:kink_location`). -/
 theorem hasDerivWithinAt_stacksvdEx_right {θ c s : ℝ} (hθ : 0 < θ) (hstrong : 2 * c < θ ^ 4)
     (hs : sStar θ c ≤ s) :
     HasDerivWithinAt (stacksvdEx θ c) (θ ^ 2 * hSmoothD c (θ ^ 2 * (1 + s)))
@@ -762,7 +762,7 @@ theorem hasDerivWithinAt_stacksvdEx_right {θ c s : ℝ} (hθ : 0 < θ) (hstrong
     (fun t ht => stacksvdEx_of_sStar_le hθ hstrong ht)
     (stacksvdEx_of_sStar_le hθ hstrong hs)
 
-/-- Left of the kink `F` has the slope `θ²[h'(λ_+) - h'(λ_-)]` (`main_paper.tex:2262`). -/
+/-- Left of the kink `F` has the slope `θ²[h'(λ_+) - h'(λ_-)]` (after `eq:kink_location`). -/
 theorem hasDerivWithinAt_stacksvdEx_left {θ c s : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (hstrong : 2 * c < θ ^ 4) (hs0 : 0 ≤ s) (hs : s ≤ sStar θ c) :
     HasDerivWithinAt (stacksvdEx θ c)
@@ -777,13 +777,13 @@ theorem hasDerivWithinAt_stacksvdEx_left {θ c s : ℝ} (hθ : 0 < θ) (hc : 0 <
     (stacksvdEx_of_le_sStar hθ hc hstrong hs0 hs)
 
 /-- At `s = 0` the two core eigenvalues coincide and the slope vanishes
-(`main_paper.tex:2276`). -/
+(after `eq:kink_location`). -/
 theorem hasDerivWithinAt_stacksvdEx_zero {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (hstrong : 2 * c < θ ^ 4) :
     HasDerivWithinAt (stacksvdEx θ c) 0 (Set.Icc 0 (sStar θ c)) 0 := by
   simpa using hasDerivWithinAt_stacksvdEx_left hθ hc hstrong le_rfl (sStar_pos hθ hstrong).le
 
-/-- Right of the kink `F` is strictly increasing (`main_paper.tex:2257`). -/
+/-- Right of the kink `F` is strictly increasing (after `eq:kink_location`). -/
 theorem stacksvdEx_strictMonoOn {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (hstrong : 2 * c < θ ^ 4) :
     StrictMonoOn (stacksvdEx θ c) (Set.Ici (sStar θ c)) := by
@@ -797,7 +797,7 @@ theorem stacksvdEx_strictMonoOn {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (Set.mem_Ioi.mpr (by nlinarith)) (by nlinarith)
 
 /-- Left of the kink `F` is strictly decreasing: `λ_+ > λ_-` and `h'` is strictly decreasing
-by concavity (`main_paper.tex:2262`). -/
+by concavity (after `eq:kink_location`). -/
 theorem stacksvdEx_strictAntiOn {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c)
     (hstrong : 2 * c < θ ^ 4) :
     StrictAntiOn (stacksvdEx θ c) (Set.Icc 0 (sStar θ c)) := by
@@ -827,7 +827,7 @@ theorem stacksvdEx_strictAntiOn {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c)
   exact hAnti hx hy hxy
 
 /-- `F` is continuous on `(-1, 1)`, kinks included: an indicator switches exactly where the
-term it multiplies vanishes (`main_paper.tex:2268`). -/
+term it multiplies vanishes (after `eq:kink_location`). -/
 theorem continuousOn_stacksvdEx {θ c : ℝ} (hθ : 0 < θ) :
     ContinuousOn (stacksvdEx θ c) (Set.Ioo (-1 : ℝ) 1) := by
   have hθ2 : (0 : ℝ) < θ ^ 2 := pow_pos hθ 2
@@ -861,7 +861,7 @@ theorem hSmoothD_sqrt {c : ℝ} (hc : 0 < c) :
   field_simp
   ring
 
-/-- The slope jump at the kink (`main_paper.tex:2270`):
+/-- The slope jump at the kink (after `eq:kink_location`):
 `F'(s⋆+) - F'(s⋆-) = θ² h'(√(2c)) = 2θ²/(1 + √(2c))`. -/
 theorem slope_jump_at_kink {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c) :
     θ ^ 2 * hSmoothD c (θ ^ 2 * (1 + sStar θ c))
@@ -906,7 +906,7 @@ private theorem beta_sq' (θ c : ℝ) : beta θ c ^ 2 = betaSq θ c :=
   Real.sq_sqrt (betaSq_nonneg' θ c)
 
 /-- Doubling the aspect ratio strictly lowers the rank-one performance above the threshold.
-This is the paper's `2β²(θ, 2c) < 2β²(θ, c)` at `s = 0` (`main_paper.tex:866`). -/
+This is the paper's `2β²(θ, 2c) < 2β²(θ, c)` at `s = 0` (after `eq:perf_rankr_ex_stacksvd`). -/
 theorem betaSq_two_mul_lt {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c) (h : c < θ ^ 4) :
     betaSq θ (2 * c) < betaSq θ c := by
   have hden : (0 : ℝ) < θ ^ 4 + θ ^ 2 := by nlinarith [pow_pos hθ 4, pow_pos hθ 2]
@@ -918,8 +918,8 @@ theorem betaSq_two_mul_lt {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c) (h : c < θ ^
     linarith [div_pos hc hden, key]
   · exact div_pos (by linarith) hden
 
-/-- `main_paper.tex:866`: at `s = 0` svdstack strictly dominates stacksvd. svdstack analyzes
-each table on its own and attains `2β²(θ, c)`; stacksvd dilutes the signal with the other
+/-- After `eq:perf_rankr_ex_stacksvd`: at `s = 0` svdstack strictly dominates stacksvd. svdstack
+analyzes each table on its own and attains `2β²(θ, c)`; stacksvd dilutes the signal with the other
 table's rows and attains only `2β²(θ, 2c)`. -/
 theorem stacksvdEx_lt_svdstackEx_zero {θ c : ℝ} (hθ : 0 < θ) (hc : 0 < c) (h : c < θ ^ 4) :
     stacksvdEx θ c 0 < svdstackEx (beta θ c) 0 := by
@@ -937,7 +937,7 @@ theorem limitR_example_beta {θ c ψ : ℝ} (hc : 0 < c) :
 
 Sections 1 to 6 are identities between real numbers. This section joins the svdstack half to
 `prop:general_rank_unweighted_svdstack` and gives `eq:perf_rankr_ex_svdstack`
-(`main_paper.tex:859`) as a statement about the data: `perfR →p svdstackEx β s`.
+as a statement about the data: `perfR →p svdstackEx β s`.
 
 At `M = 2` and `r = 2` the model has `r̃ = M = r`, so the top-`r` eigengap of `A_{β,R}` is
 vacuous. It is the paper's own convention `λ_{r̃+1} := -∞`, which
@@ -957,8 +957,8 @@ open MeasureTheory
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {n : Fin 2 → ℕ → ℕ} {d : ℕ → ℕ}
 
-/-- `eq:perf_rankr_ex_svdstack` (`main_paper.tex:859`) as a limit theorem, Layer 1 form.
-Take the paper's example `eq:psi_equation` (`main_paper.tex:848`): `M = 2`, `r = r_i = 2`,
+/-- `eq:perf_rankr_ex_svdstack` as a limit theorem, Layer 1 form.
+Take the paper's example `eq:psi_equation`: `M = 2`, `r = r_i = 2`,
 `R = Rex ψ`, `θ_1 = θ_2 = θ` and `c_1 = c_2 = c`. Then the svdstack performance `perfR`
 converges in probability to `β²(1+s)/(1+sβ²) + β²(1-s)/(1-sβ²)` with `β = β(θ, c)` and
 `s = sin ψ`.

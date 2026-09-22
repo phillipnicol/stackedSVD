@@ -49,7 +49,7 @@ Numeric check (a session script, `check_h4.py`, not kept; seed 20260901, `d = 40
 `overlap = 1/(λ · qform2) = 0.63734` both ways, `Lw = 0.63927`; `λ_max = 15.40` vs
 `ρ = 15.73`.
 
-Paper: `main_paper.tex` lines 1409 to 1440 (`thm:stacksvd_weighted`, `eq:assumption4`).
+Paper: `lem:secular_equation` to `eq:weighted_norm` (`thm:stacksvd_weighted`, `eq:assumption4`).
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology

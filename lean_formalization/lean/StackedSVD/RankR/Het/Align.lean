@@ -12,7 +12,7 @@ import StackedSVD.LinAlg.SpecWindow
 /-!
 # Track E, task E8a: the supercritical `align` and `cross` limits of the weighted stack
 
-Paper: `thm:rank_r_stacksvd` (the weighted rank-`r` stacked SVD, `main_paper.tex:2337`), read
+Paper: `thm:rank_r_stacksvd` (the weighted rank-`r` stacked SVD), read
 through `thm:stacksvd_weighted` and `eq:assumption4`. This file lands the overlap limit of the
 sorted right singular direction `ellSup k` of the weighted stack `X_W` with the spike
 directions `v_l` at a supercritical component `k`: the limit is `Scalars.Lw θ_k c w` at
@@ -424,8 +424,8 @@ theorem tendstoInProb_eigVal_het [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
 
 /-! ### 7. The target: `align` and `cross` at the supercritical index -/
 
-/-- **Task E8a, the target** (the outlier branch of `thm:rank_r_stacksvd`,
-`main_paper.tex:2337`; the rank-one mirror is `thm:stacksvd_weighted`, `:463`). At a
+/-- **Task E8a, the target** (the outlier branch of `thm:rank_r_stacksvd`;
+the rank-one mirror is `thm:stacksvd_weighted`). At a
 supercritical component `k` (`eq:assumption4` at the
 weights `w`) with no tie among the supercritical outliers, the overlap of the sorted right
 singular direction `ellSup k` of the weighted stack `X_W` with the spike direction `v_l`

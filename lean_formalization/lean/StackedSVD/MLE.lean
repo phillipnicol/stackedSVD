@@ -9,7 +9,7 @@ import StackedSVD.StackSVDWeighted
 # `app:wstacksvd_mle`: the marginal log-likelihood is the weighted stackSVD objective
 
 The review note is `notes/archive/mle_identity.md` (task D5). The paper's appendix
-`app:wstacksvd_mle` (`main_paper.tex:1630`) marginalizes over `u_i`, gets rows of `X_i` that
+`app:wstacksvd_mle` marginalizes over `u_i`, gets rows of `X_i` that
 are independent Gaussian vectors with covariance `Σ_i(v) = (1/d)(I + (θ_i²/c_i) v vᵀ)`, and
 then reduces the marginal log-likelihood to the weighted stackSVD objective.
 
@@ -45,7 +45,7 @@ open Matrix
 /-! ### The one-table marginal covariance -/
 
 /-- `Σ(a, v) = (1/d)(I + a v vᵀ)`, the paper's `Σ_i(v)` with `a = θ_i²/c_i`
-(`main_paper.tex:1654`). -/
+(`app:wstacksvd_mle`). -/
 noncomputable def mleCov (d : ℕ) (a : ℝ) (v : Fin d → ℝ) : Matrix (Fin d) (Fin d) ℝ :=
   (1 / (d : ℝ)) • (1 + a • vecMulVec v v)
 
@@ -56,7 +56,7 @@ theorem pos_of_dotProduct_self_eq_one {d : ℕ} {v : Fin d → ℝ} (hv : v ⬝�
   · exact h
 
 /-- The determinant of `Σ(a, v)` at a unit `v` is `d^{-d}(1 + a)`, which does not see the
-direction of `v` (`main_paper.tex:1668`). -/
+direction of `v` (`app:wstacksvd_mle`). -/
 theorem det_mleCov (d : ℕ) (a : ℝ) (v : Fin d → ℝ) (hv : v ⬝ᵥ v = 1) :
     (mleCov d a v).det = (1 / (d : ℝ)) ^ d * (1 + a) := by
   rw [mleCov, Matrix.det_smul, Fintype.card_fin]
@@ -67,7 +67,7 @@ theorem det_mleCov (d : ℕ) (a : ℝ) (v : Fin d → ℝ) (hv : v ⬝ᵥ v = 1)
   simp
 
 /-- Sherman-Morrison for `Σ(a, v)` at a unit `v`: `Σ⁻¹ = d(I - (a/(1+a)) v vᵀ)`
-(`main_paper.tex:1674`). The hypothesis `0 ≤ a` gives `1 + a ≠ 0`. -/
+(`app:wstacksvd_mle`). The hypothesis `0 ≤ a` gives `1 + a ≠ 0`. -/
 theorem inv_mleCov (d : ℕ) (a : ℝ) (v : Fin d → ℝ) (hv : v ⬝ᵥ v = 1) (ha : 0 ≤ a) :
     (mleCov d a v)⁻¹ = (d : ℝ) • (1 - (a / (1 + a)) • vecMulVec v v) := by
   have h1a : (1 : ℝ) + a ≠ 0 := by positivity
@@ -80,7 +80,7 @@ theorem inv_mleCov (d : ℕ) (a : ℝ) (v : Fin d → ℝ) (hv : v ⬝ᵥ v = 1)
   match_scalars <;> (field_simp; try ring)
 
 /-- The trace that the log-likelihood needs: `tr(Σ(a, v)⁻¹ G) = d tr G - d (a/(1+a)) vᵀ G v`
-for every square `G` (`main_paper.tex:1680`). -/
+for every square `G` (`app:wstacksvd_mle`). -/
 theorem trace_inv_mleCov_mul (d : ℕ) (a : ℝ) (v : Fin d → ℝ) (hv : v ⬝ᵥ v = 1) (ha : 0 ≤ a)
     (G : Matrix (Fin d) (Fin d) ℝ) :
     ((mleCov d a v)⁻¹ * G).trace
@@ -136,7 +136,7 @@ theorem dotProduct_stackGramW (m : MultiTableModel μ M n d) (w : Fin M → ℝ)
 
 /-! ### The marginal log-likelihood -/
 
-/-- The paper's marginal log-likelihood `ℓ(v)` (`main_paper.tex:1662`), taken as a definition:
+/-- The paper's marginal log-likelihood `ℓ(v)` (`app:wstacksvd_mle`), taken as a definition:
 `-(1/2) ∑_i (n_i log det Σ_i(v) + tr(Σ_i(v)⁻¹ X_iᵀX_i))` with `Σ_i(v) = mleCov d (θ_i²/c_i) v`.
 The Gaussian marginalization that produces this formula is `thm_wstacksvd_mle_marginal`
 (`MLEMarginal/Main.lean`, 2026-09-03; modeling choice 1 of `notes/archive/mle_identity.md`
@@ -157,8 +157,8 @@ noncomputable def mleConst (m : MultiTableModel μ M n d) (c : Fin M → ℝ) (N
 
 omit [NeZero M] in
 /-- `app:wstacksvd_mle`, the identity: on unit vectors `ℓ(v)` is a constant plus `d/2` times
-the Rayleigh form of the weighted stack Gram matrix at the paper's optimal weights
-(`main_paper.tex:1690`). -/
+the Rayleigh form of the weighted stack Gram matrix at the paper's optimal
+weights. -/
 theorem mleLogLik_eq [NeZero M] (m : MultiTableModel μ M n d) (c : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (N : ℕ) (ω : Ω N) (v : Fin (d N) → ℝ) (hv : v ⬝ᵥ v = 1) :
     m.mleLogLik c N ω v
@@ -200,7 +200,7 @@ theorem mleLogLik_le_iff (m : MultiTableModel μ M n d) (c : Fin M → ℝ) (hc 
 
 /-- `app:wstacksvd_mle`, the conclusion: every unit vector of the top eigenspace of the
 weighted stack Gram matrix maximizes `ℓ` over unit vectors. So the weighted stackSVD
-estimator at the optimal weights is a marginal MLE (`main_paper.tex:1700`). -/
+estimator at the optimal weights is a marginal MLE. -/
 theorem mleLogLik_le_of_mem_topSpace (m : MultiTableModel μ M n d) (c : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) (N : ℕ) (ω : Ω N) (v : Fin (d N) → ℝ) (hv : v ⬝ᵥ v = 1)
     (x : EuclideanSpace ℝ (Fin (d N))) (hx : ‖x‖ = 1)

@@ -16,7 +16,7 @@ Task C9 of `notes/archive/rankr_plan_C.md`, in the form the audit of 2026-09-02 
 direction of the table: the limit is `0` for every `l`, so this one statement covers the
 `align` field of `SpikedModelR.TableLawR` at a subcritical index (`betaSq θ c = 0` there)
 and the `cross` field at such an index. The paper statements are `prop:single_table` (rank
-1) and `lem:general_rank_delocalization` (`main_paper.tex:1948`, general rank); the
+1) and `lem:general_rank_delocalization` (general rank); the
 rank-1 mirror is `SpikedModel.align_tendstoInProb_of_subcritical` (**R6'**, `RMT/R6.lean`).
 
 ## The route

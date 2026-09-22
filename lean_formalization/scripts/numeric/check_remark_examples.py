@@ -1,5 +1,5 @@
 """Closed-form checks of the four examples in remark:stack_outperform_svd and
-remark:svd_outperform_stack (main_paper.tex lines 566 to 620). Deterministic; no seed.
+remark:svd_outperform_stack. Deterministic; no seed.
 
 Formulas (paper): beta_i^2 = (theta^4 - c)/(theta^4 + theta^2) if theta^4 > c else 0;
 stackSVD limit on a set S: (T^2 - C)/(T^2 + T) with T = sum theta_i^2, C = sum c_i, if T^2 > C

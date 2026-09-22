@@ -1,5 +1,5 @@
 # Monte Carlo: are the columns of the component-weighted stacksvd estimate asymptotically
-# orthogonal (main_paper.tex:926)? Model: M=2 tables, r=2 shared components, R_i = I,
+# orthogonal (the paragraph after `prop:singleweight_suboptimality`)? Model: M=2 tables, r=2 shared components, R_i = I,
 # X_i = sqrt(d)^{-1}... we use the paper's scaling X_i = U_i Theta_i V^T + Z_i/sqrt(d), n_i = c_i d.
 import os
 for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):

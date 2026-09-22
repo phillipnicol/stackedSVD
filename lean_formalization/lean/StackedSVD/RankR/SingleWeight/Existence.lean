@@ -14,10 +14,10 @@ Track E of `notes/archive/singleweight_plan.md` section 4.3, units E1 and E2.
 
 ## The paper
 
-`main_paper.tex:915`, `prop:singleweight_suboptimality`: "In the general rank-`r` setting,
+`prop:singleweight_suboptimality`: "In the general rank-`r` setting,
 there exists a problem instance such that unweighted svdstack outperforms optimally weighted
-stacksvd with a single weight per table." The instance is built at `main_paper.tex:2171` to
-`:2194`.
+stacksvd with a single weight per table." The instance is built in
+`sec:appendix_insufficiency_single_weights_stacksvd`.
 
 ## The witness
 
@@ -33,7 +33,7 @@ Every constant is rational: `θ_0² = 64/25`, `θ_0⁴ = 4096/625 > 1 = c_0`, `�
 
 `R = Rone (RankR.Example.Rex 0)`, since `Rex 0 = (e_1, (sin 0, cos 0)ᵀ) = (e_1, e_2)`. So the
 witness is the paper's own example of `eq:psi_equation` at `sin ψ = 0`
-(`main_paper.tex:912`).
+(the sentence before `prop:singleweight_suboptimality`).
 
 ## What is stated here
 
@@ -123,7 +123,7 @@ instance instProbMu (N : ℕ) : IsProbabilityMeasure (mu N) := by
 noncomputable def th : Fin 1 → ℝ := fun _ => 8 / 5
 
 /-- `R_1 = (1, 0)ᵀ`, `R_2 = (0, 1)ᵀ`, as `Rone` of the paper's `Rex 0`
-(`main_paper.tex:2171`). -/
+(the first display of `sec:appendix_insufficiency_single_weights_stacksvd`). -/
 noncomputable def Rmat : (i : Fin 2) → Matrix (Fin 2) (Fin ((fun _ : Fin 2 => 1) i)) ℝ :=
   Rone (RankR.Example.Rex 0)
 
@@ -176,8 +176,8 @@ theorem mdl_joint : mdl.JointGaussianNoise := fun _ => ProbabilityTheory.HasLaw.
 /-! ### 4. The unweighted svdstack half -/
 
 /-- Unweighted svdstack on the witness tends in probability to `2 β_0² = 39/32`
-(`main_paper.tex:2187`). On this instance `A_{β,R} = I_2` and `(W_opt)^{-2} = (1 - β_0²) I_2`,
-so optimally weighted svdstack and unweighted svdstack agree. -/
+(`sec:appendix_insufficiency_single_weights_stacksvd`). On this instance `A_{β,R} = I_2` and
+`(W_opt)^{-2} = (1 - β_0²) I_2`, so optimally weighted svdstack and unweighted svdstack agree. -/
 theorem witness_perfRG_tendsto :
     TendstoInProb mu (fun N ω => mdl.perfRG N ω) (2 * betaSq (8 / 5) 1) := by
   have h := mdl.prop_general_rank_unweighted_svdstack_general_gaussian_one (fun _ => 1)
@@ -192,7 +192,7 @@ theorem witness_perfRG_tendsto :
 
 /-! ### 5. The existence proposition -/
 
-/-- **`prop:singleweight_suboptimality`** (`main_paper.tex:915`), Layer 1 form: there is a
+/-- **`prop:singleweight_suboptimality`**, Layer 1 form: there is a
 problem instance of the general rank-`r` setting on which unweighted svdstack outperforms
 every single weighting of stacksvd.
 

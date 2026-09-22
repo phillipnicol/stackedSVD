@@ -378,7 +378,7 @@ theorem thm_svd_stack_general_zero (m : MultiTableModel μ M n d) (c β : Fin M 
         exact Finset.sum_congr rfl fun i _ => (hEq i).symm
 
 omit [NeZero M] in
-/-- `thm:svd_stack_general` (`main_paper.tex:479`) with every random matrix theory hypothesis
+/-- `thm:svd_stack_general` with every random matrix theory hypothesis
 discharged. The tables are Gaussian and independent (`hG`) and each is in the proportional
 regime (`hreg`); no `SingleTableLaw` is assumed. The proof applies
 `SpikedModel.singleTableLaw_of_gaussian` to table `i`, whose Gaussian marginal comes from

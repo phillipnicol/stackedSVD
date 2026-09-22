@@ -13,7 +13,7 @@ STATUS 2026-09-01: proved, 0 `sorry` (tasks PA and PB of `notes/archive/rankr_pl
 The plan is the review note; the audit is `notes/archive/audit_rankr_plan_B_2026-09-01.md` and its
 numeric section checks every identity of this file (rows P1 to P7, all PASS).
 
-`RankR/Subspace.lean` proves `prop:stacksvd_subspace` (`main_paper.tex:834`) when every table
+`RankR/Subspace.lean` proves `prop:stacksvd_subspace` when every table
 carries one spike. This file removes that restriction. Table `i` of an `UnalignedModelR` has
 `r_i` spikes,
 
@@ -21,13 +21,13 @@ carries one spike. This file removes that restriction. Table `i` of an `Unaligne
 X_i = U_i Θ_i (V R_i)ᵀ + E_i,   R_i ∈ O(r, r_i),  Θ_i = diag(θ_i1, …, θ_i r_i),  U_i ∈ O(n_i, r_i),
 ```
 
-so the unit-weight stack is again a rank-`r` spiked matrix (`main_paper.tex:818`)
+so the unit-weight stack is again a rank-`r` spiked matrix (before `eq:signal_cov`)
 
 ```
 X_stack = [U_1 Θ_1 R_1ᵀ Vᵀ + E_1; …; U_M Θ_M R_Mᵀ Vᵀ + E_M] = A Vᵀ + E_stack
 ```
 
-with population Gram (`main_paper.tex:824`, `:826`)
+with population Gram (`eq:signal_cov`)
 
 ```
 E[X_stackᵀ] E[X_stack] = ∑_i ∑_j θ_ij² (V R_i)_j (V R_i)_jᵀ = V C Vᵀ,  C = ∑_i R_i Θ_i² R_iᵀ.
@@ -66,8 +66,8 @@ Lean, so that identity is a doc-comment (choice 5 of the plan). It was measured 
 288 draws at `M = 2`, `r_i = (2, 1)` (row P5 of the audit).
 
 `SubspaceLawG` has one field, as `SubspaceLaw` does. It carries no eigengap of `C` and no
-distinct-spike condition, which is what the paper claims at `main_paper.tex:842`; the audit of
-2026-08-30 (item 4.1) shows that a `topGap` field would be false, not almost surely false, at
+distinct-spike condition, which is what the paper claims after `prop:stacksvd_subspace`; the audit
+of 2026-08-30 (item 4.1) shows that a `topGap` field would be false, not almost surely false, at
 any `N` with `∑_i n_i N < r ≤ d N`. The numeric check runs a cell with `spec(C) = [3.25, 3.25]`
 and the bias still falls with `d` (row P7).
 
@@ -142,7 +142,7 @@ private theorem spikedR_X_apply {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω
 
 /-! ### 1. The core matrix `C` and the limit -/
 
-/-- The core matrix `C = ∑_i R_i Θ_i² R_iᵀ` (`main_paper.tex:826`) at general `r_i`, written
+/-- The core matrix `C = ∑_i R_i Θ_i² R_iᵀ` (`eq:signal_cov`) at general `r_i`, written
 as `B_θᵀ B_θ` with `B_θ = BBlock θ R` of `RankR/General.lean`. The paper's sum form is
 `cblock_eq_sum`. The rank-one mirror is `Cmat` (`RankR/Subspace.lean:180`); the argument `θ`
 is the family of signal strengths, not the family `β`. -/
@@ -164,7 +164,7 @@ theorem cblock_apply {M r : ℕ} {rk : Fin M → ℕ} (θ : (i : Fin M) → Fin 
   rw [← hstep]
   exact Finset.sum_congr rfl fun p _ => by ring
 
-/-- The paper's form of the core matrix, `C = ∑_i R_i Θ_i² R_iᵀ` (`main_paper.tex:826`).
+/-- The paper's form of the core matrix, `C = ∑_i R_i Θ_i² R_iᵀ` (`eq:signal_cov`).
 Row `j` of `Θ_i R_iᵀ` is `θ_ij (R_i)_jᵀ`, so the `(i, j)` term is `θ_ij²` times the rank-one
 matrix built from column `j` of `R_i`. -/
 theorem cblock_eq_sum {M r : ℕ} {rk : Fin M → ℕ} (θ : (i : Fin M) → Fin (rk i) → ℝ)
@@ -177,7 +177,7 @@ theorem cblock_eq_sum {M r : ℕ} {rk : Fin M → ℕ} (θ : (i : Fin M) → Fin
   rw [Matrix.sum_apply]
   exact Finset.sum_congr rfl fun j _ => by simp [Matrix.vecMulVec_apply]
 
-/-- The limit of `prop:stacksvd_subspace` (`main_paper.tex:836`) at general `r_i`: one
+/-- The limit of `prop:stacksvd_subspace` at general `r_i`: one
 rank-one performance per spike of the core matrix, at signal `√(λ_j(C))` and aspect ratio
 `‖c‖₁ = ∑_i c_i`. The rank-one mirror is `limitStackR`.
 
@@ -223,7 +223,7 @@ theorem isHermitian_stackGramG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω
     (m.stackGramG N ω).IsHermitian :=
   isHermitian_transpose_mul_self (m.stackXG N ω)
 
-/-- `X_stackᵀ X_stack = ∑_i X_iᵀ X_i` (`main_paper.tex:823`). -/
+/-- `X_stackᵀ X_stack = ∑_i X_iᵀ X_i` (before `eq:signal_cov`). -/
 theorem stackGramG_eq_sum (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N) :
     m.stackGramG N ω = ∑ i, ((m.tbl i).X N ω)ᵀ * (m.tbl i).X N ω := by
   ext k l
@@ -242,7 +242,7 @@ theorem isHermitian_coreG (m : UnalignedModelR μ M n d r rk) : m.coreG.IsHermit
 /-! ### 2b. The stack bridge at general `r_i`
 
 The paper's justification of `prop:stacksvd_subspace` is one sentence
-(`main_paper.tex:842`): the stack is a rank-`r` spiked matrix whose population Gram is
+(after `prop:stacksvd_subspace`): the stack is a rank-`r` spiked matrix whose population Gram is
 `V C Vᵀ`. This section proves that sentence with no restriction on the `r_i`.
 `signalFactorG` is the paper's signal factor `A` (block row `i` is `U_i Θ_i R_iᵀ`),
 `signalPartG = A Vᵀ` is the mean of the stack, and `stackEG` is the stacked noise.
@@ -285,7 +285,7 @@ theorem stackE_eqG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N) :
     smul_eq_mul]
 
 /-- The signal factor `A ∈ ℝ^{n_stack × r}` of the stack: block row `i` is `U_i Θ_i R_iᵀ`
-(`main_paper.tex:818`, the commented display `[U_i Θ_i R_iᵀ]`). Entry `((i, a), k)` is
+(the display before `eq:signal_cov`, with `Vᵀ` factored out). Entry `((i, a), k)` is
 `∑_j (U_i)_{aj} θ_ij (R_i)_{kj}`. At `r_i = 1` the sum has one term and this is
 `signalFactor` (`RankR/Subspace.lean:292`). -/
 noncomputable def signalFactorG (m : UnalignedModelR μ M n d r rk) (N : ℕ) :
@@ -342,7 +342,7 @@ theorem signalPartG_apply (m : UnalignedModelR μ M n d r rk) (N : ℕ)
   exact row_mul_V m N _ _ k
 
 /-- The stack is a rank-`r` spiked matrix: `X_stack = A Vᵀ + E_stack`
-(`main_paper.tex:818`). -/
+(before `eq:signal_cov`). -/
 theorem stackX_eqG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N) :
     m.stackXG N ω = m.signalPartG N + m.stackEG N ω := by
   ext q k
@@ -400,7 +400,7 @@ theorem signalFactorG_transpose_mul_self (m : UnalignedModelR μ M n d r rk) (N 
     table_UtU m i N (fun j => m.R i k j) (fun j => m.R i l j)
 
 /-- The population Gram of the stack, `E[X_stackᵀ] E[X_stack] = ∑_i ∑_j θ_ij² v_ij v_ijᵀ`
-(`main_paper.tex:824`, the matrix `S`), with `v_ij` the `j`-th column of `V R_i`. -/
+(`eq:signal_cov`, the matrix `S`), with `v_ij` the `j`-th column of `V R_i`. -/
 noncomputable def signalGramG (m : UnalignedModelR μ M n d r rk) (N : ℕ) :
     Matrix (Fin (d N)) (Fin (d N)) ℝ :=
   ∑ i, ∑ j : Fin (rk i), (m.tbl i).θ j ^ 2 •
@@ -423,8 +423,8 @@ theorem signalGram_eq_signalPartG (m : UnalignedModelR μ M n d r rk) (N : ℕ) 
   exact Finset.sum_congr rfl fun j _ => by
     simp [Matrix.vecMulVec_apply, SpikedModelR.col]
 
-/-- `main_paper.tex:826`: the population Gram of the stack is `V C Vᵀ`. This is the sentence
-the paper's proof rests on (`main_paper.tex:842`). -/
+/-- `eq:signal_cov`: the population Gram of the stack is `V C Vᵀ`. This is the sentence
+the paper's proof rests on (after `prop:stacksvd_subspace`). -/
 theorem signalGram_eqG (m : UnalignedModelR μ M n d r rk) (N : ℕ) :
     m.signalGramG N = m.V N * m.coreG * (m.V N)ᵀ := by
   rw [← signalGram_eq_signalPartG, signalPartG, Matrix.transpose_mul,
@@ -439,7 +439,7 @@ noncomputable def coreEigG (m : UnalignedModelR μ M n d r rk) (j : Fin r) : ℝ
 
 /-- `V q_j`, the `j`-th population right singular vector of the stack, with `q_j` the matching
 eigenvector of `C`. The paper's qualifier "if the `λ_j` are distinct"
-(`main_paper.tex:831`) is not needed below: `signalGram_eq_sum_spikeVecG` holds for every
+(after `eq:signal_cov`) is not needed below: `signalGram_eq_sum_spikeVecG` holds for every
 spectrum. -/
 noncomputable def spikeVecG (m : UnalignedModelR μ M n d r rk) (j : Fin r) (N : ℕ) :
     EuclideanSpace ℝ (Fin (d N)) :=
@@ -456,7 +456,7 @@ theorem spikeVecG_eq_sum (m : UnalignedModelR μ M n d r rk) (j : Fin r) (N : �
     dotProduct]
   exact Finset.sum_congr rfl fun k _ => by ring
 
-/-- The last equality of `main_paper.tex:826`: `V C Vᵀ = (V Q) Λ (V Q)ᵀ`. The stack has `r`
+/-- The last equality of `eq:signal_cov`: `V C Vᵀ = (V Q) Λ (V Q)ᵀ`. The stack has `r`
 spikes, the `j`-th of strength `√(λ_j(C))` in the direction `V q_j`. -/
 theorem signalGram_eq_sum_spikeVecG (m : UnalignedModelR μ M n d r rk) (N : ℕ) :
     m.signalGramG N = ∑ j : Fin r, m.coreEigG j •

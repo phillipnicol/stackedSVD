@@ -43,9 +43,9 @@ that each proposition gets a corollary stated exactly on `‖V̂ᵀ V‖_F²`.
    `isTopEigFrame_topEigMat` proves it is a top-`r` eigenframe under `TopGap A hA r`, which is
    the existence statement that the corollaries need.
 6. `UnalignedModel.vhatSvdstack` and `vhatSvdstackW`: the paper's `V̂_svdstack = Ṽᵀ Q Λ^{-1/2}`
-   (`main_paper.tex:1982` and `2016`). `frobSq_vhatSvdstack` and `frobSq_vhatSvdstackW` prove
-   `‖V̂ᵀ V‖_F² = perfR` and `= perfRW W`, so the two svdstack propositions get corollaries on
-   the paper's own quantity.
+   (the proofs of `prop:general_rank_unweighted_svdstack` and `thm:gen_rank_weight_svdstack`).
+   `frobSq_vhatSvdstack` and `frobSq_vhatSvdstackW` prove `‖V̂ᵀ V‖_F² = perfR` and
+   `= perfRW W`, so the two svdstack propositions get corollaries on the paper's own quantity.
 7. `topGap_gram_whp`: the top-`r` gap of `Ṽ Ṽᵀ` with probability tending to one, from `gramR`
    and `specTop_simple_whp_of_tendsto`. With item 5 it discharges the frame hypothesis of the
    unweighted svdstack corollary (`..._frobenius_eig`).
@@ -83,7 +83,7 @@ rank-one tie. Their `_eig` companions fix the canonical frame of item 5 and carr
 hypothesis: for unweighted svdstack the hypotheses are exactly those of
 `prop_general_rank_unweighted_svdstack` plus `0 < r`; for stacksvd the top-`r` gap of
 `X_stackᵀ X_stack` with probability tending to one stays an explicit hypothesis, because
-`SubspaceLaw` has no gap field (decision D18). `thm_gen_rank_weight_svdstak_frobenius` keeps
+`SubspaceLaw` has no gap field (decision D18). `thm_gen_rank_weight_svdstack_frobenius` keeps
 the `∀ N ω` frame; it is used at `r = M`, where `TopGap` holds for every matrix
 (`topGap_of_card_le`) and item 5 gives the frame at every `ω`.
 
@@ -251,7 +251,7 @@ theorem isHermitian_specInvTop {A : Matrix (Fin p) (Fin p) ℝ} (hA : A.IsHermit
   simpa [Matrix.conjTranspose_apply] using (hsym j i)
 
 /-- A top-`r` frame together with the eigenvalues of its columns, `A Y = Y diag(λ)`. This is
-the paper's pair `(Q_r, Λ_r)` (`main_paper.tex:1982`). -/
+the paper's pair `(Q_r, Λ_r)` (the proof of `prop:general_rank_unweighted_svdstack`). -/
 structure IsTopEigFrame (A : Matrix (Fin p) (Fin p) ℝ) (hA : A.IsHermitian)
     (Y : Matrix (Fin p) (Fin r) ℝ) (lam : Fin r → ℝ) : Prop where
   /-- the columns are an orthonormal basis of the top-`r` eigenspace -/
@@ -555,10 +555,10 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! #### 4a. `V̂_svdstack`, unweighted -/
 
-/-- `V̂_svdstack` at rank `r`, written as the paper writes it (`main_paper.tex:1982`):
-`V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r` eigenframe of `Ṽ Ṽᵀ`. It is a
-`d × r` matrix, and `svdGram_mul_vhatSvdstack` shows its columns are eigenvectors of `Ṽᵀ Ṽ`,
-that is right singular vectors of `Ṽ`. -/
+/-- `V̂_svdstack` at rank `r`, written as the paper writes it (the proof of
+`prop:general_rank_unweighted_svdstack`): `V̂_svdstack = Ṽᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r`
+eigenframe of `Ṽ Ṽᵀ`. It is a `d × r` matrix, and `svdGram_mul_vhatSvdstack` shows its columns are
+eigenvectors of `Ṽᵀ Ṽ`, that is right singular vectors of `Ṽ`. -/
 noncomputable def vhatSvdstack (m : UnalignedModel μ M n d r) (N : ℕ) (ω : Ω N)
     (Q : Matrix (Fin M) (Fin r) ℝ) (lam : Fin r → ℝ) : Matrix (Fin (d N)) (Fin r) ℝ :=
   (m.Vt N ω)ᵀ * Q * Matrix.diagonal fun j => (Real.sqrt (lam j))⁻¹
@@ -636,7 +636,7 @@ theorem svdGram_mul_vhatSvdstack (m : UnalignedModel μ M n d r) (N : ℕ) (ω :
 
 /-! #### 4b. `V̂_svdstack(W)`, weighted -/
 
-/-- `V̂_svdstack(W)` at rank `r`, as the paper writes it (`main_paper.tex:2016`):
+/-- `V̂_svdstack(W)` at rank `r`, as the proof of `thm:gen_rank_weight_svdstack` writes it:
 `V̂ = Ṽ_Wᵀ Q_r Λ_r^{-1/2}` with `(Q, λ)` a top-`r` eigenframe of `Ṽ_W Ṽ_Wᵀ`. -/
 noncomputable def vhatSvdstackW (m : UnalignedModel μ M n d r) (W : Matrix (Fin M) (Fin M) ℝ)
     (N : ℕ) (ω : Ω N) (Q : Matrix (Fin M) (Fin r) ℝ) (lam : Fin r → ℝ) :
@@ -680,7 +680,7 @@ frame `topEigMat` of section 3b and carry no frame hypothesis at all: for svdsta
 stacksvd the gap of `X_stackᵀ X_stack` stays an explicit hypothesis, because `SubspaceLaw` has
 no gap field (decision D18).
 
-Cleanup wave 3 gives `thm_gen_rank_weight_svdstak_frobenius` the same treatment, since the
+Cleanup wave 3 gives `thm_gen_rank_weight_svdstack_frobenius` the same treatment, since the
 same defect appears there at `r < M`: the frame of `Ṽ_W Ṽ_Wᵀ` is asked with probability
 tending to one, and the `_eig` companion reads the canonical frame, whose gap comes from
 `hgapW` through `gramRW`. -/
@@ -713,7 +713,7 @@ theorem topGap_gram_whp (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
       (fun N ω => m.isHermitian_gram N ω)
       (fun i j => m.gramR c β hβdef law hG i j) hr hrM hgap
 
-/-- `prop:general_rank_unweighted_svdstack` (`main_paper.tex:799`) at `r_i = 1`, on the
+/-- `prop:general_rank_unweighted_svdstack` at `r_i = 1`, on the
 paper's own quantity `‖V̂_svdstackᵀ V‖_F²`. `(Q N ω, λ N ω)` is any selection that is a
 top-`r` eigenframe of `Ṽ Ṽᵀ` with nonnegative eigenvalues on an event whose probability tends
 to one. Quantifying the frame over every `ω` would be a false hypothesis (see the note above
@@ -767,7 +767,7 @@ theorem posSemidef_gramW (m : UnalignedModel μ M n d r) (W : Matrix (Fin M) (Fi
 /-- `Ṽ_W Ṽ_Wᵀ → W A_{β,R} Wᵀ` entrywise in probability. Each entry is a fixed real linear
 combination of the entries of `Ṽ Ṽᵀ` (`mul_mul_transpose_apply`), so `gramR` and the
 continuous mapping theorem give it. Same step as inside
-`thm_gen_rank_weight_svdstak_general`, named here for `topGap_gramW_whp`. -/
+`thm_gen_rank_weight_svdstack_general`, named here for `topGap_gramW_whp`. -/
 theorem gramRW (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (W : Matrix (Fin M) (Fin M) ℝ) (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
     (law : ∀ i, (m.tbl i).SingleTableLaw (c i)) (hG : m.JointGaussianNoise) (i j : Fin M) :
@@ -812,12 +812,12 @@ theorem topGap_gramW_whp (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
       (fun N ω => m.isHermitian_gramW W N ω) (fun i j => m.gramRW c β W hβdef law hG i j)
       hr hrM hgapW
 
-/-- `thm:gen_rank_weight_svdstak` for one admissible weight matrix `W`
-(`main_paper.tex:893`) at `r_i = 1`, on the paper's own quantity. `(Q N ω, λ N ω)` is any
+/-- `thm:gen_rank_weight_svdstack` for one admissible weight matrix `W`
+at `r_i = 1`, on the paper's own quantity. `(Q N ω, λ N ω)` is any
 selection that is a top-`r` eigenframe of `Ṽ_W Ṽ_Wᵀ` with nonnegative eigenvalues on an event
 whose probability tends to one. Quantifying the frame over every `ω` would be a false
 hypothesis at `r < M` (see the note above this declaration; cleanup wave 3). -/
-theorem thm_gen_rank_weight_svdstak_frobenius (m : UnalignedModel μ M n d r)
+theorem thm_gen_rank_weight_svdstack_frobenius (m : UnalignedModel μ M n d r)
     (c β : Fin M → ℝ) (W : Matrix (Fin M) (Fin M) ℝ)
     (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)) (hr : 0 < r) (hrM : r ≤ M)
     (hgapW : TopGap (AbetaRW W β m.R) (isHermitian_AbetaRW W β m.R) r)
@@ -831,17 +831,17 @@ theorem thm_gen_rank_weight_svdstak_frobenius (m : UnalignedModel μ M n d r)
       (fun N ω => frobSq ((m.vhatSvdstackW W N ω (Q N ω) (lam N ω))ᵀ * m.V N))
       (limitRW W β m.R) := by
   refine TendstoInProb.of_tendsto_measure_ne_of_tendsto ?_
-    (m.thm_gen_rank_weight_svdstak_general c β W hβdef hr hrM hgapW hposW law hG)
+    (m.thm_gen_rank_weight_svdstack_general c β W hβdef hr hrM hgapW hposW law hG)
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hQ (fun _ => zero_le)
     (fun N => measure_mono fun ω hω => ?_)
   intro hgood
   exact hω (m.frobSq_vhatSvdstackW W N ω hgood.1 hgood.2)
 
 /-- The same at the canonical frame `(Q_r, Λ_r) = (topEigMat, topEigVal)` of `Ṽ_W Ṽ_Wᵀ`, with
-**no frame hypothesis**: the hypotheses are those of `thm_gen_rank_weight_svdstak_general`.
+**no frame hypothesis**: the hypotheses are those of `thm_gen_rank_weight_svdstack_general`.
 The gap of `Ṽ_W Ṽ_Wᵀ` comes from `hgapW` through `topGap_gramW_whp`, and the eigenvalues are
 nonnegative by `posSemidef_gramW`. -/
-theorem thm_gen_rank_weight_svdstak_frobenius_eig (m : UnalignedModel μ M n d r)
+theorem thm_gen_rank_weight_svdstack_frobenius_eig (m : UnalignedModel μ M n d r)
     (c β : Fin M → ℝ) (W : Matrix (Fin M) (Fin M) ℝ)
     (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)) (hr : 0 < r)
     (hrM : r ≤ Fintype.card (Fin M))
@@ -853,7 +853,7 @@ theorem thm_gen_rank_weight_svdstak_frobenius_eig (m : UnalignedModel μ M n d r
         (topEigMat (m.isHermitian_gramW W N ω) hrM)
         (topEigVal (m.isHermitian_gramW W N ω) hrM))ᵀ * m.V N))
       (limitRW W β m.R) := by
-  refine m.thm_gen_rank_weight_svdstak_frobenius c β W hβdef hr (by simpa using hrM) hgapW
+  refine m.thm_gen_rank_weight_svdstack_frobenius c β W hβdef hr (by simpa using hrM) hgapW
     hposW law hG _ _ ?_
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     (m.topGap_gramW_whp c β W hβdef hrM hgapW law hG) (fun _ => zero_le)
@@ -862,7 +862,7 @@ theorem thm_gen_rank_weight_svdstak_frobenius_eig (m : UnalignedModel μ M n d r
   exact hω ⟨isTopEigFrame_topEigMat (m.isHermitian_gramW W N ω) hrM hgapN,
     fun j => topEigVal_nonneg hrM (m.posSemidef_gramW W N ω) j⟩
 
-/-- `prop:stacksvd_subspace` (`main_paper.tex:834`) at `r_i = 1`, on the paper's own quantity:
+/-- `prop:stacksvd_subspace` at `r_i = 1`, on the paper's own quantity:
 `Y N ω` is any selection that is an orthonormal basis of the top-`r` eigenspace of
 `X_stackᵀ X_stack` on an event whose probability tends to one, and then
 `‖V̂_stacksvdᵀ V‖_F² → ∑_j β²(√λ_j(C), ‖c‖₁)`. Here `V̂_stacksvd = Y` itself: the stacksvd

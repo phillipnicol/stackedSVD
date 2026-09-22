@@ -3,11 +3,11 @@
 
 Targets (main_paper.tex, read-only snapshot in the repo root):
 
-  * assum:gen_rank_stacksvd_eig_sep   (line 2104)
-  * prop:gen_rank_stacksvd_singleweight (line 2112) and its proof (2124 to 2167)
-  * prop:singleweight_suboptimality   (line 915), proof at 2169 to 2194
+  * assum:gen_rank_stacksvd_eig_sep
+  * prop:gen_rank_stacksvd_singleweight and its proof
+  * prop:singleweight_suboptimality, proof in sec:appendix_insufficiency_single_weights_stacksvd
 
-Model (assum:unaligned, line 753), weighted per table:
+Model (assum:unaligned), weighted per table:
 
     X_i = U_i Theta_i (V R_i)^T + E_i,  E_i entries iid N(0, 1/d),  c_i = n_i / d
     X_stack(w) = [w_1 X_1; ...; w_M X_M]
@@ -92,7 +92,7 @@ def secular_roots(w, R, Theta, r):
 
     The roots above `max_i w_i^2` are therefore exactly the eigenvalues of the symmetric
     `rtot x rtot` matrix `H = W + B B^T` above that threshold, with multiplicity.  This is the
-    paper's own reduction (`main_paper.tex:2124`) compressed from `n x n` to `rtot x rtot`.
+    paper's own reduction (the proof of `prop:gen_rank_stacksvd_singleweight`) compressed from `n x n` to `rtot x rtot`.
 
     An earlier bisection implementation was wrong twice: it invented a root from `eigvalsh`
     roundoff on `Mmat` evaluated ~1e-13 from the pole, and it divided by zero once
@@ -449,9 +449,9 @@ def main():
     print(f"  SANITY worst deviation: {worst:.3e}")
 
     # ------------------------------------------------- 1. exact secular identity
-    sep("1. EXACT: det(G - g I) = det(Sigma - g I) det(I_r - Mmat(g))  (proof, line 2124)")
+    sep("1. EXACT: det(G - g I) = det(Sigma - g I) det(I_r - Mmat(g))  (proof of prop:gen_rank_stacksvd_singleweight)")
     print("Top eigenvalues of G above max_i w_i^2 vs the roots of det(I_r - Mmat) = 0;")
-    print("eigenvector identity A^T xi_l = z_l / ||(g - Sigma)^-1 A z_l|| (line 2143).")
+    print("eigenvector identity A^T xi_l = z_l / ||(g - Sigma)^-1 A z_l|| (same proof).")
     for name, R, TH, w, c, nsm in (
         ("A  (M=2, r=2, r_i=2)", A_R, A_TH, A_W, A_C, [17, 13]),
         ("A2 (M=3, r=3, r_i=2)", A2_R, A2_TH, A2_W, A2_C, [15, 14, 12]),
@@ -519,7 +519,7 @@ def main():
               f"{['%.8f' % x for x in got]}")
 
     # ---------------------------------------------- 2. Monte Carlo, proposition
-    sep("2. MONTE CARLO: prop:gen_rank_stacksvd_singleweight  (line 2112)")
+    sep("2. MONTE CARLO: prop:gen_rank_stacksvd_singleweight")
     reps = {400: 30, 800: 16, 1600: 10}
     rng = np.random.default_rng(SEED)
     rows = []
@@ -546,7 +546,7 @@ def main():
             rows.append((name, d, f["perf"], m["mean"], m["se"]))
 
     # ----------------------------------- 3. the suboptimality instance, 3 methods
-    sep("3. prop:singleweight_suboptimality  (line 915, proof 2169 to 2194)")
+    sep("3. prop:singleweight_suboptimality  (proof in sec:appendix_insufficiency_single_weights_stacksvd)")
     b0 = betaSq(B_TH0, B_C0)
     print(f"  theta_0 = {B_TH0}, c_0 = {B_C0}, beta_0^2 = {b0:.6f}, 2 beta_0^2 = {2*b0:.6f}")
     print(f"  detectability theta_0^4 = {B_TH0**4:.4f} > c_0 = {B_C0}: "
@@ -555,7 +555,7 @@ def main():
     print(f"  t > 1/(1+theta_0^2) = {1/(1+B_TH0**2):.6f}")
 
     def paper_stacksvd(t, th0=B_TH0, c0=B_C0):
-        """The paper's display at line 2190 with w_1 = 1, w_2^2 = t."""
+        """The paper's stackSVD display in the proof of prop:singleweight_suboptimality, w_1 = 1, w_2^2 = t."""
         w1s, w2s = 1.0, t
         d1 = (w1s * (1 + th0**2) - w2s) ** 2
         d2 = (w2s * (1 + th0**2) - w1s) ** 2
@@ -692,7 +692,7 @@ def main():
               f"one-root formula {perf_formula([1.0,0.5], B_C, B_R, B_TH)['perf']:.4f}   "
               f"beta_0^2 = {b0:.4f}")
 
-    print("\n  (d) Rank(sum_i R_i R_i^T) = r  (assum:unaligned, line 758)")
+    print("\n  (d) Rank(sum_i R_i R_i^T) = r  (assum:unaligned)")
     Rdeg = [np.array([[1.0], [0.0]]), np.array([[1.0], [0.0]])]
     f = perf_formula([1.0, 0.8], B_C, Rdeg, B_TH)
     print(f"      R_1 = R_2 = e_1, r = 2: rank(sum R_i R_i^T) = "
@@ -701,7 +701,7 @@ def main():
           f"det(I - Mmat) has\n      only {f['n_roots']} root and the sum over l = 1..r is "
           f"undefined.")
 
-    print("\n  (e) ties inside Theta_i  (assum:unaligned line 770 asks for distinct entries)")
+    print("\n  (e) ties inside Theta_i  (the text after assum:unaligned asks for distinct entries)")
     Rt = [np.eye(2), rot(0.6)]
     THt = [np.array([1.6, 1.6]), np.array([1.7, 1.15])]
     f = perf_formula([1.0, 0.75], A_C, Rt, THt)

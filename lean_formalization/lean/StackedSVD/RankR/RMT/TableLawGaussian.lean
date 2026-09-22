@@ -50,8 +50,8 @@ namespace SpikedModelR
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {n d : ℕ → ℕ} {rk : ℕ}
 
-/-- **`lem:general_rank_delocalization` under Gaussian noise** (`main_paper.tex:1948`, the
-general-rank form of `prop:single_table`, `:278`): the black box `TableLawR` is discharged,
+/-- **`lem:general_rank_delocalization` under Gaussian noise** (the
+general-rank form of `prop:single_table`): the black box `TableLawR` is discharged,
 not assumed. The hypotheses are the proportional regime
 `hreg` with limit `c > 0` and the Gaussian noise law `hG`; no assumption on the spikes beyond
 the model fields `hθnn` and `hθanti`, and in particular no supercriticality.

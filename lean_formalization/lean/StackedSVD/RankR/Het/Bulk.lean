@@ -16,9 +16,9 @@ components). This is the rank-`r` heteroscedastic twin of the Track C bulk argum
 (`RankR/RMT/R6R.lean`, `align_cross_of_gaussian_subcritical_aux`) and of the edge-window
 bound `RankRStack.tendsto_measure_normSq_specProj_edge_gt` (`RankR/RMT/EdgeGlueR.lean`).
 
-Paper: the bulk half of `thm:rank_r_stacksvd` (`main_paper.tex:2337`, Appendix E,
+Paper: the bulk half of `thm:rank_r_stacksvd` (Appendix E,
 `sec:rank_r`), `⟨v̂_a, v_l⟩² → 0` for every index `a` past the outliers. The rank-one mirror
-is `thm:stacksvd_weighted` (`:463`).
+is `thm:stacksvd_weighted`.
 
 ## Contents
 
@@ -359,8 +359,8 @@ theorem tendsto_measure_normSq_specProj_edge_gt_het [NeZero M]
 
 /-! ### 4. The bulk theorem -/
 
-/-- **The bulk step of `thm:rank_r_stacksvd` (`main_paper.tex:2337`), heteroscedastic rank
-`r`; the rank-one mirror is `thm:stacksvd_weighted` (`:463`).** For every sorted
+/-- **The bulk step of `thm:rank_r_stacksvd`, heteroscedastic rank
+`r`; the rank-one mirror is `thm:stacksvd_weighted`.** For every sorted
 index `a ≥ numSup` (the number of supercritical components at the weights `w`) and every
 column `l` of the signal frame, the squared overlap of the `a`-th right singular vector of the
 weighted stack `X_w` with `v_l` tends to `0` in probability. Chain: E7's count event puts

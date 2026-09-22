@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Numeric check of the three regimes of `swLimitEx` (item F18b, notes/paper_edits.md E12).
 
-The instance of `prop:singleweight_suboptimality` (`main_paper.tex:2171` to `:2194`):
+The instance of `prop:singleweight_suboptimality` (`sec:appendix_insufficiency_single_weights_stacksvd`):
 `R_1 = e_1`, `R_2 = e_2`, `Theta_1 = Theta_2 = theta_0`, `c_1 = c_2 = c_0`, on the Lean witness
 `theta_0 = 8/5`, `c_0 = 1`, `n_i = d`. Single-weight stackSVD with weights `w = (1, ratio)`.
 

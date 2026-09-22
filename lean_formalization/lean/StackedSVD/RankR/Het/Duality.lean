@@ -31,8 +31,8 @@ replaces the single eigenvector of the rank-1 mirror `RMT/Het/Duality.lean`.
 * `simpleIdx_gram_comm`: simplicity at a positive sorted index transfers between the two Gram
   matrices. Mirror: `topSimple_transpose_mul_iff` (`LinAlg/TopProjPerturb.lean`).
 
-Paper: `main_paper.tex` lines 1409 to 1440 (rank 1) and 2294 to 2331 (rank `r`).
-
+Paper: rank 1, the proof of `lem:secular_equation` through the overlap display after
+`eq:weighted_norm`; rank `r`, `eq:rank_r_model` to `eq:stacksvd_appXstack`.
 Everything here is model-free: no `UnalignedModelR` appears. Stage E1 lands
 `stackXW_mulVec_colVecG`, and stage E7 composes the two.
 -/

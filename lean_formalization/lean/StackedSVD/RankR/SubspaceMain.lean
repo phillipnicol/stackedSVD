@@ -29,7 +29,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### 4. `prop:stacksvd_subspace` -/
 
-/-- `prop:stacksvd_subspace` (`main_paper.tex:834`) at `r_i = 1`, Layer 1 form: under the
+/-- `prop:stacksvd_subspace` at `r_i = 1`, Layer 1 form: under the
 rank-`r` spiked law of the stack at aspect ratio `‖c‖₁`, the stacksvd subspace performance
 tends to one rank-one performance per spike of the core matrix.
 
@@ -38,7 +38,7 @@ directions; each term is `SubspaceLaw.align j`; a finite sum of limits in probab
 limit of the sum (`TendstoInProb.finsum`, `Prob/TendstoInProb.lean`).
 
 No hypothesis beyond the law is needed. In particular the eigenvalues of `C` may repeat,
-which is what the paper claims at `main_paper.tex:842`. -/
+which is what the paper claims after `prop:stacksvd_subspace`. -/
 theorem prop_stacksvd_subspace (m : UnalignedModel μ M n d r) (c : Fin M → ℝ)
     (law : m.SubspaceLaw (∑ i, c i)) :
     TendstoInProb μ (fun N ω => m.perfStackR N ω)
@@ -62,7 +62,7 @@ namespace StackedSVD.RankR.Example
 
 open MeasureTheory
 
-/-- The core matrix of the paper's example is `Cex` (`main_paper.tex:2216`). -/
+/-- The core matrix of the paper's example is `Cex` (`app:unaligned_example_proofs`). -/
 theorem cmat_rex (θ ψ : ℝ) : Cmat (fun _ : Fin 2 => θ) (Rex ψ) = Cex θ ψ := by
   rw [cmat_eq_sum, Cex, Finset.smul_sum]
 
@@ -79,7 +79,7 @@ private theorem hPerf_eq_betaSq_all (c lam : ℝ) :
       simp [betaSq]
     rw [hPerf, if_neg (not_lt.mpr (hlam'.trans (Real.sqrt_nonneg (2 * c)))), hs, hb]
 
-/-- `eq:perf_rankr_ex_stacksvd` (`main_paper.tex:860`) as the limit of
+/-- `eq:perf_rankr_ex_stacksvd` as the limit of
 `prop:stacksvd_subspace`: at `M = 2`, `r = 2`, `r_i = 1`, `θ_1 = θ_2 = θ`, `c_1 = c_2 = c`
 and `R = Rex ψ`, the spectrum of the core matrix is `θ²(1 ± sin ψ)` and the limit is the
 paper's `F(s) = h(θ²(1+s)) + h(θ²(1-s))`.
@@ -146,12 +146,12 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
   {n : Fin 2 → ℕ → ℕ} {d : ℕ → ℕ}
 
 /-- The stacksvd half of the paper's headline unaligned example, as a limit theorem: with
-`eq:psi_equation` (`main_paper.tex:848`) and the rank-`r` law of the stack at aspect ratio
+`eq:psi_equation` and the rank-`r` law of the stack at aspect ratio
 `2c`, the stacksvd performance converges in probability to `eq:perf_rankr_ex_stacksvd`.
 
 The svdstack half is `example_perfR_tendsto` of `RankR/Example.lean`, and the two together
-are the comparison of `main_paper.tex:864`. The proof is `prop_stacksvd_subspace` followed by
-`limitStackR_example`; `∑ i : Fin 2, c = 2 * c` is `Fin.sum_univ_two`. Neither `0 < c` nor
+are the comparison after `eq:perf_rankr_ex_stacksvd`. The proof is `prop_stacksvd_subspace` followed
+by `limitStackR_example`; `∑ i : Fin 2, c = 2 * c` is `Fin.sum_univ_two`. Neither `0 < c` nor
 `0 < θ` nor `ψ ∈ [0, π/2)` is needed, because `limitStackR_example` needs none of them. -/
 theorem example_perfStackR_tendsto (m : UnalignedModel μ 2 n d 2) (θ c ψ : ℝ)
     (hθ : ∀ i, (m.tbl i).θ = θ) (hR : m.R = Rex ψ) (law : m.SubspaceLaw (2 * c)) :
@@ -179,7 +179,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### 4. `prop:stacksvd_subspace` at general `r_i` -/
 
-/-- **`prop:stacksvd_subspace`** (`main_paper.tex:834`) at general `r_i`, Layer 1 form: under
+/-- **`prop:stacksvd_subspace`** at general `r_i`, Layer 1 form: under
 the rank-`r` spiked law of the stack at aspect ratio `‖c‖₁`, the stacksvd subspace performance
 tends to one rank-one performance per spike of the core matrix.
 
@@ -189,7 +189,7 @@ each term is `SubspaceLawG.align j`; a finite sum of limits in probability is th
 sum (`TendstoInProb.finsum`, `Prob/TendstoInProb.lean`).
 
 No hypothesis beyond the law is needed. In particular the eigenvalues of `C` may repeat, which
-is what the paper claims at `main_paper.tex:842`. -/
+is what the paper claims after `prop:stacksvd_subspace`. -/
 theorem prop_stacksvd_subspace_general (m : UnalignedModelR μ M n d r rk) (c : Fin M → ℝ)
     (law : m.SubspaceLawG (∑ i, c i)) :
     TendstoInProb μ (fun N ω => m.perfStackRG N ω)

@@ -16,7 +16,7 @@ import StackedSVD.RankR.SingleWeight.Scalars
 
 Mirrors `RankR/Het/Forms.lean` (the exactly aligned family, `rk = alignedRk M r`, `R_i = 1`)
 at the general model `UnalignedModelR μ M n d r rk` of arbitrary alignment matrices `R_i`.
-Paper: `prop:gen_rank_stacksvd_singleweight` (`main_paper.tex:2112`); the deterministic layer
+Paper: `prop:gen_rank_stacksvd_singleweight`; the deterministic layer
 is `RankR/SingleWeight/Scalars.lean`. Campaign plan: `notes/archive/trackG_plan.md`, section "G1
 `Het/Forms.lean`". Date 2026-09-05.
 

@@ -39,7 +39,7 @@ Two modeling choices, both deliberate:
    the deterministic layer; the `d - 1` block appears only inside
    `exists_block_hasLaw_het`, where the law is stated.
 
-Paper: `main_paper.tex` lines 1409 to 1440 (`thm:stacksvd_weighted`, `eq:assumption4`).
+Paper: `lem:secular_equation` to `eq:weighted_norm` (`thm:stacksvd_weighted`, `eq:assumption4`).
 
 STATUS 2026-08-30: `lake env lean -j 3 StackedSVD/RMT/Het/Split.lean` exit 0; 0 `sorry`.
 -/

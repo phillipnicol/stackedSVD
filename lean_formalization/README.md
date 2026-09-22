@@ -5,35 +5,46 @@
 This folder (`lean_formalization` of the `stackedSVD` repository) holds a machine-checked
 proof, in Lean 4 with Mathlib, of the results of
 *"Stacked SVD or SVD stacked? A random matrix theory perspective on data integration"*
-(Tavor Z. Baharav, Phillip B. Nicol, Rafael A. Irizarry and Rong Ma; arXiv:2507.22170).
+(Tavor Z. Baharav\*, Phillip B. Nicol\*, Rafael A. Irizarry and Rong Ma; arXiv:2507.22170).
 The Lean checker accepts the tree with 0 open proofs and with no axiom beyond the 3
 standard ones of Lean. Every result of the paper holds under the hypotheses that its row of
-the table below lists; one numerical example of the paper is replaced (finding E6).
+the table below lists.
 
 Every result of the paper is proved for Gaussian noise: the rank-one results of Sections 3
 to 5, the estimator of Section 8, and the rank-`r` results of Section 7 and Appendices D
 and E. Five rank-one results are also proved at the paper's own noise class, any fixed
 entry law with mean 0, variance 1 and a finite fourth moment: the single-table law,
 delocalization, unweighted stackSVD, unweighted SVDstack and the estimator. These 5 need
-one condition the paper does not state, a density of the entry law. Two remarks of the
-paper have no Lean form; "What is not proved" lists them with the other caveats.
+one condition the paper does not state, a density of the entry law. One remark of the paper
+has no Lean form; "What is not proved" lists it with the other caveats.
 
-The formalization produced 12 findings about the paper. They are hypotheses that a
-statement needs (`M ≥ 2`, some `θ_i ≠ 0`, an ordering of the spikes), a numerical example
-that sits exactly on its threshold, a proof branch with no argument, 2 results that hold in
-a stronger form, and errata. They are proposals to the authors and none is applied to the
-paper; `docs/THEOREMS.md` marks each one (E1 to E12) where it arises.
+Four differences remain between the paper and the Lean statements.
+
+1. `thm:gen_rank_weight_svdstack`. The paper assumes `β_ij > 0` for all `i, j` and keeps the
+   footnote that sets aside the weight matrices `W` with no eigengap in `W A_{β,R} Wᵀ`. The
+   Lean statement needs neither: the upper bound holds for every `W` and is attained at `W⋆`.
+2. `thm:stacksvd_weighted` and `prop:dominance`. The Lean theorems carry the hypothesis that
+   at least one `θ_i` is nonzero, which the paper does not state.
+3. `assum:gen_rank_stacksvd_eig_sep`. The distinctness of the roots `γ_ℓ` carries the value
+   of the formula of `prop:gen_rank_stacksvd_singleweight`, not only its proof: at a tied
+   root the `z_ℓ` are fixed only up to a rotation inside the tied plane.
+4. `prop:singleweight_suboptimality`. Where the separation assumption fails, the paper bounds
+   the performance above by `β_0²` and gives no argument. Lean proves the exact limit there,
+   the summand of the larger weight in the paper's own display, which is below `β_0²`.
+
+`docs/THEOREMS.md` section 7.2 lists the four again, each with its Lean anchor, and repeats
+each one in the section of the result it belongs to.
 
 ## Start here
 
-1. A reader without Lean: `GETTING_STARTED.md` (by Phillip Nicol) walks through the install,
+1. A reader without Lean: `GETTING_STARTED.md` walks through the install,
    the build and one `#check`. A fresh clone builds in 13 minutes on 6 cores and takes 10 GB
    of disk.
 2. A coauthor or a statistician: this page, then `docs/THEOREMS.md`, which puts the paper's
    LaTeX statement and the Lean statement side by side for every result and explains each
    hypothesis in words.
 3. An auditor: `docs/AUDIT_DOC.md`, which is self-contained: what is claimed, what is
-   assumed, how each claim is checked, and the transcript of the build and of the 8 gate
+   assumed, how each claim is checked, and the transcript of the build and of the 7 gate
    scripts.
 
 ## What is proved
@@ -57,7 +68,7 @@ model hypotheses, and the `_of_moments` suffix the version at four moments plus 
 | `thm:simple_thm1` (cor. 1) | Identical tables (`θ_i = θ₀`, `c_i = c₀`): both closed forms, both branches of the threshold, every `M ≥ 1` | none | `thm_simple_thm1_stacksvd_gaussian` (`StackSVD/Main.lean`), `thm_simple_thm1_svdstack_gaussian_full` (`SVDStack/Simple.lean`) |
 | `cor.2` (binary weights) | Keep any nonempty subset `S` of tables: the limit is the stackSVD formula on `S`; the best subset exists | none | `stackPerfW_binary_tendsto_gaussian`, `exists_binary_tendsto_max_gaussian` (`StackSVD/Weighted.lean`) |
 | `thm:stacksvd_weighted` | Weights `w_i ∝ θ_i / √(θ_i² + c_i)` are optimal; the limit `γ⋆` solves `Σ θ_i⁴ (1 − x)/(c_i + xθ_i²) = 1` when `Σ θ_i⁴/c_i > 1`, else `0`; every other weighting does no better | some `θ_i ≠ 0` (caveat 4) | `thm_stacksvd_weighted_gaussian`, `_opt` (`RMT/Het/Sup.lean`) |
-| `thm:svdstack_weighted` | Weights `w_i = θ_i √((θ_i² + 1)/(θ_i² + c_i)) 1{θ_i⁴ > c_i}` give `⟨v̂, v⟩² → S/(S + 1)`, `S = Σ β_i²/(1 − β_i²)`; no nonzero weighting does better (stronger than the paper, finding E1) | at least 1 table with `β_i > 0` | `thm_svdstack_weighted_gaussian`, `_opt_full` (`SVDStack/Weighted.lean`, `SVDStack/Rayleigh.lean`) |
+| `thm:svdstack_weighted` | Weights `w_i = θ_i √((θ_i² + 1)/(θ_i² + c_i)) 1{θ_i⁴ > c_i}` give `⟨v̂, v⟩² → S/(S + 1)`, `S = Σ β_i²/(1 − β_i²)`; no nonzero weighting does better | at least 1 table with `β_i > 0` | `thm_svdstack_weighted_gaussian`, `_opt_full` (`SVDStack/Weighted.lean`, `SVDStack/Rayleigh.lean`) |
 | `lem:secular_equation` | The determinant identity for a diagonal-plus-rank-one matrix, and: a root of the secular equation above the diagonal is the largest eigenvalue, and that eigenvalue is simple (finite matrix algebra, no limit) | none | `det_Rmat_sub`, `lamMax_Rmat_eq`, `topSimple_Rmat` (`Secular.lean`) |
 | `thm:stacksvd_binary_optimal_svd_stack` | Binary stackSVD (keep the detectable tables) is at least as good as optimally weighted SVDstack; strictly better with 2 detectable tables | `c_i ≤ 1` on the kept tables only (weaker than the paper) | `thm_stacksvd_binary_optimal_svd_stack_gaussian`, `_strict` (`StackSVD/Weighted.lean`, `StrictFacades.lean`) |
 | `prop:dominance` | Optimally weighted stackSVD is at least as good as unweighted stackSVD and as optimally weighted SVDstack; strict under the paper's two side conditions | some `θ_i ≠ 0` (caveat 4) | `prop_dominance_gaussian`, `_strict` (`RMT/Het/Sup.lean`, `StrictFacades.lean`) |
@@ -65,8 +76,8 @@ model hypotheses, and the `_of_moments` suffix the version at four moments plus 
 | `thm:theta_est` | Two tables, `θ_1⁴ > c_1`: the estimator `θ̂_2` of `eq:theta_estimation` is consistent | none | `thm_theta_est_gaussian` (`ThetaEst.lean`); `thm_theta_est_of_moments` (`General/Layer1.lean`) |
 | `app:wstacksvd_mle` | The weighted stackSVD objective is the marginal Gaussian log-likelihood of the random-effects model, at finite `N`; its maximizers are the top eigenvectors | none (deterministic identity) | `mleLogLik_eq`, `mleLogLik_max_iff_mem_topSpace`, `thm_wstacksvd_mle_marginal` (`MLE.lean`, `MLEConverse.lean`, `MLEMarginal/Main.lean`) |
 | `remark:stack_outperform_svd` | An explicit family (every `M ≥ 2`, all `θ_i = c_i = 1`) where unweighted stackSVD has limit `1 − 2/(M + 1)` and SVDstack has limit `0` under every weighting; the model is built | none | `remark_stack_outperform_svd_exists` (`Existence.lean`, `Remarks.lean`) |
-| `remark:svd_outperform_stack` | An explicit 2-table instance (`θ = (√5, 4)`, `c = (1, 38.4)`) where unweighted SVDstack has limit `8/9` and every binary stackSVD at most `2008/2310`; the paper's 3-table example sits on the threshold (finding E6) | none | `remark_svd_outperform_stack_exists` (`Existence.lean`, `Remarks.lean`) |
-| Section 7 and Appendix E (rank `r`) | `lem:general_rank_delocalization`, `prop:general_rank_unweighted_svdstack`, `prop:stacksvd_subspace`, `thm:gen_rank_weight_svdstak` (uniform in the weights, finding E2), the worked example, `thm:rank_r_svdstack` (both clauses), `thm:rank_r_stacksvd` | spikes inside a table strictly decreasing and nonnegative (caveat 5) | `*_gaussian` theorems in `RankR/GeneralGaussian.lean`, `RankR/SubspaceGaussian.lean`, `RankR/WeightedUpperG.lean`, `RankR/AlignedMain.lean`, `RankR/Het/Sup.lean` |
+| `remark:svd_outperform_stack` | An explicit 2-table instance (`θ = (√5, 4)`, `c = (1, 38.4)`, the paper's third example) where unweighted SVDstack has limit `8/9` and every binary stackSVD at most `2008/2310` | none | `remark_svd_outperform_stack_exists` (`Existence.lean`, `Remarks.lean`) |
+| Section 7 and Appendix E (rank `r`) | `lem:general_rank_delocalization`, `prop:general_rank_unweighted_svdstack`, `prop:stacksvd_subspace`, `thm:gen_rank_weight_svdstack` (uniform in the weights), the worked example, `thm:rank_r_svdstack` (both clauses), `thm:rank_r_stacksvd` | spikes inside a table strictly decreasing and nonnegative (caveat 5) | `*_gaussian` theorems in `RankR/GeneralGaussian.lean`, `RankR/SubspaceGaussian.lean`, `RankR/WeightedUpperG.lean`, `RankR/AlignedMain.lean`, `RankR/Het/Sup.lean` |
 | `prop:gen_rank_stacksvd_singleweight` (Appendix D) | StackSVD with one weight `w_i` per table, general rotations `R_i`: the limit of `‖V̂ᵀ V‖_F²` is the paper's sum over the `r` roots `γ_ℓ` of a matrix secular equation, and per pair `(ℓ, k)` the overlap `⟨v̂_ℓ, v_k⟩²` has the limit `swTerm_ℓ (z_ℓ)_k²` | the paper's separation assumption (distinct roots above the threshold, as data `γ`, `z`); no condition on the weights | `prop_gen_rank_stacksvd_singleweight_gaussian`, `_inner_gaussian` (`RankR/SingleWeight/Het/Sup.lean`) |
 | `prop:singleweight_suboptimality` (Appendix D) | A built 2-table rank-2 instance (`θ = 8/5`, `c = 1`, one table rotated) where unweighted SVDstack has limit `2β²` and stackSVD with one weight per table has a smaller limit at every positive weight pair | none | `prop_singleweight_suboptimality_gaussian` (`RankR/SingleWeight/Suboptimality.lean`) |
 
@@ -92,15 +103,15 @@ discharges it.
 3. One detectable table. Unweighted SVDstack (`thm:svd_stack_general`) needs 2 tables with
    `β_i > 0`. With exactly 1, `A_β` is the identity and the paper's formula is not defined;
    the paper leaves that case open.
-4. `θ ≡ 0`. `thm:stacksvd_weighted` and `prop:dominance` need some `θ_i ≠ 0`. At `θ ≡ 0`
-   the stated optimal weights are all zero and the claim is false (finding E8).
+4. `θ ≡ 0`. `thm:stacksvd_weighted` and `prop:dominance` need some `θ_i ≠ 0`, a hypothesis
+   the paper does not state. At `θ ≡ 0` the stated optimal weights are all zero and the
+   claim is false.
 5. Rank `r`. The spikes inside a table are strictly decreasing and nonnegative, a model
-   field, so `ℓ_j = j` in `thm:rank_r_stacksvd`; the paper's index `ℓ_j` at unordered `θ` is
-   finding E7. That theorem also takes `hnz` (every component has a positive spike in some
-   table), which the paper's own hypothesis implies for `r ≥ 2`.
-6. Two remarks. The removal remark after `thm:gen_rank_weight_svdstak` (paper line 901) is
-   wrong in general and has no Lean form (finding E2). The `M → ∞` remark (line 407) has
-   none either: `M` is fixed in every statement.
+   field, so `ℓ_j = j` in `thm:rank_r_stacksvd`. The paper's index `ℓ_j` at unordered `θ` is
+   not formalized. That theorem also takes `hnz` (every component has a positive spike in
+   some table), which the paper's own hypothesis implies for `r ≥ 2`.
+6. One remark. The remark after `prop:stacksvd_general`, that the result also holds as
+   `M → ∞`, has no Lean form: `M` is fixed in every statement.
 
 ## Check it yourself
 
@@ -126,9 +137,8 @@ scripts/check_axioms.sh                                   # gate 2: only the thr
 python3 scripts/check_root_imports.py                     # gate 3: every module is in the audited set
 python3 scripts/check_theorems_sigs.py docs/THEOREMS.md   # gate 4: the quoted statements match the source
 scripts/check_layering.sh                                 # gate 5: no Gaussian result uses a limit-law hypothesis
-python3 scripts/check_paper_edits.py                      # gate 6: prints SKIP here (needs the paper snapshot; the result of record is in docs/TECHNICAL.md)
-scripts/check_kernel.sh                                   # gate 7: every declaration re-checked by the kernel (12 min, 20 GB of RAM with 3 workers; KERNEL_CHECK_JOBS=2 for less)
-python3 scripts/check_core_imports.py                     # gate 8: the Gaussian RMT core imports no paper-specific module
+scripts/check_kernel.sh                                   # gate 6: every declaration re-checked by the kernel (12 min, 20 GB of RAM with 3 workers; KERNEL_CHECK_JOBS=2 for less)
+python3 scripts/check_core_imports.py                     # gate 7: the Gaussian RMT core imports no paper-specific module
 ```
 
 `lake build` is the core check: Lean recompiles and rechecks every proof, and an open proof
@@ -142,7 +152,7 @@ tracked `sorry` sites; 5631 declarations audited, no axiom outside `propext`,
 `Classical.choice` and `Quot.sound`; 148 signatures quoted in `docs/THEOREMS.md` match the
 source; 231 modules replayed through the kernel, 0 problems; our 210 files compile with 0
 linter warnings. `docs/TECHNICAL.md` holds the build of record with its timings, and
-`docs/AUDIT_DOC.md` Appendix A the full transcript of the 8 gates.
+`docs/AUDIT_DOC.md` Appendix A the full transcript of the 7 gates.
 
 ## Layout
 
@@ -152,24 +162,17 @@ linter warnings. `docs/TECHNICAL.md` holds the build of record with its timings,
 | `GETTING_STARTED.md` | install Lean, build the project, check one theorem yourself |
 | `docs/` | the detailed documents; `docs/README.md` names each one (`THEOREMS.md`, `AUDIT_DOC.md`, `TECHNICAL.md`, `SORRIES.md`) |
 | `lean/` | the Lean project (Lean 4 v4.33.0, Mathlib v4.33.0 and StatsMLlib `37286c3`, pinned in `lakefile.toml` and `lean-toolchain`); the source is `lean/StackedSVD/` (108508 lines, 210 files, plus 20 vendored files); `lean/StackedSVD/Main.lean` states the 40 theorems |
-| `scripts/` | the 8 gate scripts and the numeric checks; `scripts/README.md` describes each |
+| `scripts/` | the 7 gate scripts and the numeric checks; `scripts/README.md` describes each |
 | `notes/` | the lab notebook of the development repository; not part of this copy (see "About this copy" below) |
 | `CITATION.cff` | how to cite the paper and this repository |
 | `LICENSE` | Apache License 2.0 |
 
 ## How it was made
 
-Claude (Anthropic) wrote the Lean statements and proofs between 2026-08-29 and 2026-09-10,
-under a fixed workflow: for each result the authors reviewed the Lean statement against the
-paper before a proof started, and 8 mechanical gates ran before each push. While this work
-was under way, Anthropic published "Formalizing Fermat's Last Theorem"
-(<https://www.anthropic.com/research/formalizing-fermats-last-theorem>, 2026-09-04), a
-report that Claude wrote a complete Lean proof of Fermat's Last Theorem in 11 days. On
-2026-09-08 OpenAI published "On the Navier-Stokes Millennium Prize Problem"
-(<https://openai.com/index/navier-stokes-solution/>), an AI-generated proof that the forced
-three-dimensional equations develop a singularity in finite time, with a Lean
-formalization. Each of those works formalizes one theorem. The paper here states many
-separate limits and comparisons, and the work went as much into stating each one
+Claude (Anthropic) wrote the Lean statements and the proofs between 2026-08-29 and
+2026-09-10. For each result the authors reviewed the Lean statement against the paper before
+a proof started, and the gate scripts of "Check it yourself" ran before each push. The paper
+states many separate limits and comparisons, so the work went as much into stating each one
 faithfully as into proving it.
 
 ## About this copy
@@ -179,13 +182,17 @@ on 2026-09-11 from commit `41e730f` by its script `scripts/release/make_release.
 Lean sources, the gate scripts and the numeric scripts are byte-identical to that commit. Not
 part of this copy: `notes/` (the lab notebook of the development, 374 files: the review
 note of every result, the audit packets, the campaign logs, the read-only snapshot of the
-paper, and the two paper-facing documents, private until the revised paper is public),
-`CLAUDE.md` (the working rules of the AI assistant) and the scratch folder
+paper, and the two paper-facing documents) and the scratch folder
 of the count proof. The documents and the Lean docstrings cite those files by path;
 `scripts/release_withheld.txt` lists every withheld path (449 in all), and
 `scripts/check_paths.py` reads it, so a citation of a withheld file counts as withheld, not as
-missing. Gate 6 (`check_paper_edits.py`) needs the paper and prints `SKIP` here; its result of
-record is in `docs/AUDIT_DOC.md`, Appendix A.
+missing.
+
+Some Lean docstrings and scripts cite `notes/paper_edits.md` by item number, from E1 to E12.
+That document is the review of the paper's statements against the Lean statements, one item
+per point, each with its Lean anchor. The item numbers are a record of that review. They are
+not needed to read the proofs. For the differences between the paper and the Lean statements,
+see "What is not proved" above and section 7.2 of `docs/THEOREMS.md`.
 
 ## Questions, citation and license
 

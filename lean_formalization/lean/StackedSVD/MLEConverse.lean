@@ -9,7 +9,7 @@ import StackedSVD.MLE
 # `app:wstacksvd_mle`: the converse, every maximizer sits in the top eigenspace
 
 `StackedSVD/MLE.lean` proves one direction of the paper's `v̂_MLE = v_max(...)`
-(`main_paper.tex:1700`): a unit vector of the top eigenspace of the weighted stack Gram matrix
+(`app:wstacksvd_mle`): a unit vector of the top eigenspace of the weighted stack Gram matrix
 maximizes the marginal log-likelihood `ℓ` (`MultiTableModel.mleLogLik_le_of_mem_topSpace`).
 Modeling choice 5 of `notes/archive/mle_identity.md` left the converse open. This file adds it.
 
@@ -121,7 +121,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-- `app:wstacksvd_mle`, the converse of `mleLogLik_le_of_mem_topSpace`: every unit maximizer
 of the marginal log-likelihood lies in the top eigenspace of the weighted stack Gram matrix at
-the paper's optimal weights (`main_paper.tex:1700`). Route: `mleLogLik_le_iff` turns the
+the paper's optimal weights. Route: `mleLogLik_le_iff` turns the
 maximizer hypothesis into the Rayleigh equality (the top eigenvector `vMax` is the test vector
 for the lower bound, `inner_toOp_self_le` for the upper one), and
 `inner_toOp_self_eq_lamMax_iff` reads the equality case. -/

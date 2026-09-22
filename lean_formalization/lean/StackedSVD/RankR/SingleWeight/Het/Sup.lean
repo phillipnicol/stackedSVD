@@ -201,7 +201,7 @@ theorem singleWeightLaw_of_gaussian_shift [NeZero M] [∀ N, IsProbabilityMeasur
 
 /-! ### 7. The paper's facades -/
 
-/-- **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`), second half, for
+/-- **`prop:gen_rank_stacksvd_singleweight`**, second half, for
 Gaussian noise: the single-weight stacksvd performance converges in probability to the
 paper's sum. Layer 1 mirror: `prop_gen_rank_stacksvd_singleweight`
 (`RankR/SingleWeight/Main.lean:88`). -/
@@ -218,7 +218,7 @@ theorem prop_gen_rank_stacksvd_singleweight_gaussian [NeZero M]
   exact SpikedModel.tendstoInProb_of_shift (f := fun N ω => m.perfSW w N ω) k
     (prop_gen_rank_stacksvd_singleweight (m.shift k) w c γ z hsep law)
 
-/-- **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`) for Gaussian noise, in
+/-- **`prop:gen_rank_stacksvd_singleweight`** for Gaussian noise, in
 the paper's own inner-product form, one pair at a time. Layer 1 mirror:
 `prop_gen_rank_stacksvd_singleweight_inner` (`RankR/SingleWeight/Main.lean:120`). -/
 theorem prop_gen_rank_stacksvd_singleweight_inner_gaussian [NeZero M]

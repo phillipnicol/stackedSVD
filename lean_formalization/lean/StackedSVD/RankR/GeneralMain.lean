@@ -14,7 +14,7 @@ import StackedSVD.SVDStack.Deterministic
 STATUS 2026-09-01: all five statements are proved, 0 `sorry`.
 `lem_general_rank_delocalization_general` (task T4), `VtV_tendsto_general` (T6),
 `gramR_general` (T5), `prop_general_rank_unweighted_svdstack_general` (T7) and
-`thm_gen_rank_weight_svdstak_general_r` (T8 of `notes/archive/rankr_plan_B.md`).
+`thm_gen_rank_weight_svdstack_general_r` (T8 of `notes/archive/rankr_plan_B.md`).
 
 The five statements moved here verbatim from `RankR/General.lean` on 2026-09-01. Their proofs
 need `RankR/GramR.lean` (the per-table delocalization twins of task B2b), and `GramR.lean`
@@ -41,13 +41,13 @@ imports `General.lean`, so the statements cannot stay where they were stated.
 6. `gramWG_eq`, `VtVWG_eq`: the weighted Gram matrix and the weighted overlap matrix as
    fixed linear images of the unweighted ones. Mirrors: `gramW_eq`, `VtVW_eq` of
    `RankR/Weighted.lean`.
-7. The five statements, plus `thm_gen_rank_weight_svdstak_general_r_conv`, the weighted limit
+7. The five statements, plus `thm_gen_rank_weight_svdstack_general_r_conv`, the weighted limit
    at one admissible weight matrix.
 
 ## The route of `VtV_tendsto_general`
 
-`⟪v̂_ij, V e_k⟫` splits as the paper does (`main_paper.tex:1961`), with the **whole signal
-frame** of table `i` in place of the single spike direction of the `r_i = 1` case:
+`⟪v̂_ij, V e_k⟫` splits as the paper does (the proof of `lem:general_rank_delocalization`), with the
+**whole signal frame** of table `i` in place of the single spike direction of the `r_i = 1` case:
 
 ```
 V e_k = ∑_{l} ⟪(V R_i)_l, V e_k⟫ (V R_i)_l + perpSpan_i (V e_k).
@@ -225,7 +225,7 @@ theorem gramG_eq_inner (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N)
   rfl
 
 /-- `⟪(V R_i)_j, V e_k⟫ = (R_i)_{kj}`, the paper's `(V R_i)ᵀ V = R_iᵀ`
-(`main_paper.tex:1964`). Mirror: `inner_v_colVec`. -/
+(the proof of `lem:general_rank_delocalization`). Mirror: `inner_v_colVec`. -/
 theorem inner_col_colVecG (m : UnalignedModelR μ M n d r rk) (i : Fin M) (j : Fin (rk i))
     (k : Fin r) (N : ℕ) : ⟪(m.tbl i).col N j, m.colVecG N k⟫_ℝ = m.R i k j := by
   have hVV := m.hV N
@@ -246,9 +246,9 @@ theorem inner_col_colVecG (m : UnalignedModelR μ M n d r rk) (i : Fin M) (j : F
         rw [hVV]
         simp [Matrix.one_apply]
 
-/-- `⟪(V R_i)_k, (V R_{i'})_l⟫ = (R_iᵀ R_{i'})_{kl}`: the shared frame `V` cancels, so the
-inner products of two signal frames read the paper's `R_iᵀ R_{i'}` (`main_paper.tex:1964`).
-Mirror: `inner_v_v` of `RankR/Defs.lean`, which is this statement at `r_i = r_{i'} = 1`. -/
+/-- `⟪(V R_i)_k, (V R_{i'})_l⟫ = (R_iᵀ R_{i'})_{kl}`: the shared frame `V` cancels, so the inner
+products of two signal frames read the paper's `R_iᵀ R_{i'}` (proof of
+`lem:general_rank_delocalization`). Mirror at rank one: `inner_v_v` of `RankR/Defs.lean`. -/
 theorem inner_col_col (m : UnalignedModelR μ M n d r rk) (i i' : Fin M) (k : Fin (rk i))
     (l : Fin (rk i')) (N : ℕ) :
     ⟪(m.tbl i).col N k, (m.tbl i').col N l⟫_ℝ = ((m.R i)ᵀ * m.R i') k l := by
@@ -346,10 +346,10 @@ theorem inner_vhatG_perp_tendsto (m : UnalignedModelR μ M n d r rk) {ci : ℝ} 
 /-- `⟪v̂_ij, y_N⟫ → β_ij a_j` for a deterministic family `y` of norm at most one whose inner
 products with the signal frame of table `i` are the constants `a_1, …, a_{r_i}`.
 
-The split is the paper's `y = ∑_l a_l (V R_i)_l + perpSpan_i y` (`main_paper.tex:1961`) with
-the whole frame in place of the single direction of the `r_i = 1` case: `align_innerR` gives
-the term `l = j`, `cross_innerR` kills the terms `l ≠ j`, and `inner_vhatG_perp_tendsto` kills
-the remainder. Mirror: `align_inner_det`. -/
+The split is the paper's `y = ∑_l a_l (V R_i)_l + perpSpan_i y` (the proof of
+`lem:general_rank_delocalization`) with the whole frame in place of the single direction of the
+`r_i = 1` case: `align_innerR` gives the term `l = j`, `cross_innerR` kills the terms `l ≠ j`, and
+`inner_vhatG_perp_tendsto` kills the remainder. Mirror: `align_inner_det`. -/
 theorem align_inner_detR (m : UnalignedModelR μ M n d r rk) {ci : ℝ} {i : Fin M}
     (law : (m.tbl i).TableLawR ci) (j : Fin (rk i))
     (y : (N : ℕ) → EuclideanSpace ℝ (Fin (d N))) (a : Fin (rk i) → ℝ)
@@ -395,8 +395,8 @@ theorem align_inner_detR (m : UnalignedModelR μ M n d r rk) {ci : ℝ} {i : Fin
 /-! ### 6. The statements -/
 
 
-/-- **`lem:general_rank_delocalization`, off-diagonal half, at general `r_i`**
-(`main_paper.tex:1948`): for two spikes in **different** tables,
+/-- **`lem:general_rank_delocalization`, off-diagonal half, at general `r_i`**:
+for two spikes in **different** tables,
 `⟪v̂_ij, v̂_{i'j'}⟫ → β_ij β_{i'j'} ⟪(R_i)_j, (R_{i'})_{j'}⟫`. Inside one table the inner
 product is exactly `0` for `j ≠ j'` and exactly `1` for `j = j'`, because the rows of `Ṽ`
 coming from one table are orthonormal singular vectors; that half needs no limit and no
@@ -405,8 +405,8 @@ hypothesis, and `ABlock_intra`, `ABlock_diag` give the matching entries of `A_{�
 The route is the paper's own split
 `v̂_ijᵀ v̂_{i'j'} = v̂_ijᵀ (V R_i)_j (V R_i)_jᵀ v̂_{i'j'}
 + v̂_ijᵀ (I - (V R_i)_j (V R_i)_jᵀ) v̂_{i'j'}`
-(`main_paper.tex:1967`): the first term is `align_inner` of the two tables against a
-deterministic direction, and the second needs `TableLawR.delocUniform` of table `i` at the
+(the proof of `lem:general_rank_delocalization`): the first term is `align_inner` of the two tables
+against a deterministic direction, and the second needs `TableLawR.delocUniform` of table `i` at the
 **random** direction of table `i'`, hence Fubini against the product law and `hG`. -/
 theorem lem_general_rank_delocalization_general (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (law : ∀ i, (m.tbl i).TableLawR (c i)) (hG : m.IndepNoise)
@@ -562,7 +562,7 @@ theorem VtV_tendsto_general (m : UnalignedModelR μ M n d r rk) (c : Fin M → �
   filter_upwards with ω
   exact (m.VtVG_eq_inner N ω p k).symm
 
-/-- **`prop:general_rank_unweighted_svdstack`** (`main_paper.tex:799`) at general `r_i`, Layer 1
+/-- **`prop:general_rank_unweighted_svdstack`** at general `r_i`, Layer 1
 form. `hgap` is the paper's `λ_r(A_{β,R}) - λ_{r+1}(A_{β,R}) > 0` with its convention
 `λ_{r̃+1} := -∞`, which `TopGap` encodes by quantifying over the indices; `hc` gives
 `0 ≤ β_ij < 1`, hence `A_{β,R} ⪰ D ≻ 0` (`ABlock_posDef`). The paper's hypothesis that each
@@ -626,12 +626,12 @@ theorem prop_general_rank_unweighted_svdstack_general (m : UnalignedModelR μ M 
 `RankR/Flatten.lean` (task B0) shows that every block object of `RankR/General.lean` is the
 `r_i = 1` object of `RankR/Weighted.lean` read at table count `r̃ = rtot rk`, alignment family
 `Rcol R` and scalar family `betaFlat β`, and each bridge is `rfl`. So the deterministic half
-of `thm:gen_rank_weight_svdstak` (Ky Fan, the eigengap at `W⋆`, the attained value `L⋆`) is
+of `thm:gen_rank_weight_svdstack` (Ky Fan, the eigengap at `W⋆`, the attained value `L⋆`) is
 not proved again here: `limitRW_le_opt`, `limitRW_optWR`, `topGap_optWR_of_rankBR` and
 `abetaRW_optWR_posDef` apply as they stand. Only the probabilistic half is new, because
 `perfRGW` reads `UnalignedModelR` and not `UnalignedModel`; it is
-`thm_gen_rank_weight_svdstak_general_r_conv`, the transcription of
-`thm_gen_rank_weight_svdstak_general` (`RankR/Weighted.lean`) with `gramR_general` and
+`thm_gen_rank_weight_svdstack_general_r_conv`, the transcription of
+`thm_gen_rank_weight_svdstack_general` (`RankR/Weighted.lean`) with `gramR_general` and
 `VtV_tendsto_general` in place of `gramR` and `VtV_tendsto`. -/
 
 /-- `Ṽ_W Ṽ_Wᵀ = W (Ṽ Ṽᵀ) Wᵀ`, so the weighted Gram matrix is a fixed linear image of the
@@ -648,16 +648,16 @@ theorem VtVWG_eq (m : UnalignedModelR μ M n d r rk)
     m.VtVWG W N ω = W * m.VtVG N ω := by
   rw [UnalignedModelR.VtVWG, UnalignedModelR.VtWG, UnalignedModelR.VtVG, Matrix.mul_assoc]
 
-/-- **`thm:gen_rank_weight_svdstak`** (`main_paper.tex:893`) for one admissible weight matrix
-`W`, at general `r_i`. `hgapW` is the paper's `eq:weighted_eigengap` (`main_paper.tex:2010`)
+/-- **`thm:gen_rank_weight_svdstack`** for one admissible weight matrix
+`W`, at general `r_i`. `hgapW` is the paper's `eq:weighted_eigengap`
 and `hposW` its `λ_r(W A_{β,R} Wᵀ) > 0`, both read on the weighted limit matrix.
 
-Route, verbatim from `UnalignedModel.thm_gen_rank_weight_svdstak_general`
+Route, verbatim from `UnalignedModel.thm_gen_rank_weight_svdstack_general`
 (`RankR/Weighted.lean`) with `Fin M` replaced by `Fin r̃`: `gramWG_eq` and `VtVWG_eq` write the
 two random matrices as fixed real linear combinations of the entries of `Ṽ Ṽᵀ` and `Ṽ V`,
 `gramR_general` and `VtV_tendsto_general` give those entrywise limits, and
 `continuousAt_traceFun` with `TendstoInProbPi.comp_continuous` transports the limit twice. -/
-theorem thm_gen_rank_weight_svdstak_general_r_conv (m : UnalignedModelR μ M n d r rk)
+theorem thm_gen_rank_weight_svdstack_general_r_conv (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -721,8 +721,8 @@ theorem thm_gen_rank_weight_svdstak_general_r_conv (m : UnalignedModelR μ M n d
   filter_upwards with ω
   exact traceFun_eq (m.isHermitian_gramWG W N ω) (m.VtVWG W N ω)
 
-/-- **`thm:gen_rank_weight_svdstak`** (`main_paper.tex:893`) at general `r_i`, both halves in
-one declaration, as `thm_gen_rank_weight_svdstak_max` states them at `r_i = 1`.
+/-- **`thm:gen_rank_weight_svdstack`** at general `r_i`, both halves in
+one declaration, as `thm_gen_rank_weight_svdstack_max` states them at `r_i = 1`.
 
 1. With `W⋆ = D^{-1/2}` the performance of weighted svdstack tends to
    `L⋆ = r - ∑_{ℓ=1}^r λ_{r̃+1-ℓ}(A_{β,R}^{-1/2} D A_{β,R}^{-1/2})`.
@@ -730,11 +730,11 @@ one declaration, as `thm_gen_rank_weight_svdstak_max` states them at `r_i = 1`.
    `limitRGW W`, which is at most `L⋆`.
 
 `W` is a full matrix, not a block-diagonal one: the paper allows every `W ∈ ℝ^{r̃ × r̃}`
-(`main_paper.tex:886`) and the point of the theorem is that the optimum is still the diagonal
-`W⋆`, so restricting `W` would weaken the claim. Admissibility is the paper's own eigengap
-condition `eq:weighted_eigengap` (`main_paper.tex:2010`) plus the positivity of
-`λ_{r-1}(W A_{β,R} Wᵀ)`, which the paper needs for `Λ_r^{-1/2}` to exist; the footnote at
-`main_paper.tex:890` excludes every other `W`.
+(before `thm:gen_rank_weight_svdstack`) and the point of the theorem is that the optimum is still
+the diagonal `W⋆`, so restricting `W` would weaken the claim. Admissibility is the paper's own
+eigengap condition `eq:weighted_eigengap` plus the positivity of
+`λ_{r-1}(W A_{β,R} Wᵀ)`, which the paper needs for `Λ_r^{-1/2}` to exist; the footnote before
+`thm:gen_rank_weight_svdstack` excludes every other `W`.
 
 The hypothesis is `rank B_R = r`, not the paper's `β_ij > 0` plus `Rank(∑ R_i R_iᵀ) = r`:
 decision D16 of `notes/FLAGGED.md` shows the paper's remark that a component with `β_ij = 0`
@@ -743,9 +743,9 @@ can be removed is false in general, and `rank B_R = r` is what the eigengap at `
 Route: the flatten bridges of `RankR/Flatten.lean` read every block object as the `r_i = 1`
 object of `RankR/Weighted.lean` at table count `r̃`, so the deterministic half is
 `topGap_optWR_of_rankBR`, `abetaRW_optWR_posDef`, `limitRW_optWR` and `limitRW_le_opt` as they
-stand. The convergence half is `thm_gen_rank_weight_svdstak_general_r_conv`, instantiated at
+stand. The convergence half is `thm_gen_rank_weight_svdstack_general_r_conv`, instantiated at
 `W⋆` for the first conjunct and at the given `W` for the second. -/
-theorem thm_gen_rank_weight_svdstak_general_r (m : UnalignedModelR μ M n d r rk)
+theorem thm_gen_rank_weight_svdstack_general_r (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
     (hr : 0 < r) (hrr : r ≤ rtot rk)
@@ -779,13 +779,13 @@ theorem thm_gen_rank_weight_svdstak_general_r (m : UnalignedModelR μ M n d r rk
     exact hpdOpt.eigenvalues_pos _
   refine ⟨?_, fun W hgapW hposW => ⟨?_, ?_⟩⟩
   · -- first conjunct: the general limit at `W⋆`, then the attained value `L⋆`
-    have h := m.thm_gen_rank_weight_svdstak_general_r_conv c β (optWG β) hβdef hr hrr
+    have h := m.thm_gen_rank_weight_svdstack_general_r_conv c β (optWG β) hβdef hr hrr
       hgapOpt hposOpt law hG
     have hval : limitRGW (optWG β) β m.R = limitOptG β m.R hrp := by
       rw [limitRGW_eq_limitRW, limitOptG_eq_limitROpt, optWG_eq_optWR,
         limitRW_optWR (betaFlat β) (Rcol m.R) h0 h1 hrp]
     rwa [hval] at h
-  · exact m.thm_gen_rank_weight_svdstak_general_r_conv c β W hβdef hr hrr hgapW hposW law hG
+  · exact m.thm_gen_rank_weight_svdstack_general_r_conv c β W hβdef hr hrr hgapW hposW law hG
   · -- Ky Fan: no admissible weight matrix beats `L⋆`
     rw [limitRGW_eq_limitRW, limitOptG_eq_limitROpt]
     exact limitRW_le_opt W (betaFlat β) (Rcol m.R) h0 h1 hr hrp hgapW hposW

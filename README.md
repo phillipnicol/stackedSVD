@@ -62,4 +62,4 @@ theorem.
 
 ## Reference
 
-Baharav, T.Z., Nicol, P.B., Irizarry, R.A., and Ma, R. (2025). Stacked SVD or SVD Stacked? A Random Matrix Theory perspective on data integration. [ArXiv](https://arxiv.org/abs/2507.22170)
+Baharav, T.Z.\*, Nicol, P.B.\*, Irizarry, R.A., and Ma, R. (2025+). Stacked SVD or SVD Stacked? A Random Matrix Theory perspective on data integration. [ArXiv](https://arxiv.org/abs/2507.22170)

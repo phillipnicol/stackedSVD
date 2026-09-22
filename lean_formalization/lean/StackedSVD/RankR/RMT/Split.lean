@@ -38,7 +38,7 @@ with orthonormal columns, `Z` a canonical Gaussian matrix and `t = d^{-1/2}`. Wi
    (`hasLaw_stackZu`) obtained from `MultiTableModel.stack_law` through a shared-spike copy
    of the tables (the noise fields are untouched, so the law transfers).
 
-Paper: `main_paper.tex` lines 815 to 843 (`prop:stacksvd_subspace`).
+Paper: `prop:stacksvd_subspace` and the core matrix `C` before it.
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology

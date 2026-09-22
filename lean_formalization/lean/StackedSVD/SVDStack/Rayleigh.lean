@@ -9,9 +9,9 @@ import StackedSVD.SVDStack.Weighted
 # P1: the weight-free row-space bound for weighted svdstack
 
 Sixth module of `StackedSVD.SVDStack`. It proves the bound of `notes/archive/P1_rayleigh_bound.md`:
-no weight vector, data dependent or not, beats `S/(S+1)` (`main_paper.tex:502`,
-`thm:svdstack_weighted`; the paper's proof at `main_paper.tex:1274` covers only the weights
-`w` for which `W A_beta W` has a simple top eigenvalue).
+no weight vector, data dependent or not, beats `S/(S+1)`
+(`thm:svdstack_weighted`; the paper states it for every nonzero weighting after the theorem
+and sketches it in the paragraph with `eq:nonuniqueweights`).
 
 The mathematics. Write `Vt = m.Vt N omega` for the `M x d` matrix of the top right singular
 vectors, `v` for the shared spike, `g = Vt v` and `G = Vt Vtᵀ`. For a weight vector `w` with
@@ -30,7 +30,7 @@ invertible it equals `g ⬝ᵥ (G⁻¹ g)`, which tends in probability to
 4. `det_Abeta_pos`, `dotProduct_inv_Abeta`: the two scalar facts about `A_beta`.
 5. `rowBound_tendsto` (c): `rowBound` tends in probability to `svdstackLimitOpt beta`.
 6. `svdstackPerfW_uniform_bound` (d) and `svdstackPerfW_le_opt_whp`.
-7. `svdstackLimitOpt_eq_of_single`: case 3 of the paper's proof (`main_paper.tex:1219`).
+7. `svdstackLimitOpt_eq_of_single`: case 3 of the paper's proof (`sec:svdstack_threshold`).
 8. `thm_svdstack_weighted_gaussian_opt_full`: the Gaussian facade.
 
 The three scalar lemmas `det_Abeta_pos`, `dotProduct_inv_Abeta` and
@@ -199,7 +199,7 @@ theorem dotProduct_inv_Abeta (β : Fin M → ℝ) (hβ : ∀ i, 0 ≤ β i ∧ �
   rw [hinv, hbx]
   rfl
 
-/-- Case 3 of the paper's proof (`main_paper.tex:1219`): when at most one table is above the
+/-- Case 3 of the paper's proof (`sec:svdstack_threshold`): when at most one table is above the
 threshold, `S/(S+1) = β_k²`, so no weighting beats the best single table. -/
 theorem svdstackLimitOpt_eq_of_single (β : Fin M → ℝ) (k : Fin M)
     (hβ : ∀ i, 0 ≤ β i ∧ β i < 1) (hk : ∀ i, i ≠ k → β i = 0) :
@@ -316,7 +316,7 @@ variable [NeZero M]
 
 /-- `‖P_R v‖²` with `P_R` the orthogonal projector onto the row space of `Ṽ` (the column space
 of `Ṽᵀ`). It reads no weight vector (`notes/archive/P1_rayleigh_bound.md`, statement (a);
-`main_paper.tex:502`). -/
+`thm:svdstack_weighted`, the paragraph with `eq:nonuniqueweights`). -/
 noncomputable def rowBound (m : MultiTableModel μ M n d) (N : ℕ) (ω : Ω N) : ℝ :=
   ‖(LinearMap.range (Matrix.toEuclideanLin (m.Vt N ω)ᵀ)).starProjection ((m.tbl 0).v N)‖ ^ 2
 
@@ -586,7 +586,7 @@ theorem svdstackPerfW_le_opt_whp (m : MultiTableModel μ M n d) (c β : Fin M �
 
 /-- Gaussian facade: the conclusion of `thm_svdstack_weighted_gaussian_opt`
 (`SVDStack/Weighted.lean:1412`) with the uniform bound of P1 as a second conjunct
-(`main_paper.tex:502`). -/
+(`thm:svdstack_weighted`; the paragraph with `eq:nonuniqueweights`). -/
 theorem thm_svdstack_weighted_gaussian_opt_full [∀ N, IsProbabilityMeasure (μ N)]
     (m : MultiTableModel μ M n d) (c β : Fin M → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)) (hthr : ∃ k, 0 < β k)

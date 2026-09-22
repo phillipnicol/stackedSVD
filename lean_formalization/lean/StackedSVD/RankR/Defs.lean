@@ -13,7 +13,7 @@ import StackedSVD.LinAlg.SpecProjPerturb
 STATUS 2026-08-30: proved, 0 `sorry` (tasks T3 and T4 of `notes/RANK_R_PLAN.md`). The review
 note is `notes/archive/rank_r_defs.md`.
 
-`assum:unaligned` (`main_paper.tex:753`) gives every table its own right singular subspace
+`assum:unaligned` gives every table its own right singular subspace
 `V R_i` inside one shared `r`-dimensional subspace `V`. This file takes the slice `r_i = 1`,
 where each table has one spike `v_i = V R_i` with `R_i` a unit vector of `ℝ^r`, so `r̃ = M`
 and the per-table random matrix theory input is the already proved rank-one
@@ -35,12 +35,12 @@ and the per-table random matrix theory input is the already proved rank-one
    eigenvalue. Task T4 needs this for the continuity hypothesis `0 < λ_{r-1}`.
 6. The rank-one reduction `abetaR_reduce`, `BR_reduce`, `limitR_one_eq_svdstackLimit`: at
    `r = 1` with every `R_i = 1` the objects of this file are the rank-one objects of
-   `SVDStack/Defs.lean`. This is the paper's own consistency check (`main_paper.tex:810`).
+   `SVDStack/Defs.lean`. This is the paper's check after `prop:general_rank_unweighted_svdstack`.
 
 ## The performance
 
 The paper measures `‖V̂_svdstackᵀ V‖_F²` with `V̂_svdstack` the top `r` right singular vectors
-of `Ṽ`. Its own first display (`main_paper.tex:1982`) writes
+of `Ṽ`. The proof of `prop:general_rank_unweighted_svdstack` writes
 `V̂_svdstackᵀ V = Λ_r^{-1/2}(Ṽ Ṽᵀ) Q_r(Ṽ Ṽᵀ)ᵀ Ṽ V`, so
 
 ```
@@ -86,19 +86,19 @@ namespace StackedSVD
 /-! ### 1. `B_R`, `D` and `A_{β,R}` -/
 
 /-- `B_R = diag(β) R_stack ∈ ℝ^{M × r}`, the matrix with row `i` equal to `β_i R_iᵀ`
-(`main_paper.tex:1951`). At `r_i = 1` the row index `(i, j)` of the paper is the table index
-`i`, because `r̃ = ∑_i r_i = M`. -/
+(`lem:general_rank_delocalization`). At `r_i = 1` the row index `(i, j)` of the paper is the table
+index `i`, because `r̃ = ∑_i r_i = M`. -/
 noncomputable def BR {M r : ℕ} (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     Matrix (Fin M) (Fin r) ℝ :=
   Matrix.of fun i k => β i * R i k
 
-/-- `D = diag(1 - β_ij²)` (`main_paper.tex:2050`). -/
+/-- `D = diag(1 - β_ij²)` (the proof of `thm:gen_rank_weight_svdstack`). -/
 noncomputable def Dmat {M : ℕ} (β : Fin M → ℝ) : Matrix (Fin M) (Fin M) ℝ :=
   Matrix.diagonal fun i => 1 - β i ^ 2
 
-/-- `A_{β,R} = B_R B_Rᵀ + D` (`main_paper.tex:2053`). The paper defines the matrix entrywise
-(diagonal `1`, off-diagonal `β_i β_j ⟪R_i, R_j⟫`); `abetaR_apply` and `abetaR_diag` recover
-that form. At `r = 1` with every `R_i = 1` this is `Abeta β`. -/
+/-- `A_{β,R} = B_R B_Rᵀ + D` (the proof of `thm:gen_rank_weight_svdstack`). The paper defines the
+matrix entrywise (diagonal `1`, off-diagonal `β_i β_j ⟪R_i, R_j⟫`); `abetaR_apply` and `abetaR_diag`
+recover that form. At `r = 1` with every `R_i = 1` this is `Abeta β`. -/
 noncomputable def AbetaR {M r : ℕ} (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     Matrix (Fin M) (Fin M) ℝ :=
   BR β R * (BR β R)ᵀ + Dmat β
@@ -184,7 +184,7 @@ variable {p q : ℕ}
 
 /-- The performance functional `z ↦ tr(Bᵀ (specInvTop A r) B)` read off the joint entry family
 `z`, in the exact shape of `continuousAt_trace_specInvTop`. Public since 2026-08-30: the proof
-of `thm_gen_rank_weight_svdstak_general` in `RankR/Weighted.lean` uses the same functional with
+of `thm_gen_rank_weight_svdstack_general` in `RankR/Weighted.lean` uses the same functional with
 `W Ṽ` in place of `Ṽ`. -/
 noncomputable def traceFun (r : ℕ)
     (z : (Fin p × Fin p) ⊕ (Fin p × Fin q) → ℝ) : ℝ :=
@@ -282,8 +282,8 @@ vector `R i ∈ ℝ^r`, and the spike of table `i` is `v_i = V R_i`. Cross-table
 the separate predicate `JointGaussianNoise`, as for `MultiTableModel`.
 
 `Rank(∑_i R_i R_iᵀ) = r` of the paper is **not** a field. The unweighted proposition below
-does not use it (necessity scan row N3), and `thm:gen_rank_weight_svdstak` takes it as an
-explicit argument (`thm_gen_rank_weight_svdstak_paper`, `RankR/Weighted.lean`). -/
+does not use it (necessity scan row N3), and `thm:gen_rank_weight_svdstack` takes it as an
+explicit argument (`thm_gen_rank_weight_svdstack_paper`, `RankR/Weighted.lean`). -/
 structure UnalignedModel {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)]
     (μ : ∀ N, Measure (Ω N)) (M : ℕ) (n : Fin M → ℕ → ℕ) (d : ℕ → ℕ) (r : ℕ) where
   /-- the `M` rank-one spiked tables -/
@@ -319,9 +319,9 @@ theorem isHermitian_tableGram (m : UnalignedModel μ M n d r) (i : Fin M) (N : �
   isHermitian_transpose_mul_self ((m.tbl i).X N ω)
 
 /-- `v̂_i`, the top right singular vector of table `i`, with the paper's sign convention
-`⟪v̂_i, v_i⟫ ≥ 0` (`main_paper.tex:1959`). The sign test reads the unknown `v_i`, so `vhat` is
-not an observable estimator; the observable one differs by a sign, which `perfR` squares
-away. -/
+`⟪v̂_i, v_i⟫ ≥ 0` (the proof of `lem:general_rank_delocalization`). The sign test reads the unknown
+`v_i`, so `vhat` is not an observable estimator; the observable one differs by a sign, which `perfR`
+squares away. -/
 noncomputable def vhat (m : UnalignedModel μ M n d r) (i : Fin M) (N : ℕ) (ω : Ω N) :
     EuclideanSpace ℝ (Fin (d N)) :=
   if 0 ≤ ⟪vMax (m.tableGram i N ω) (m.isHermitian_tableGram i N ω), (m.tbl i).v N⟫_ℝ then
@@ -404,7 +404,7 @@ theorem inner_v_v (m : UnalignedModel μ M n d r) (i j : Fin M) (N : ℕ) :
 noncomputable def colVec (m : UnalignedModel μ M n d r) (N : ℕ) (k : Fin r) :
     EuclideanSpace ℝ (Fin (d N)) := WithLp.toLp 2 fun l => m.V N l k
 
-/-- `⟪v_i, V e_k⟫ = (R_i)_k`, the paper's `(V R_i)ᵀ V = R_iᵀ` (`main_paper.tex:1964`). -/
+/-- `⟪v_i, V e_k⟫ = (R_i)_k`: `(V R_i)ᵀ V = R_iᵀ`, proof of `lem:general_rank_delocalization`. -/
 theorem inner_v_colVec (m : UnalignedModel μ M n d r) (i : Fin M) (k : Fin r) (N : ℕ) :
     ⟪(m.tbl i).v N, m.colVec N k⟫_ℝ = m.R i k := by
   have hVV := m.hV N
@@ -493,12 +493,12 @@ end UnalignedModel
 /-! ### 5. The rank-one reduction
 
 At `r = 1` every `R_i` is the unit vector of `ℝ^1`, so `r̃ = M = r̃` and the objects above are
-the rank-one objects of `SVDStack/Defs.lean`. The paper states the same check at
-`main_paper.tex:810`. The limit `limitR` needs the top eigenvalue of `A_β` to be simple: at
-`β = (0.8, 0)` the matrix `A_β` is the identity, `limitR` is `0.64`, and `svdstackLimit` reads
-one arbitrary eigenvector of a degenerate eigenvalue and gives `0` or `0.64`
-(`notes/archive/audit_rank_r_2026-08-30.md`, row A1.4c). `thm_svd_stack_general` excludes that
-through `hthr` and `abeta_gap`. -/
+the rank-one objects of `SVDStack/Defs.lean`. The paper states the same check in
+the display after `prop:general_rank_unweighted_svdstack`. The limit `limitR` needs the top
+eigenvalue of `A_β` to be simple: at `β = (0.8, 0)` the matrix `A_β` is the identity, `limitR` is
+`0.64`, and `svdstackLimit` reads one arbitrary eigenvector of a degenerate eigenvalue and gives `0`
+or `0.64` (`notes/archive/audit_rank_r_2026-08-30.md`, row A1.4c). `thm_svd_stack_general` excludes
+that through `hthr` and `abeta_gap`. -/
 
 /-- The unit vector of `ℝ^1`: the value of every `R_i` in the rank-one reduction. -/
 noncomputable def oneVec : EuclideanSpace ℝ (Fin 1) := WithLp.toLp 2 fun _ => 1
@@ -519,7 +519,7 @@ theorem BR_reduce {M : ℕ} (β : Fin M → ℝ) (i : Fin M) (k : Fin 1) :
     BR β (fun _ => oneVec) i k = β i := by
   rw [BR, Matrix.of_apply, oneVec_apply, mul_one]
 
-/-- `A_{β,R}` at `r = 1` with every `R_i = 1` is `A_β` (`main_paper.tex:810`). -/
+/-- `A_{β,R}` at `r = 1`, `R_i = 1`, is `A_β` (after `prop:general_rank_unweighted_svdstack`). -/
 theorem abetaR_reduce {M : ℕ} (β : Fin M → ℝ) : AbetaR β (fun _ => oneVec) = Abeta β := by
   ext i j
   rw [abetaR_apply, inner_oneVec, mul_one]

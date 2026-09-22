@@ -57,8 +57,8 @@ theorem isHermitian_Abeta {M : ℕ} (β : Fin M → ℝ) : (Abeta β).IsHermitia
   ext i j
   simp [Matrix.vecMulVec_apply, mul_comm]
 
-/-- `A_{β,w} = W A_β W` with `W = diag(w)` (`main_paper.tex:1284`). It is the entrywise limit
-in probability of the weighted Gram matrix `(W Ṽ)(W Ṽ)ᵀ`. It lives here, and not in
+/-- `A_{β,w} = W A_β W` with `W = diag(w)` (the proof of `thm:svdstack_weighted`). It is the
+entrywise limit in probability of the weighted Gram matrix `(W Ṽ)(W Ṽ)ᵀ`. It lives here, and not in
 `SVDStack/Weighted.lean`, so that `SVDStack/Deterministic.lean` can state
 `sq_le_lamMax_AbetaW` (`notes/archive/audit_weighted_2026-08-30.md`, section 3). -/
 noncomputable def AbetaW {M : ℕ} (w β : Fin M → ℝ) : Matrix (Fin M) (Fin M) ℝ :=
@@ -206,13 +206,13 @@ noncomputable def svdstackLimit {M : ℕ} (β : Fin M → ℝ) : ℝ :=
   (β ⬝ᵥ WithLp.ofLp (vMax (Abeta β) (isHermitian_Abeta β))) ^ 2
     / lamMax (Abeta β) (isHermitian_Abeta β)
 
-/-- `S = ∑_i β_i² / (1 - β_i²)` of `thm:svdstack_weighted` (`main_paper.tex:510`). The single
+/-- `S = ∑_i β_i² / (1 - β_i²)` of `thm:svdstack_weighted`. The single
 copy: `Scalars.lean` and `SVDStack/Weighted.lean` both read it from here
 (`notes/archive/audit_weighted_2026-08-30.md`, section 4). -/
 noncomputable def Sval {M : ℕ} (β : Fin M → ℝ) : ℝ := ∑ i, β i ^ 2 / (1 - β i ^ 2)
 
-/-- The optimal weights `w_i⋆ = 1/√(1 - β_i²)` (`main_paper.tex:521`, the rewriting of
-`eq:svdstack.weight` above the detectability threshold). -/
+/-- The optimal weights `w_i⋆ = 1/√(1 - β_i²)` (the text after `thm:svdstack_weighted`, the
+rewriting of `eq:svdstack.weight` above the detectability threshold). -/
 noncomputable def optW {M : ℕ} (β : Fin M → ℝ) : Fin M → ℝ :=
   fun i => 1 / Real.sqrt (1 - β i ^ 2)
 

@@ -18,18 +18,18 @@ over `Fin M`; no probability appears.
 ## The paper
 
 Track E writes the `j`-th weighted stack `X_stack^(j)` of `eq:stacksvd_appXstack`
-(`main_paper.tex:2325`) as one heteroscedastic rank-`r` spiked matrix. The `r` spikes decouple,
+as one heteroscedastic rank-`r` spiked matrix. The `r` spikes decouple,
 so component `k` under the weighting `w = w_{·j}` is the rank-1 heteroscedastic problem at the
 block energy profile `(w_i² θ_ik²)_i`. Its outlier is `MPhet.rhoHet (θ_{·k}) c w` (`rho_k`), its
-detectability condition is `Scalars.Assumption4 (θ_{·k}) c w` (`eq:assumption4`,
-`main_paper.tex:1368`), and its overlap limit is `Scalars.Lw (θ_{·k}) c w`.
+detectability condition is `Scalars.Assumption4 (θ_{·k}) c w` (`eq:assumption4`),
+and its overlap limit is `Scalars.Lw (θ_{·k}) c w`.
 
-`alg:rank_r_stacksvd` line `alg_line:stacksvd_rank` (`main_paper.tex:2382`) reads the estimator
-off the sorted index `ℓ_j`, the rank of `θ̃_jj` among `{θ̃_jk}`. Section 4.2 of the Track E plan
-shows that at unordered `θ` this is **not** the index of the outlier of spike `j`. The index the
-random matrix chain is true at is `ellSup`, the rank of `rho_j` among the outliers of the
-supercritical spikes. Inside the model class (`hθnn`, `hθanti`) the two agree, which is
+`alg:rank_r_stacksvd` line `alg_line:stacksvd_rank` reads the estimator off the sorted index
+`ℓ_j`, the rank of `λ_jj` among `{λ_jk}` (`eq:stacksvd_lambda`). The index the random matrix
+chain is true at is `ellSup`, the rank of `rho_j` among the outliers of the supercritical
+spikes. Inside the model class (`hθnn`, `hθanti`) it agrees with `ellR`, which is
 `ellSup_eq_ellR` below.
+
 
 ## Contents
 
@@ -43,7 +43,7 @@ supercritical spikes. Inside the model class (`hθnn`, `hθanti`) the two agree,
 4. `rhoHet_le_rhoHet`, `rhoHet_lt_rhoHet`: the outlier `rho` is monotone in `θ²`. This is
    fact 1 of step 4 of the Track E plan.
 5. `nuHet = F'(rho)`, `nuHet_pos`, `overlap_identity_nuHet` (`1/(rho * nu) = L(w)`, the paper's
-   `main_paper.tex:1433`).
+   overlap display after `eq:weighted_norm`).
 
 ### `namespace Scalars` (over a strength table `θ : Fin M → Fin r → ℝ`)
 
@@ -274,14 +274,14 @@ theorem rhoHet_lt_rhoHet (hc : ∀ i, 0 < c i) (hθ : ∀ i, θ i ^ 2 ≤ θ' i 
 /-! ### 5. `nu = F'(rho)` -/
 
 /-- `ν = F'(ρ)`: the derivative of the limiting secular function `1 + F` at the outlier. The
-overlap limit of `main_paper.tex:1433` is `1/(ρ ν)`. -/
+overlap limit after `eq:weighted_norm` is `1/(ρ ν)`. -/
 noncomputable def nuHet (θ c w : Fin M → ℝ) : ℝ := FhetDeriv θ c w (rhoHet θ c w)
 
 /-- `0 < ν` under `eq:assumption4`. This is `FhetDeriv_rhoHet_pos` read on `nuHet`. -/
 theorem nuHet_pos (hc : ∀ i, 0 < c i) (h4 : Assumption4 θ c w) : 0 < nuHet θ c w :=
   FhetDeriv_rhoHet_pos hc h4
 
-/-- The overlap identity `1/(ρ ν) = L(w)` (`main_paper.tex:1433`), read on `nuHet`. -/
+/-- The overlap identity `1/(ρ ν) = L(w)` (display after `eq:weighted_norm`), read on `nuHet`. -/
 theorem overlap_identity_nuHet (hc : ∀ i, 0 < c i) (h4 : Assumption4 θ c w) :
     1 / (rhoHet θ c w * nuHet θ c w) = Lw θ c w :=
   overlap_identity_het hc h4
@@ -302,8 +302,8 @@ noncomputable def numSup (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (w :
 open Classical in
 /-- The sorted index of the outlier of component `k` at the weights `w`: the number of
 supercritical components whose outlier location `rho_l` is strictly above `rho_k`. This is the
-index the Track E chain is true at; `ellR` is the paper's `ℓ_j` and agrees with it inside the
-model class (`ellSup_eq_ellR`). -/
+index the Track E chain is true at. `ellR` ranks `θ̃_jj`; inside the model class both are `j`,
+the paper's `ℓ_j` there (`ellSup_eq_ellR`). -/
 noncomputable def ellSup (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (w : Fin M → ℝ) (k : Fin r) :
     ℕ :=
   (Finset.univ.filter fun l : Fin r =>
@@ -341,7 +341,7 @@ theorem ellSup_lt (θ : Fin M → Fin r → ℝ) (c w : Fin M → ℝ) (k : Fin 
 variable {θ : Fin M → Fin r → ℝ} {c w : Fin M → ℝ}
 
 /-- `eq:assumption4` at the stack weights of column `j` is the paper's detectability threshold
-`∑_i θ_ij⁴/c_i > 1` (`main_paper.tex:1602`). -/
+`∑_i θ_ij⁴/c_i > 1` (the threshold at the end of the proof of `thm:stacksvd_weighted`). -/
 theorem assumption4_wStackR_iff (hc : ∀ i, 0 < c i) (j : Fin r) :
     Assumption4 (fun i => θ i j) c (wStackR θ c j) ↔ 1 < ∑ i, θ i j ^ 4 / c i :=
   assumption4_optW_iff hc
@@ -398,7 +398,7 @@ theorem rhoHet_lt_of_lt (hc : ∀ i, 0 < c i) (hnn : ∀ i k, 0 ≤ θ i k)
 
 /-! ### 9. The two index theorems -/
 
-/-- **The outlier index is the paper's `ℓ_j` inside the model class.** At a supercritical
+/-- **Inside the model class the outlier index is `ellR`, and both are `j`.** At a supercritical
 component `j` the filter of `ellSup` is exactly `Finset.Iio j`: a component to the left is
 supercritical with a strictly larger outlier, `j` itself fails the strict inequality, and a
 component to the right that is supercritical has a strictly smaller outlier. -/
@@ -425,7 +425,7 @@ theorem ellSup_eq_ellR (hc : ∀ i, 0 < c i) (hnn : ∀ i k, 0 ≤ θ i k)
 
 /-- **The subcritical branch.** When component `j` is not supercritical at its own weights,
 every supercritical component sits strictly to the left of `j`, so the number of outliers is at
-most `ℓ_j`. Stage E8 reads the bulk branch at every index from `numSup` up. -/
+most `ellR`. Stage E8 reads the bulk branch at every index from `numSup` up. -/
 theorem numSup_le_of_not_assumption4 (hc : ∀ i, 0 < c i) (hnn : ∀ i k, 0 ≤ θ i k)
     (hanti : ∀ i, StrictAnti (θ i)) (hM : 0 < M) {j : Fin r} (hposj : ∀ i, 0 < θ i j)
     (h4 : ¬ Assumption4 (fun i => θ i j) c (wStackR θ c j)) :

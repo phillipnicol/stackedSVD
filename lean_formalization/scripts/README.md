@@ -1,8 +1,7 @@
 # scripts/ - mechanical gates before a commit
 
-The working rules of the development repository (`CLAUDE.md`, not part of this copy)
-require the gates to pass before a commit; the first two are the
-minimum, the eight together are the build of record.
+The gates must pass before a commit. The first two are the minimum; the seven together are
+the build of record.
 
 ```sh
 scripts/check_sorries.sh && scripts/check_axioms.sh
@@ -59,8 +58,8 @@ The rule: a declaration passes when its axioms are inside
    `SORRYDEPS` line, so an inherited `sorry` needs no row of its own.
 3. Anything else: fail.
 
-Any axiom outside the three also fails. `CLAUDE.md` hard rule 2 forbids `axiom`, so this
-gate is how a new `axiom` gets caught.
+Any axiom outside the three also fails. The project declares no `axiom`, and this gate is
+how a new one gets caught.
 
 Options and variables:
 
@@ -166,7 +165,7 @@ Vendored code (`StackedSVD/Vendor/`) is reported, not gated: the axiom driver sk
 `AXIOM_AUDIT_VENDOR=1`. One vendored module is outside the closure on purpose,
 `Vendor/COLT83/Axioms.lean`, which is the vendor's own `#print axioms` driver.
 
-State on 2026-09-02, after `StackedSVD/Sat.lean` landed: 147 modules, 127 ours, all 127 reachable.
+State on 2026-09-02: 147 modules, 127 ours, all 127 reachable.
 
 Exit codes: `0` pass, `1` a module of ours is unreachable, `2` environment error.
 
@@ -182,13 +181,13 @@ the toolchain, a full capped build, `check_sorries.sh`, `check_axioms.sh`,
 audit pack comes from this script, so no build result is hand written.
 
 `AUDIT_PACK_JOBS` sets the core count of `lake-build-capped.sh` (default 12). Set it to the
-thread budget of the session. `--no-build` skips the build; use it for a dry run only,
+core budget of the machine. `--no-build` skips the build; use it for a dry run only,
 because the two gates then read stale oleans.
 
 The script always exits 0. Read the recorded exit codes: a non-zero code means the pack must
 not claim that the library builds.
 
-## check_theorems_sigs.py - the third gate
+## check_theorems_sigs.py - the fourth gate
 
 ```sh
 python3 scripts/check_theorems_sigs.py docs/THEOREMS.md
@@ -201,38 +200,19 @@ when even the elided form is absent. It prints the count of signatures, the coun
 verbatim, and one line per mismatch. `NO VERBATIM MATCH` is expected for a signature the
 document abbreviates on purpose and is a defect only when that abbreviation is undocumented;
 `NAME NOT IN TREE` is always a defect. State on 2026-09-03: 92 signatures, 80 verbatim, 12
-documented abbreviations, exit 0 (91, 79, 12 before the L5 block of that day; 71, 59, 12
-before the 16 blocks added on 2026-09-02, 87, 75, 12 before the 4 blocks of the L2 and L3
-additions). `docs/THEOREMS.md` states which of its signatures are abbreviated and why.
+documented abbreviations, exit 0. `docs/THEOREMS.md` states which of its signatures are
+abbreviated and why.
 
-## check_paper_edits.py - the sixth gate, the paper edits as exact replacements
+## check_paper_edits.py - retired, not one of the gates
 
-```sh
-python3 scripts/check_paper_edits.py                 # the checks
-python3 scripts/check_paper_edits.py --apply FILE    # also write the amended paper to FILE
-```
+The script stays in `scripts/` and no longer runs in the gate sequence. It compared the
+proposed edits of `notes/paper_edits.md` with the paper snapshot `main_paper.tex` and with
+the amended statements that `docs/THEOREMS.md` quoted: every old text once in the snapshot,
+every new text with balanced braces, every amended block verbatim in the snapshot with the
+replacements applied. The revision of the paper applies those edits, so the comparison has no
+subject left. Without the paper snapshot the script prints `SKIP` and exits 0.
 
-In this public copy the paper snapshot and `notes/paper_edits.md` are absent; the script
-prints `SKIP` and exits 0. The gate ran on the development tree (`docs/AUDIT_DOC.md`,
-Appendix A, and the build of record in `docs/TECHNICAL.md`).
-
-The paper snapshot `main_paper.tex` is never edited. `notes/paper_edits.md` records each
-proposed edit as a subsection `### Exact replacement Ek.j: ...` with two fenced `latex`
-blocks, the old text and the new text. `docs/THEOREMS.md` quotes each amended statement
-under a lead-in `**Paper, as amended (Ek).**` followed by one fenced `latex` block. The
-script reads no Lean. It checks that every old text occurs exactly once in the snapshot and
-that no two overlap, that every new text has balanced braces and matched `\begin` and
-`\end` pairs, and that every amended block of `THEOREMS.md` is verbatim in the amended paper
-(the snapshot with every replacement applied, held in memory) and absent from the
-unamended snapshot. It prints one line per hunk, in paper order, and one summary line; it
-exits 1 on the first failure. `--apply` writes the amended paper only to a path outside the
-repository or containing `scratch`; the amended paper is not a repository file, by the
-user's decision of 2026-09-05. It does not compile the LaTeX (the class file and
-`tdefs.tex` are not in the repository), so a macro that the new text uses must already
-occur in the paper; the review of each hunk checks this by hand. State on 2026-09-05: 24
-replacements, 6 amended blocks, exit 0, 0.1 s.
-
-## check_core_imports.py - the eighth gate, the import boundary of the Gaussian RMT core
+## check_core_imports.py - the seventh gate, the import boundary of the Gaussian RMT core
 
 ```sh
 python3 scripts/check_core_imports.py              # gate, under 1 s
@@ -250,9 +230,9 @@ module outside the set, or when the entry theorem is missing. Exit codes: 0 pass
 boundary violation or the missing entry theorem, 2 environment error. `--boundary` is
 informational: it lists, for `RMT/Het/`, `RankR/RMT/`, `RankR/Het/` and
 `RankR/SingleWeight/Het/`, the imports that are neither in the core nor in one of those four
-families, which is the list the F28 refactor has to move.
+families.
 
-## check_kernel.sh - the seventh gate, the kernel replay
+## check_kernel.sh - the sixth gate, the kernel replay
 
 ```sh
 scripts/check_kernel.sh                                    # every module of the package, about 10 min
@@ -306,44 +286,43 @@ the N oleans of the package (S s, 3 workers)`.
 These six scripts are not gates. Each one recomputes a closed form or a limit outside Lean
 and asserts it, so a Lean statement that quotes a constant has an independent witness. They
 need numpy. Each prints its seed. Each one
-caps the BLAS threads at 4 (`OMP_NUM_THREADS` and its siblings, set before numpy loads,
-since 2026-09-10 evening: an uncapped run of `check_nongaussian_forms.py` took 60 cores);
-export those variables first to choose another count.
+caps the BLAS threads at 4 (`OMP_NUM_THREADS` and its siblings, set before numpy loads; an
+uncapped run of `check_nongaussian_forms.py` took 60 cores); export those variables first to
+choose another count.
 
 | Script | What it checks | Runtime |
 |---|---|---|
-| `check_edge_count.py` | task U7 of `notes/archive/rankr_plan_A.md`: the edge and the outlier count of the rank-`r` subspace law. Seed 2026090101. **Exits 1 today**: its C2 bar is an exact empirical rate of 1.000, which no finite `d` reaches near the edge. Read the cross-`d` trend block, and `notes/archive/audit_numeric_edge_count_2026-09-02.md` for the 32 rows and why none of them contradicts a claim. | 368 s |
+| `check_edge_count.py` | the edge and the outlier count of the rank-`r` subspace law (`notes/archive/rankr_plan_A.md`). Seed 2026090101. **Exits 1**: its C2 bar is an exact empirical rate of 1.000, which no finite `d` reaches near the edge. Read the cross-`d` trend block, and `notes/archive/audit_numeric_edge_count_2026-09-02.md` for the 32 rows and why none of them contradicts a claim. | 368 s |
 | `check_port_stacksvd_subspace.py` | `prop_stacksvd_subspace_general` (`notes/archive/rankr_plan_B.md` section 6). Rows P1 to P5 are exact identities and must hit machine precision. | seconds |
-| `check_rayleigh_bound.py` | the Rayleigh quotient bound uniform in the weights, rank 1 and rank `r` (paper findings E1 and E2). | seconds |
+| `check_rayleigh_bound.py` | the Rayleigh quotient bound uniform in the weights, rank 1 and rank `r`. | seconds |
 | `check_remark_examples.py` | the four examples of `remark:stack_outperform_svd` and `remark:svd_outperform_stack` (`main_paper.tex` 566 to 620). Deterministic, no seed. | seconds |
-| `check_singleweight.py` | the single-weight stackSVD limit of Appendix D (`prop:gen_rank_stacksvd_singleweight`, paper finding E11): the closed form against Monte Carlo, and the value at a tied root. Seed 20260905. Prints its rows; no PASS bar. | about 2 minutes on 2 cores |
-| `check_stacksvd_orthogonality.py` | the asymptotic orthogonality of the rank-`r` svdstack columns (`thm_rank_r_svdstack_offdiag_of_sep`, follow-up F2). Seed 20260905. No PASS bar. | seconds |
+| `check_singleweight.py` | the single-weight stackSVD limit of Appendix D (`prop:gen_rank_stacksvd_singleweight`): the closed form against Monte Carlo, and the value at a tied root. Seed 20260905. Prints its rows; no PASS bar. | about 2 minutes on 2 cores |
+| `check_stacksvd_orthogonality.py` | the asymptotic orthogonality of the rank-`r` svdstack columns (`thm_rank_r_svdstack_offdiag_of_sep`). Seed 20260905. No PASS bar. | seconds |
 | `weighted_edge_levels.py` | the edge levels of the weighted noise block (`bHet`, `bSF`, the Weyl and operator-norm bounds of `notes/WEIGHTED_GENERAL_SCOPE.md` section 4): the share of supercritical draws whose outlier lies above each level. Seed 20260910. No PASS bar. | about 20 s |
 
 The scripts `check_singleweight_regimes.py` and `check_nongaussian_forms.py` (the three weight
-regimes of F18b; the non-Gaussian resolvent forms, which reads the R and Python reference code
-of the paper from a checkout of the `stackedSVD` repository, `STACKEDSVD_REPO` or the parent
-of this tree) are the same kind of witness. `scripts/numeric/` (the top-level
-`scratchpad/` until 2026-09-09) holds the exploration scripts behind two design decisions,
-with its own README; they are evidence, not checks.
+regimes of the single-weight witness; the non-Gaussian resolvent forms, which reads the R and
+Python reference code of the paper from a checkout of the `stackedSVD` repository,
+`STACKEDSVD_REPO` or the parent of this tree) are the same kind of witness. `scripts/numeric/`
+holds the exploration scripts behind two design decisions, with its own README; they are
+evidence, not checks.
 
 ## scripts/stage3_count/ - numeric evidence for the Furedi-Komlos count
 
 Six scripts, kept as evidence for `cellCard_mul_le_pos`, the Furedi-Komlos count of Stage 3
-(proved 2026-09-10 evening, `lean/StackedSVD/RMT/General/Edge/CountBound.lean`, moved from
-`Count.lean`). Exact integer enumeration, no randomness, runtimes under 1 s to 17 s. Not a
+(proved in `lean/StackedSVD/RMT/General/Edge/CountBound.lean`). Exact integer enumeration,
+no randomness, runtimes under 1 s to 17 s. Not a
 gate; see `scripts/stage3_count/README.md` for what each script checks and the result.
-Three more scripts (`x8_enum.py`, `x8_charge.py`, `x8_cells8.py`) back the X8 plan that
-proved the same lemma, `notes/x8_plan.md` (a six-part code of a walk and a Narayana lower
-bound on the tree cell). `scripts/stage3_count/x8_scratch/` (development repository only, not
-part of this copy) holds the scratch Lean files and reports of that plan's units, produced
-2026-09-10, not part of the Lake build.
+Three more scripts (`x8_enum.py`, `x8_charge.py`, `x8_cells8.py`) back the proof plan of the
+same lemma, `notes/x8_plan.md` (a six-part code of a walk and a Narayana lower
+bound on the tree cell). `scripts/stage3_count/x8_scratch/` (not part of this copy) holds
+the scratch Lean files of that plan; they are not part of the Lake build.
 
 ## check_paths.py - every path the documents name exists
 
-Not a gate of the build of record; a check on the documents (added 2026-09-10 with the
-repository cleanup, `notes/REPO_CLEANUP_PLAN.md`). It reads `README.md`, `CLAUDE.md`,
-`docs/*.md`, `scripts/README.md`, `scripts/numeric/README.md` and `lean/README.md`,
+Not a gate of the build of record; a check on the documents. It reads `README.md`,
+`GETTING_STARTED.md`, `docs/*.md`, `scripts/README.md`, `scripts/numeric/README.md` and
+`lean/README.md`,
 takes every backtick-quoted token that looks like a path (a slash, or a file extension), and
 resolves it against the repository root, the Lean package, the Lean sources, `docs/`,
 `notes/`, `notes/archive/`, `scripts/`, and finally as a path suffix or a bare file name
@@ -357,7 +336,7 @@ python3 scripts/check_paths.py            # gate form
 python3 scripts/check_paths.py --list     # every token and where it resolved
 ```
 
-Release mode (2026-09-10): the public copy of the tree ships without `notes/`, the paper
+Release mode: the public copy of the tree ships without `notes/`, the paper
 snapshot and a few private documents. When `scripts/release_withheld.txt` exists (the release
 script writes it; the development tree has none, and the file is not tracked), a token that does not resolve in the tree
 but resolves against that list counts as withheld, not as missing, and the summary line
@@ -370,17 +349,17 @@ python3 scripts/release/make_release.py OUTDIR [--tar]   # writes OUTDIR/lean_fo
 ```
 
 Exports the public copy (the folder `lean_formalization` of the paper's code repository,
-`https://github.com/phillipnicol/stackedSVD`; the user's decision of 2026-09-10, the plan is
-`notes/RELEASE_PLAN.md`). It copies the tracked files that ship (the Lean project, the reader
+`https://github.com/phillipnicol/stackedSVD`; the plan is `notes/RELEASE_PLAN.md`). It copies the tracked files that ship (the Lean project, the reader
 documents, the gate and numeric scripts, `README.md`, `GETTING_STARTED.md`, `LICENSE`,
 `CITATION.cff`), applies a fixed list of exact text replacements (each must match once: the
 clone lines, the server paths, the sentences that name a withheld file), adds an "About this
 copy" section to `README.md`, writes the list of the withheld paths (`release_withheld.txt`
 under `scripts/`, generated, not tracked), and then checks the
-copy: every unmodified file byte-identical, no server path or session link in the reader
-documents, `check_paths.py` inside the copy with 0 missing. Not shipped: `notes/` (which since
-2026-09-11 holds the paper snapshot and the two paper-facing documents too), `CLAUDE.md`,
-`scripts/stage3_count/x8_scratch/`, `scripts/make_audit_packet_rank1.py` and the folder
+copy: every unmodified file byte-identical, no server path or private link in the reader
+documents, `check_paths.py` inside the copy with 0 missing. Not shipped: `notes/` (which
+holds the paper snapshot and the two paper-facing documents too), the top-level
+working-rules file, `scripts/stage3_count/x8_scratch/`,
+`scripts/make_audit_packet_rank1.py` and the folder
 `scripts/release/` itself. The docstring lists the rules. `release/make_branch.sh` puts the
 exported folder on a branch of a clone of the paper's code repository (no push), and
 `release/README.md` gives the commands from a clone.

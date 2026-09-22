@@ -1,43 +1,29 @@
 # THEOREMS.md: what is proved, and under which hypotheses
 
-> Location (2026-09-03): this file lives in `docs/`. The bare names `TECHNICAL.md`, `THEOREMS.md`
+> Location: this file lives in `docs/`. The bare names `TECHNICAL.md`, `THEOREMS.md`
 > and `AUDIT_DOC.md` refer to the files of this folder; every other path is relative to the
-> repository root. `paper_edits.md` and `NOTE_FOR_COAUTHORS.md` moved from this folder to
-> `notes/` on 2026-09-11; this file names them `notes/paper_edits.md` and
-> `notes/NOTE_FOR_COAUTHORS.md` throughout.
+> repository root.
 > The short `README.md` at the root is the plain-language entry point.
 
 This document is self-contained. It states every result of the paper *"Stacked SVD or SVD
 stacked? A random matrix theory perspective on data integration"* that the Lean development
 covers, next to the Lean declaration that carries it. An auditor can read it without the
-repository open.
-
-Source of the paper text: `main_paper.tex`, the read-only snapshot in `notes/paper/` of the
-development repository (taken 2026-08-29 from the AoS resubmission; not part of this public
-copy, and the arXiv version carries the same labels). Label references are labels, not line numbers;
-grep the label.
+repository open. Label references are labels in main_paper.tex (available on arxiv), not line numbers; grep the label.
 
 Source of the Lean text: `lean/StackedSVD/`, branch `stage3`. Section 8 names the
-commit of the build of record. Every signature below was copied from the tree (the first
-rows on 2026-09-02, later rows with their own dates) and is re-checked against the build of
-record by `python3 scripts/check_theorems_sigs.py docs/THEOREMS.md` (gate 4; section 8 holds
-the last run).
-The declaration names never change; a redundant hypothesis may be dropped from a signature by
-a later cleanup pass, and `notes/archive/cleanup_2026-09-02_removed.md` records every such
-change.
+commit of the build of record. Every signature below was copied from the tree and is
+re-checked against the build of record by
+`python3 scripts/check_theorems_sigs.py docs/THEOREMS.md` (gate 4; section 8 holds the last
+run).
+The declaration names never change. A redundant hypothesis may be dropped from a signature,
+and `notes/archive/cleanup_2026-09-02_removed.md` records every such change.
 
 ## 0. How to read a result section
 
-Each section has up to eight parts.
+Each section has up to seven parts.
 
 1. **Paper.** The theorem environment, verbatim LaTeX.
-2. **Paper, as amended.** A result that a paper edit touches carries this second block: the
-   whole statement environment, verbatim as it reads after the replacement, or a one-line note
-   when the edit changes only prose outside the environment. The exact replacements, old text
-   and new text, are the **Exact replacement** subsections of `notes/paper_edits.md`.
-   `python3 scripts/check_paper_edits.py` checks that every old text occurs exactly once in the
-   snapshot `main_paper.tex` and that every amended block here is verbatim in the amended paper.
-3. **Lean.** The `theorem` signature, verbatim, for the Gaussian form and for the Layer 1
+2. **Lean.** The `theorem` signature, verbatim, for the Gaussian form and for the Layer 1
    form when both exist, and, in the five sections that have one, a **Lean, general noise**
    block for the four-moment form (3.1, 3.2, 3.4, 3.5 and 5.4); section 2.1 quotes the same
    general-noise discharge next to the Gaussian one. Exceptions, for readability: a
@@ -71,12 +57,12 @@ Each section has up to eight parts.
    confirms exactly one `[NeZero M]` per declaration. Nothing else is hidden: no other
    section-level instance or variable enters a quoted declaration without appearing in its
    source text. The hypothesis is well-formedness: at least one table.
-4. **Hypotheses in words.** One line per binder.
-5. **Modeling choices.** Numbered, from the archived review note and from `notes/FLAGGED.md`.
-6. **Proof sketch.** Where present, the route of the proof, with the lemmas it passes through
+3. **Hypotheses in words.** One line per binder.
+4. **Modeling choices.** Numbered, from the archived review note and from `notes/FLAGGED.md`.
+5. **Proof sketch.** Where present, the route of the proof, with the lemmas it passes through
    and their file lines.
-7. **Scope.** What the Lean statement says that the paper's does not, or the reverse.
-8. **Audit trail.** The audit notes that examined the result, and their verdicts.
+6. **Scope.** What the Lean statement says that the paper's does not, or the reverse.
+7. **Audit trail.** The audit notes that examined the result, and their verdicts.
 
 Two forms exist for almost every result.
 
@@ -87,23 +73,23 @@ Two forms exist for almost every result.
 - **Gaussian**, named `*_gaussian`, takes model hypotheses only: independent Gaussian tables
   in the proportional regime. The structure is proved, not assumed.
 
-A third form exists for five results since 2026-09-09. **General noise**, named `*_of_general`,
+A third form exists for five results. **General noise**, named `*_of_general`,
 takes model hypotheses at the paper's own noise class `assum:general_noise`: independent tables
 with i.i.d. entries of one fixed law with mean `0`, variance `1` and a finite fourth moment.
 It adds two binders that the paper does not have, a Lebesgue density and the upper edge of the
-bulk, so it is an implication and not an unconditional theorem. Since 2026-09-10 evening
-(Stage 3 of `notes/NONGAUSSIAN_SCOPE.md`) the tree proves the edge binder at four moments
+bulk, so it is an implication and not an unconditional theorem. Stage 3 of
+`notes/NONGAUSSIAN_SCOPE.md` proves the edge binder at four moments
 unconditionally (`SpikedModel.lamMax_W0_edge_of_general`, `RMT/General/Edge/Sup.lean`;
-section 7.1 names the one combinatorial count the proof needed, proved 2026-09-10 evening),
+section 7.1 names the one combinatorial count the proof needed),
 and a fourth form,
 named `*_of_moments`, takes the same binders minus the edge. Only the density binder remains
 beyond the paper. Sections 2.1 and 3.1 give both binders, and `notes/NONGAUSSIAN_SCOPE.md`
 gives the staged plan they come from.
 
 There is no `axiom` in the development. Convergence is always in probability, never almost
-surely, and that is the paper's own mode: `main_paper.tex:234` defines `\pto` as "convergence
-in probability of a sequence of random variables", and `:159` and `:175` state the results in
-that mode. The paper writes "almost surely" twice (`:1129`, `:1142`), both inside one proof
+surely, and that is the paper's own mode: Section `sec:model_setup` defines `\pto` as "convergence
+in probability of a sequence of random variables", and the contributions list and the outline of
+the introduction state the results in that mode. The paper writes "almost surely" twice, both inside the proof of `lem:delocalization`
 and not in any statement. The formalization therefore does not weaken the paper's claim.
 
 ### Glossary of the project's own terms
@@ -119,19 +105,17 @@ theory; they name parts of this development.
 | **`*_of_gaussian`** | The name of a Layer 2 theorem: it proves a hypothesis structure for independent Gaussian tables in the proportional regime. |
 | **`*_gaussian`** | The name of a result that takes model hypotheses only, obtained by feeding a `*_of_gaussian` theorem to a Layer 1 theorem. |
 | **`*_of_general`** | A general-noise name: a structure discharged at one fixed i.i.d. law (`thetaEstLaw_of_general`, Stage 0; `singleTableLaw_of_general`, Stage 1), or a Layer 1 theorem fed by that discharge (the four facades of `General/Layer1.lean`). Every Stage 1 name carries the upper edge of the bulk as a hypothesis. |
-| **`*_of_moments`** | The same result with the edge hypothesis supplied (Stage 3, 2026-09-10). It takes the paper's noise class and a Lebesgue density, and nothing else, but it rests on one open combinatorial count (section 7.1). Five names: `singleTableLaw_of_moments` (`RMT/General/Edge/Sup.lean`) and the four facades of `General/Layer1.lean`. |
+| **`*_of_moments`** | The same result with the edge hypothesis supplied (Stage 3). It takes the paper's noise class and a Lebesgue density, and nothing else. The combinatorial count it rests on is proved (section 7.1). Five names: `singleTableLaw_of_moments` (`RMT/General/Edge/Sup.lean`) and the four facades of `General/Layer1.lean`. |
 | **Stage 0 to 5** | The stages of `notes/NONGAUSSIAN_SCOPE.md`, the plan that carries the rank-one results from Gaussian noise to the paper's four-moment class. Stage 0 (`ThetaEstLaw`), Stage 1 (`SingleTableLaw`, given the edge) and Stage 3 (the edge itself, at four moments) are done. |
 | **`rk`** | The per-table spike count `r_i` of `assum:unaligned`, as a function `Fin M → ℕ`. `alignedRk M r` is the constant function `r`, that is the exactly aligned family of `assum:rank_r`. |
 | **item R0 to R6, S, Sym, T** | Stages of the Marchenko-Pastur chain that proves `singleTableLaw_of_gaussian`, in `RMT/`. The roadmap is `notes/archive/rmt_roadmap.md`. |
 | **item P, item D** | Two roadmap items outside that chain: P is `lem:noise_projection_concentration` (`ThetaEst.lean`), D is `lem:delocalization` (`SVDStack/Gram.lean`). |
 | **H0 to H12** | The same for the heteroscedastic chain `RMT/Het/` that proves `heteroLaw_of_gaussian`. |
-| **Track A to E** | The five work streams of Section 7: A (Gaussian discharge of `SubspaceLaw` at `r_i = 1`), B (Section 7 at general `r_i`, Layer 1 only), C (Gaussian discharge of `TableLawR` at general `r_i`), D (the aligned rank-`r` svdstack clauses), E (Gaussian discharge of `HeteroLawR`). A "wave" is one batch of agents inside a track. |
-| **D1 to D38** | Numbered decisions Claude took alone, in `notes/FLAGGED.md`. D32 carries a numbered sub-list, cited here as "item *n* of the D32 block". |
-| **Q1 to Q17** | Numbered questions for the user, in the same file. |
-| **E1 to E12** | Numbered findings about the paper, in `notes/paper_edits.md`. Each is a proposal; none is applied to the paper. |
+| **D1 to D38** | Numbered formalization decisions, recorded in `notes/FLAGGED.md`. D32 carries a numbered sub-list, cited here as "item *n* of the D32 block". |
+| **Q1 to Q17** | Numbered questions about scope, in the same file. Section 7.3 states the answers. |
 | **class A, B, C** | The formalization class of a result in `notes/README.md`: A scalar algebra, B finite matrix algebra, C a random matrix theory limit law. |
 
-`lean/StackedSVD/Main.lean` (added 2026-09-07) collects the final form of every result
+`lean/StackedSVD/Main.lean` collects the final form of every result
 above into one file, in the order of this document. Each paper label gets a theorem named
 after it (`prop_single_table`, `lem_delocalization`, ..., `prop_singleweight_suboptimality`
 of 6.9), whose signature is the `_gaussian` theorem quoted in that section, or the
@@ -211,13 +195,13 @@ structure SpikedModelR (μ : ∀ N, Measure (Ω N)) (n d : ℕ → ℕ) (rk : �
 `hθnn : ∀ k, 0 ≤ θ k` and `hθanti : StrictAnti θ` fix the spikes of a table: nonnegative and
 strictly decreasing. So every spike is positive except possibly the last one, which may be
 `0`. A table whose last spike is `0` is the same table with one spike fewer, so this class
-is the paper's class of `assum:unaligned` ("diagonal with positive entries") up to that
+is the paper's class of `assum:unaligned` (`Θ_i ∈ ℝ^{r_i × r_i}_{>0}` diagonal) up to that
 relabeling; the nonnegative form makes the rank-one table `SpikedModel` (whose `hθ : 0 ≤ θ`
 allows `θ = 0`) a special case through `SpikedModel.toRankR`. `hθanti` is the paper's
-distinctness hypothesis (`main_paper.tex:768`) together with a fixed column order, which is
+distinctness hypothesis (in the text after `assum:unaligned`) together with a fixed column order, which is
 free: a simultaneous permutation of the columns of `U_i`, `Θ_i` and `R_i` leaves the model
 unchanged. Both are model fields, not hypotheses of any theorem, and no Layer 1 proof reads
-either; see section 6.7 and `notes/paper_edits.md` E7.
+either; see section 6.7.
 
 ```lean
 /-- `assum:unaligned` with no restriction on the `r_i`. -/
@@ -360,7 +344,7 @@ noncomputable def UnalignedModelR.thetaAligned (m : UnalignedModelR μ M n d r (
 ```
 
 `ellSup` and `ellR` differ in general. `Scalars.ellSup_eq_ellR` proves they agree inside the
-model class of `assum:rank_r`. The difference is paper finding E7; see section 7.
+model class of `assum:rank_r`. Section 6.7 reads the difference against the paper's `ℓ_j`.
 
 ### 1.4 The estimators
 
@@ -415,7 +399,7 @@ in `RMT/Full.lean`, both regimes (`c < θ⁴` and `θ⁴ ≤ c`), through the ch
 `RMT/{MP, MP7, R0, R4, R4C, Simplicity, Symmetry, R3, R3minus, T, R1, ResolvDeriv, SteinStep,
 R2, R5, R6, Sup, TailShift}`. The literature mirror is `liu2023asymptotic` Theorem 1.
 
-And, since 2026-09-09, at a general law with a density, given the edge:
+And at a general law with a density, given the edge:
 
 ```lean
 theorem singleTableLaw_of_general [∀ N, IsProbabilityMeasure (μ N)] {c : ℝ} (hc : 0 < c)
@@ -435,15 +419,15 @@ DelocAlign, DelocUniform, DelocUniformSup, Sup}` and the probability files
 four-moment class at one fixed law (section 2.6). `hG : m.GeneralNoise ν` says that the
 entries of `Z N` are i.i.d. of law `ν` at every `N`. Two binders go beyond the paper.
 `hedge` is the upper edge of the bulk: for every `ε > 0` the probability that the top
-eigenvalue of the downdated Gram matrix `W₀` is at most `bulkEdge c + ε` tends to `1`. Since
-2026-09-10 evening the tree proves it at four moments unconditionally:
+eigenvalue of the downdated Gram matrix `W₀` is at most `bulkEdge c + ε` tends to `1`. The
+tree proves it at four moments unconditionally:
 `lamMax_W0_edge_of_general` in
 `RMT/General/Edge/Sup.lean` (Stage 3, route C of `notes/stage3_edge.md`: the moment method
 with a truncation at `d^(1/2 - 1/16)`, a Markov bound at the order `⌈C log d⌉`, and the
 comparison of the truncated trace with the Gaussian one) through the chain
 `RMT/General/Edge/{Defs, Arith, Trunc, Sparse, Trace, Compare, Gaussian, Count, Code, Dyck,
 CountBound, Excess, Markov, Sup}`, including the one combinatorial count that section 7.1
-names, proved 2026-09-10 evening. The theorem with `hedge` stays as the Stage 1 statement; the closed form is
+names. The theorem with `hedge` stays as the Stage 1 statement; the closed form is
 
 ```lean
 theorem singleTableLaw_of_moments [∀ N, IsProbabilityMeasure (μ N)] {c : ℝ} (hc : 0 < c)
@@ -470,7 +454,9 @@ structure HeteroLaw [NeZero M] (m : MultiTableModel μ M n d) (w c : Fin M → �
 
 `align` is the specialization of `eq:weighted_norm` at `b = v`, with both branches of the
 paper inside `Lw`. The paper's `b`-general half is not a field: no result below consumes it.
-The literature mirror is `10.3150/19-BEJ1129` Theorem 2.3.
+The literature mirror is `10.3150/19-BEJ1129` Theorem 2.3. That reference states its result
+for white noise, so the block variance profile of the weighted stack is proved here and not
+taken from it.
 
 Discharged by:
 
@@ -558,7 +544,7 @@ theorem subspaceLaw_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
 
 There is no side condition on `∑_i n_i`: the tail shift of `RankR/RMT/ShiftR.lean` removes it.
 
-### 2.5 `UnalignedModelR.HeteroLawR` (`RankR/StackGamma.lean` since F28, 2026-09-08; was `RankR/StackMain.lean`, which still holds its consumer theorems)
+### 2.5 `UnalignedModelR.HeteroLawR` (`RankR/StackGamma.lean`; its consumer theorems are in `RankR/StackMain.lean`)
 
 ```lean
 structure HeteroLawR (m : UnalignedModelR μ M n d r (alignedRk M r)) (c : Fin M → ℝ) :
@@ -577,7 +563,7 @@ The rank-`r` twin of `HeteroLaw`, one field per thing `thm:rank_r_stacksvd` read
 field is a statement about the `r` weighted stacks `X_stack^{(j)}` of
 `eq:stacksvd_appXstack`. `align` is the first display of the corollary in projector form.
 `crossProj` is the paper's sentence "the columns of `V̂` will be asymptotically orthogonal"
-(`main_paper.tex:2318`), which the second display needs. `simpleIdxJ` turns the projector
+(the text before `eq:stacksvd_app_wij`), which the second display needs. `simpleIdxJ` turns the projector
 overlap into the paper's `⟪v̂_j, v_j⟫²`.
 
 Discharged by:
@@ -590,7 +576,7 @@ theorem heteroLawR_of_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
     m.HeteroLawR c
 ```
 
-in `RankR/Het/Sup.lean`, the last stage of Track E. The chain is `RankR/Het/{Scalars, Split,
+in `RankR/Het/Sup.lean`. The chain is `RankR/Het/{Scalars, Split,
 Duality, Simplicity, Edge, Forms, Deloc, BulkDet, Outliers, Align, Bulk, Sup}`. It uses two
 further internal structures: `HeteroEdgeR` (`RankR/Het/Edge.lean`), the rank-`r` edge, proved
 at `b = MPhet.bHet c w` by `heteroEdgeR_of_gaussian`; and `ResolventLimitsHetR`
@@ -607,7 +593,7 @@ structure ThetaEstLaw (m : MultiTableModel μ M n d) (i j : Fin M) (cj : ℝ) : 
     ((m.tbl j).E N ω *ᵥ WithLp.ofLp (ThetaEst.topDir ((m.tbl i).X N ω)))) 0
 ```
 
-Fields in words (F31, 2026-09-08). Both are limits of the noise `E_j` of table `j` against
+Fields in words. Both are limits of the noise `E_j` of table `j` against
 the top right singular direction `v̂_i` of table `i`, the two concentration steps that the
 paper's proof of `thm:theta_est` takes from `lem:noise_projection_concentration` and the
 independence of the tables. `noiseProj` is `‖E_j v̂_i‖² → c_j`, item P of the roadmap with a
@@ -626,8 +612,8 @@ in `ThetaEst.lean`, from `noise_projection_topDir_tendsto` and `cross_term_tends
 same file: Chebyshev bounds after the Fubini step `measure_randomDir_le`, where the direction
 `v̂_i` is a measurable function of the noise of table `i`, independent of table `j`.
 
-Also discharged for a general i.i.d. noise law (Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-08). The law is one probability measure `ν` on `ℝ`, the same for every `N`, with mean
+Also discharged for a general i.i.d. noise law (Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`).
+The law is one probability measure `ν` on `ℝ`, the same for every `N`, with mean
 `0`, second moment `1` and an integrable fourth power:
 
 ```lean
@@ -657,7 +643,7 @@ keeps the exact second moment `1` (`Prob/NoiseMoments.lean`).
 
 | Structure | File | Gaussian discharge | Unconditional? |
 |---|---|---|---|
-| `SpikedModel.SingleTableLaw` | `RMT.lean` | `singleTableLaw_of_gaussian` (`RMT/Full.lean`); also `singleTableLaw_of_general` for any i.i.d. law with mean 0, variance 1, a finite fourth moment and a Lebesgue density (`RMT/General/Sup.lean`, 2026-09-09) | yes for Gaussian; yes at that general law since Stage 3 (`singleTableLaw_of_moments`, `RMT/General/Edge/Sup.lean`, 2026-09-10), which supplies the upper edge of the bulk; the conditional form `singleTableLaw_of_general` keeps the edge as a binder |
+| `SpikedModel.SingleTableLaw` | `RMT.lean` | `singleTableLaw_of_gaussian` (`RMT/Full.lean`); also `singleTableLaw_of_general` for any i.i.d. law with mean 0, variance 1, a finite fourth moment and a Lebesgue density (`RMT/General/Sup.lean`) | yes for Gaussian; yes at that general law since Stage 3 (`singleTableLaw_of_moments`, `RMT/General/Edge/Sup.lean`), which supplies the upper edge of the bulk; the conditional form `singleTableLaw_of_general` keeps the edge as a binder |
 | `MultiTableModel.HeteroLaw` | `StackSVDWeighted.lean` | `heteroLaw_of_gaussian` (`RMT/Het/Sup.lean`) | yes, given `hw : ∃ i, w i ≠ 0` |
 | `MultiTableModel.HeteroEdge` | `RMT/Het/R4het.lean` | `heteroEdge_of_gaussian` (`RMT/Het/EdgeSharp.lean`) | yes |
 | `SpikedModelR.TableLawR` | `RankR/General.lean` | `tableLawR_of_gaussian_rk` (`RankR/RMT/TableLawGaussian.lean`) | yes |
@@ -667,22 +653,22 @@ keeps the exact second moment `1` (`Prob/NoiseMoments.lean`).
 | `UnalignedModelR.HeteroEdgeR` | `RankR/Het/Edge.lean` | `heteroEdgeR_of_gaussian` (`RankR/Het/Edge.lean`) | yes |
 | `UnalignedModelR.ResolventLimitsHetR` | `RankR/Het/Forms.lean` | `resolventLimitsHetR_of_gaussian` (`RankR/Het/Forms.lean`) | yes |
 | `UnalignedModelR.SingleWeightLaw` | `RankR/SingleWeight/Main.lean` | `singleWeightLaw_of_gaussian` (`RankR/SingleWeight/Het/Sup.lean`) | yes, under the paper's separation assumption `EigSep` (a condition on the parameters, section 6.8) and `hrn` |
-| `MultiTableModel.ThetaEstLaw` | `ThetaEst.lean` | `thetaEstLaw_of_gaussian` (`ThetaEst.lean`); also `thetaEstLaw_of_general` for any i.i.d. law with mean 0, variance 1 and a finite fourth moment (`NoiseLaw`, 2026-09-08) | yes |
+| `MultiTableModel.ThetaEstLaw` | `ThetaEst.lean` | `thetaEstLaw_of_gaussian` (`ThetaEst.lean`); also `thetaEstLaw_of_general` for any i.i.d. law with mean 0, variance 1 and a finite fourth moment (`NoiseLaw`) | yes |
 
 Every limit-law hypothesis structure in the tree has a Gaussian discharge (`EigSep` of section
 6.8 is a condition on the parameters, not a law, and stays a binder). No result of the paper that
 this development covers rests on an undischarged black box.
 
 Two structures also have a general-noise discharge, at the paper's own class
-`assum:general_noise`: `ThetaEstLaw` unconditionally (`thetaEstLaw_of_general`, Stage 0,
-2026-09-08) and `SingleTableLaw` (`singleTableLaw_of_general`, Stage 1, 2026-09-09, which
+`assum:general_noise`: `ThetaEstLaw` unconditionally (`thetaEstLaw_of_general`, Stage 0)
+and `SingleTableLaw` (`singleTableLaw_of_general`, Stage 1, which
 asks for a Lebesgue density and for the upper edge of the bulk). The edge was a hypothesis
 and never a black box: it is a statement about the model, and every theorem that carried it
-was an honest implication. Stage 3 (2026-09-10) proves it at four moments, so
+was an honest implication. Stage 3 proves it at four moments, so
 `singleTableLaw_of_moments` (`RMT/General/Edge/Sup.lean`) states the same conclusion with the
-density as its only binder beyond the paper. One combinatorial input of that proof is stated
-and used but not yet proved; section 7.1 names it, and it is the one row of
-`docs/SORRIES.md`. Section 3.1 gives the route, and `notes/NONGAUSSIAN_SCOPE.md` gives the
+density as its only binder beyond the paper. Its combinatorial input, the Furedi-Komlos count
+`cellCard_mul_le_pos`, is proved (section 7.1), so `docs/SORRIES.md` is empty.
+Section 3.1 gives the route, and `notes/NONGAUSSIAN_SCOPE.md` gives the
 stages.
 
 ## 3. Rank-one core results
@@ -718,8 +704,8 @@ theorem singleTableLaw_of_gaussian [∀ N, IsProbabilityMeasure (μ N)] {c : ℝ
     m.SingleTableLaw c
 ```
 
-**Lean, general noise** (`RMT/General/Sup.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-09; the definitions `NoiseLaw` and `noiseMatrix` are quoted in section 2.6):
+**Lean, general noise** (`RMT/General/Sup.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`;
+the definitions `NoiseLaw` and `noiseMatrix` are quoted in section 2.6):
 
 ```lean
 theorem singleTableLaw_of_general [∀ N, IsProbabilityMeasure (μ N)] {c : ℝ} (hc : 0 < c)
@@ -731,7 +717,7 @@ theorem singleTableLaw_of_general [∀ N, IsProbabilityMeasure (μ N)] {c : ℝ}
 ```
 
 **Lean, the edge at four moments** (`RMT/General/Edge/Sup.lean`, Stage 3 of
-`notes/NONGAUSSIAN_SCOPE.md`, 2026-09-10). `opNorm_sq_edge_of_general` is the upper half of
+`notes/NONGAUSSIAN_SCOPE.md`). `opNorm_sq_edge_of_general` is the upper half of
 the Bai-Yin theorem for the unscaled noise matrix, `lamMax_W0_edge_of_general` is the binder
 `hedge` above word for word, and the form without `hedge`, `singleTableLaw_of_moments`, has
 the same binders minus the edge; it is `singleTableLaw_of_general` applied to
@@ -771,12 +757,12 @@ theorem tendsto_measure_opNorm_edge {c : ℝ} (hc : 0 < c) {ν : Measure ℝ} (h
 
 `a` is the truncation exponent: the proof truncates each entry at `d^(1/2 - a)` and the
 target fixes `a = 1/16`. The one input of the chain, the Furedi-Komlos count now in
-`RMT/General/Edge/CountBound.lean` (`cellCard_mul_le_pos`), was proved 2026-09-10 evening;
+`RMT/General/Edge/CountBound.lean` (`cellCard_mul_le_pos`), is proved;
 section 7.1 names it, and `docs/SORRIES.md` has no row, so the three theorems above and the
 five `*_of_moments` forms are proved unconditionally. The chain is
 `RMT/General/Edge/{Defs, Arith, Trunc, Sparse, Trace, Compare, Gaussian, Count, Code, Dyck,
 CountBound, Excess, Markov, Sup}`, fourteen files, and the plan they follow is route C of
-`notes/stage3_edge.md` (the campaign log is `notes/STAGE3_CAMPAIGN.md`).
+`notes/stage3_edge.md`; `notes/STAGE3_CAMPAIGN.md` records the chain.
 
 **Hypotheses in words.**
 
@@ -807,17 +793,17 @@ replaces `hG : m.GaussianNoise` by four binders.
 **Hypotheses beyond the paper.** `[∀ N, IsProbabilityMeasure (μ N)]` is technical. The paper
 works on an unnamed probability space, and the instance only fixes `μ N Set.univ = 1`, which
 the events of probability tending to one need. `hc : 0 < c` is paper-implicit: `eq:RMT_limit`
-(`main_paper.tex:262`) writes `n_i/d → c_i ∈ (0, ∞)`. `hreg : m.Regime c` is paper-implicit for
-the same reason; it is `assum:main` (`main_paper.tex:271`) written as one limit statement.
+writes `n_i/d → c_i ∈ (0, ∞)`. `hreg : m.Regime c` is paper-implicit for
+the same reason; it is `assum:main` written as one limit statement.
 `m : SpikedModel μ n d` is data, and it is the paper's `eq:model_rank1`. `hG : m.GaussianNoise`
-is restrictive. `assum:general_noise` (`main_paper.tex:246`) asks only for i.i.d. entries with
+is restrictive. `assum:general_noise` asks only for i.i.d. entries with
 mean `0`, unit variance after the `√d` scaling, and a fourth moment below a constant. The
 Gaussian law is one member of that class, so what is lost is the four-moment universality.
 Layer 1 takes the law as a hypothesis, so a four-moment proof replaces this one theorem and no
-statement downstream. `singleTableLaw_of_general` (2026-09-09) is that proof, up to the edge.
+statement downstream. `singleTableLaw_of_general` is that proof, up to the edge.
 
 **Hypotheses beyond the paper, general noise.** `hν : NoiseLaw ν` and `hG : m.GeneralNoise ν`
-together are `assum:general_noise` (`main_paper.tex:246`) at one fixed law: i.i.d. entries,
+together are `assum:general_noise` at one fixed law: i.i.d. entries,
 mean `0`, unit variance after the `√d` scaling, and a fourth moment that is finite rather than
 bounded by a constant. That is what Stage 1 buys, and it is the four-moment universality that
 `hG : m.GaussianNoise` gives up. Two binders go beyond the paper. `hedge` is the upper edge of
@@ -825,7 +811,7 @@ the bulk. It is not paper-implicit in the sense of the binders above: the paper'
 it from the literature, and the Gaussian chain proves it here by Sudakov-Fernique
 (`tendsto_measure_lamMax_le`, `RMT/R3.lean:635`), which reads the Gaussian law. Stage 3 of
 `notes/NONGAUSSIAN_SCOPE.md` named Bai-Yin as the route that would discharge it at a general
-law, and `lamMax_W0_edge_of_general` (2026-09-10) is that discharge, by the moment method
+law, and `lamMax_W0_edge_of_general` is that discharge, by the moment method
 with a truncation. `singleTableLaw_of_general` keeps `hedge` as a binder, so it stays an
 honest implication; `singleTableLaw_of_moments` supplies the binder and keeps `hac` alone
 beyond the paper.
@@ -841,10 +827,10 @@ it by interlacing plus `hedge`, and drop `hac`; 1200 to 1800 Layer 1 lines.
 
 **Modeling choices** (`notes/archive/prop_single_table.md`).
 
-1. Gaussian noise in place of the paper's four-moment condition. This is user decision Q3 of
+1. Gaussian noise in place of the paper's four-moment condition. This is question Q3 of
    `notes/FLAGGED.md`. The Layer 1 form is noise-free, so a four-moment discharge plugs in
-   with no change to any downstream statement. `singleTableLaw_of_general` (Stage 1,
-   2026-09-09) is that discharge, given the edge hypothesis `hedge` and a law with a density.
+   with no change to any downstream statement. `singleTableLaw_of_general` (Stage 1)
+   is that discharge, given the edge hypothesis `hedge` and a law with a density.
    It confirms the design: no Layer 1 statement changed, and the four representative
    corollaries of `General/Layer1.lean` (sections 3.2, 3.4, 3.5 and 5.4) are the Gaussian ones
    with the discharge swapped.
@@ -939,8 +925,8 @@ chain reads the deterministic content only, never its Gaussian block law.
 Three external reviews examined the chain: `notes/archive/external_audit_2026-08-30.md`,
 `external_audit_v2_review_2026-08-31.md`, `notes/archive/external_audit_v3_review_2026-09-01.md`.
 The general-noise chain has its own trail: the plan note
-`notes/archive/prop_single_table_general.md` (status `user OK` 2026-09-09, with the hypothesis
-necessity scan of workflow rule 5 in its section 4, which drops each of the nine binders in
+`notes/archive/prop_single_table_general.md` (with the hypothesis
+necessity scan in its section 4, which drops each of the nine binders in
 turn), the 21 unit reports `notes/archive/agent_reports/stage1_*.md`, and the numeric audit
 `notes/archive/audit_nongaussian_forms_2026-09-09.md`, which recomputes the resolvent forms
 and their rates at three laws with printed seeds (seed base 20260909).
@@ -968,8 +954,7 @@ theorem lem_delocalization (m : MultiTableModel μ M n d) (c : Fin M → ℝ)
       (beta (m.tbl i).θ (c i) * beta (m.tbl j).θ (c j))
 ```
 
-**Lean, general noise** (`General/Layer1.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-09):
+**Lean, general noise** (`General/Layer1.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`):
 
 ```lean
 theorem lem_delocalization_of_general [∀ N, IsProbabilityMeasure (μ N)]
@@ -984,8 +969,8 @@ theorem lem_delocalization_of_general [∀ N, IsProbabilityMeasure (μ N)]
       (beta (m.tbl i).θ (c i) * beta (m.tbl j).θ (c j))
 ```
 
-The form without `hedge`, `lem_delocalization_of_moments` (`General/Layer1.lean`,
-2026-09-10), has the same binders minus the edge; it is `lem_delocalization_of_general`
+The form without `hedge`, `lem_delocalization_of_moments` (`General/Layer1.lean`), has the
+same binders minus the edge; it is `lem_delocalization_of_general`
 applied to `lamMax_W0_edge_of_general` at every table:
 
 ```lean
@@ -1015,8 +1000,8 @@ the paper lacks. `m` and `c` are data: the `M` tables of `eq:model_rank1` and th
 ratios. `law : ∀ i, (m.tbl i).SingleTableLaw (c i)` is paper-implicit, because it is
 `prop:single_table` itself, which the paper applies to each table under `assum:general_noise`
 and `assum:main`. `hI : m.IndepNoise` is stated in the paper's own lemma ("where `X_1` and
-`X_2` are independent", `main_paper.tex:1112`), and it also follows from the entries of
-`assum:general_noise` being i.i.d. across the table index (`main_paper.tex:246`). `hij : i ≠ j`
+`X_2` are independent", `lem:delocalization`), and it also follows from the entries of
+`assum:general_noise` being i.i.d. across the table index. `hij : i ≠ j`
 is the paper's `i = 1, 2`. The Layer 1 form asks for no `0 < c_i` and for no probability
 measure, so it is weaker in its binders than every other statement of this section. The
 finite-`d` companion below adds three: `hG : m.JointGaussianNoise` is restrictive in the same
@@ -1044,7 +1029,7 @@ per table and by `JointGeneralNoise.indepNoise` (section 3.4). No Layer 1 statem
    `hG.indepNoise`.
 
 **Proof sketch.** The proof follows the paper's split
-`v̂_iᵀ v̂_j = v̂_iᵀ v vᵀ v̂_j + v̂_iᵀ (I - v vᵀ) v̂_j` (`main_paper.tex:1123`) in
+`v̂_iᵀ v̂_j = v̂_iᵀ v vᵀ v̂_j + v̂_iᵀ (I - v vᵀ) v̂_j` in the proof of `lem:delocalization`, in
 `lem_delocalization` (`SVDStack/Gram.lean:221`). The first term is a product of two signed
 alignments. `align_inner` (`SVDStack/Gram.lean:200`) turns the `align` field of
 `SingleTableLaw`, a limit of the squared overlap, into `⟪v̂_i, v⟫ → β_i`, by a square root on
@@ -1070,9 +1055,9 @@ Lebesgue density and one edge hypothesis per table added, as in section 3.1.
 `notes/archive/prop_single_table_general.md` section 2.
 
 **Beyond the paper (F1).** A finite-`d` tail bound, with an explicit constant, for
-the cross term `⟪v̂_i, (I − vvᵀ) v̂_j⟫` (the second term of the paper's split at
-`main_paper.tex:1123`), at the one
-place the paper leans on an external asymptotic theorem (`main_paper.tex:1138`, Theorem 1 part
+the cross term `⟪v̂_i, (I − vvᵀ) v̂_j⟫` (the second term of the paper's split in
+the proof of `lem:delocalization`), at the one
+place the paper leans on an external asymptotic theorem (in that proof, Theorem 1 part
 2 of `liu2023asymptotic`).
 
 **Lean** (`SVDStack/DelocFinite.lean`):
@@ -1097,7 +1082,7 @@ divides by zero, and the event is not small (every unit vector is `± v`). `hε 
 bound reads none of `θ`, `n_i`, `c` or `M`, which is the point of the result.
 
 **Scope.** New result beyond the paper: no paper statement gives a rate here, and the
-positioning of Section 1 (`main_paper.tex:143`, `:150`) against non-asymptotic analyses costs
+positioning of Section 1 (the introduction) against non-asymptotic analyses costs
 nothing to extend. See `notes/archive/F_batch_2026-09-05.md` for the proof plan (three finite-`N` facts
 already in the tree, chained at `η = ε²`) and `notes/FOLLOWUP_LIST.md` item F1.
 
@@ -1151,7 +1136,7 @@ paper's "without loss of generality `⟨x, x̂⟩ ≥ 0`".
 `Ṽ Ṽᵀ`, and Lean names an arbitrary symmetric random family so that the lemma is model-free.
 Symmetry holds by construction for `Ṽ Ṽᵀ`, so the binder costs the consumer one
 `isHermitian_mul_transpose_self`. `hconv` is paper-implicit: it is `lem:delocalization` read
-entrywise, which step (iv) of the paper states at `main_paper.tex:1188`. `hsimple` is the
+entrywise, which step (iv) of the paper states in the proof of `lem:entrywise_conv_eigenvec`. `hsimple` is the
 paper's "unique largest eigenvalue `λ_1`". `x` is technical: the first
 conclusion is stated at a test vector, and the paper's coordinate form is the case
 `x = v_max(A_β)`. In the signed form `m : Fin M` is the paper's `m ∈ [M]`, and the factor
@@ -1224,9 +1209,7 @@ no noise law. The route is Davis-Kahan, whose gap hypothesis is supplied by `abe
 \end{prop}
 ```
 
-**Paper, as amended (E10), no change to the environment.** E10.1 rewrites the sentence at `main_paper.tex:403` that calls Theorem 2.3 of `10.3150/19-BEJ1129` a heteroscedastic result; the reference assumes white noise, so the sentence says instead that the argument is adapted, and names the three steps that change.
-
-**Lean** (`StackSVD/Main.lean`, since F28, 2026-09-08), Layer 1 and Gaussian:
+**Lean** (`StackSVD/Main.lean`), Layer 1 and Gaussian:
 
 ```lean
 theorem prop_stacksvd_general [NeZero M] (m : MultiTableModel μ M n d) (c : Fin M → ℝ)
@@ -1245,8 +1228,8 @@ The paper's own inner-product form is `prop_stacksvd_general_inner` and
 `prop_stacksvd_general_inner_gaussian`, which take any selection `vhat` of a unit top
 eigenvector of the stack Gram matrix.
 
-**Lean, general noise** (`General/Layer1.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-09), the facade and the two bridges of `General/Layer1.lean`:
+**Lean, general noise** (Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`), the facade and the two
+bridges of `General/Layer1.lean`:
 
 ```lean
 theorem prop_stacksvd_general_of_general [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -1266,8 +1249,8 @@ theorem JointGeneralNoise.indepNoise {m : MultiTableModel μ M n d} {ν : Measur
     [IsProbabilityMeasure ν] (hG : m.JointGeneralNoise ν) : m.IndepNoise
 ```
 
-The form without `hedge`, `prop_stacksvd_general_of_moments` (`General/Layer1.lean`,
-2026-09-10), has the same binders minus the edge; it is `prop_stacksvd_general_of_general`
+The form without `hedge`, `prop_stacksvd_general_of_moments` (`General/Layer1.lean`), has
+the same binders minus the edge; it is `prop_stacksvd_general_of_general`
 applied to `lamMax_W0_edge_of_general` at the stack:
 
 ```lean
@@ -1297,9 +1280,9 @@ the same pattern). `law : m.stack.SingleTableLaw (∑ i, c i)` is paper-implicit
 form, because it is `prop:single_table` at the parameters `(‖θ‖₂, ‖c‖₁)`, which is what the
 paper's proof applies to the stacked matrix. `hc : ∀ i, 0 < c i` and
 `hreg : ∀ i, (m.tbl i).Regime (c i)` are paper-implicit, from `eq:RMT_limit`
-(`main_paper.tex:262`) and `assum:main` (`main_paper.tex:271`). `hG : m.JointGaussianNoise` has
+and `assum:main`. `hG : m.JointGaussianNoise` has
 two halves. The Gaussian half is restrictive against the four-moment class of
-`assum:general_noise` (`main_paper.tex:246`), exactly as in 3.1;
+`assum:general_noise`, exactly as in 3.1;
 `prop_stacksvd_general_of_general` removes it, at the price of a Lebesgue density and one edge
 hypothesis at the stack. The independence half is
 paper-implicit, since `assum:general_noise` makes the entries i.i.d. across the table index `i`
@@ -1369,8 +1352,6 @@ Gaussian link, which `prop_stacksvd_general_gaussian` supplies),
 \end{prop}
 ```
 
-**Paper, as amended (E9), no change to the environment.** E9.1 adds the `M ≥ 2` qualifier to the sentence at `main_paper.tex:376` that calls `β_2 > 0` necessary and sufficient; at `M = 1` the matrix `A_β = [1]` has a unique largest eigenvalue and `β_2` does not exist.
-
 **Lean** (`SVDStack/Main.lean`):
 
 ```lean
@@ -1391,8 +1372,7 @@ theorem thm_svd_stack_general_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (
 Companions: `thm_svd_stack_general_inner` and `_inner_gaussian` (the paper's inner product),
 `thm_svd_stack_general_zero` and `_zero_gaussian` (the `β_1 = 0` clause, limit `0`).
 
-**Lean, general noise** (`General/Layer1.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-09):
+**Lean, general noise** (`General/Layer1.lean`, Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`):
 
 ```lean
 theorem thm_svd_stack_general_of_general [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -1407,8 +1387,8 @@ theorem thm_svd_stack_general_of_general [NeZero M] [∀ N, IsProbabilityMeasure
     TendstoInProb μ (fun N ω => m.svdstackPerf N ω) (svdstackLimit β)
 ```
 
-The form without `hedge`, `thm_svd_stack_general_of_moments` (`General/Layer1.lean`,
-2026-09-10), has the same binders minus the edge; it is `thm_svd_stack_general_of_general`
+The form without `hedge`, `thm_svd_stack_general_of_moments` (`General/Layer1.lean`), has
+the same binders minus the edge; it is `thm_svd_stack_general_of_general`
 applied to `lamMax_W0_edge_of_general` at every table:
 
 ```lean
@@ -1436,11 +1416,11 @@ statement: `svdstackPerf` reads the shared `v` off table `0` (`SVDStack/Defs.lea
 `0 : Fin M` must elaborate. Semantically it adds nothing, since `hthr` already forces `2 ≤ M`
 through `one_lt_card_fin_of_ne` (`SVDStack/Deterministic.lean:165`).
 `hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)` is technical: it names `β`, so that the limit
-`svdstackLimit β` reads as in the paper. `hc : ∀ i, 0 < c i` is paper-implicit (`eq:RMT_limit`,
-`main_paper.tex:262`), and the proof uses it only to get `0 ≤ β_i < 1` through `beta_mem_Ico`
+`svdstackLimit β` reads as in the paper. `hc : ∀ i, 0 < c i` is paper-implicit (`eq:RMT_limit`),
+and the proof uses it only to get `0 ≤ β_i < 1` through `beta_mem_Ico`
 (`SVDStack/Deterministic.lean:60`). `hthr` is the paper's `β_2 > 0` without an ordering. `law`
 is paper-implicit, being `prop:single_table` per table. `hI : m.IndepNoise` is paper-implicit
-through the i.i.d. entries of `assum:general_noise` (`main_paper.tex:246`), and the paper
+through the i.i.d. entries of `assum:general_noise`, and the paper
 states it outright in `lem:delocalization`. In the Gaussian form `hreg` is paper-implicit, `hG`
 is restrictive in its Gaussian half as in 3.1, and `[∀ N, IsProbabilityMeasure (μ N)]` is
 technical. `thm_svd_stack_general_of_general` removes the Gaussian half, at the price of a
@@ -1526,9 +1506,12 @@ because `General/Layer1.lean` carries the four representative facades only.
 \end{cor}
 ```
 
-**Paper, as amended (E5), no change to the environment.** E5.1 adds one sentence after the corollary, at `main_paper.tex:338`: the statement holds for every `M ≥ 1`, at `M = 1` the SVDstack branch is `prop:single_table`, and the two branches of each display agree at the threshold.
+**The corollary at every `M`.** The statement holds for every `M ≥ 1`. At `M = 1` the
+SVDstack branch is `prop:single_table`, and the two branches of each display agree at the
+threshold. The paper states the corollary without that qualifier;
+`thm_simple_thm1_svdstack_gaussian_full` covers every `M ≥ 1` and both branches.
 
-**Lean.** stacksvd half (`StackSVD/Main.lean`, since F28), svdstack half in two forms
+**Lean.** stacksvd half (`StackSVD/Main.lean`), svdstack half in two forms
 (`SVDStack/Main.lean`, `SVDStack/Simple.lean`):
 
 ```lean
@@ -1557,7 +1540,7 @@ identities are `Scalars.simple_thm1_stacksvd` and `Scalars.simple_thm1_svdstack`
 
 **Hypotheses beyond the paper.** `[NeZero M]` is technical, again because the shared `v` is
 table `0`'s, and `[∀ N, IsProbabilityMeasure (μ N)]` is technical. `hc : 0 < c₀` is
-paper-implicit, from `eq:RMT_limit` (`main_paper.tex:262`). `hθ : ∀ i, (m.tbl i).θ = θ₀` and
+paper-implicit, from `eq:RMT_limit`. `hθ : ∀ i, (m.tbl i).θ = θ₀` and
 `hreg : ∀ i, (m.tbl i).Regime c₀` are the corollary's own "`c_i = c_0` and `θ_i = θ_0` for all
 `i`", with `hreg` also carrying `assum:main`. `hG : m.JointGaussianNoise` is restrictive in its
 Gaussian half, as in 3.1, and paper-implicit in its independence half. The `hM2 : 2 ≤ M` and
@@ -1569,14 +1552,14 @@ Gaussian half, as in 3.1, and paper-implicit in its independence half. The `hM2 
 
 1. The `if` form carries both branches in one statement, so the reader sees the threshold.
 2. At `M = 1` the svdstack formula reduces to `β²`, consistent with `prop:single_table`; the
-   proof of `_full` makes that case explicit. This is `notes/paper_edits.md` E5 item 1.
+   proof of `_full` makes that case explicit.
 
 **Proof sketch.** Both halves are corollaries, so the work is scalar algebra and a case split,
 not new probability. The stacksvd half `thm_simple_thm1_stacksvd_gaussian`
 (`StackSVD/Main.lean:128`) instantiates `prop_stacksvd_general_gaussian`
 (`StackSVD/Main.lean:65`) at the constant `c ≡ c₀` and `θ ≡ θ₀`, then rewrites the general
 limit into the paper's closed form with `Scalars.simple_thm1_stacksvd` (`Scalars.lean:802`)
-directly (F32, 2026-09-08, drops the local restatement `stackSVDLimit_const_eq`). The svdstack half splits on the threshold
+directly. The svdstack half splits on the threshold
 inside `thm_simple_thm1_svdstack_gaussian_full` (`SVDStack/Simple.lean:91`). Above the
 threshold and with `2 ≤ M` it calls `thm_simple_thm1_svdstack_gaussian`
 (`SVDStack/Main.lean:428`), which instantiates `thm_svd_stack_general_gaussian`
@@ -1613,11 +1596,9 @@ must-fix). The label `cor.1` versus `cor.2` was fixed as question Q6 of `notes/F
 \end{cor}
 ```
 
-**Paper, as amended (E9), no change to the environment.** E9.2 rewrites the subset optimization at `main_paper.tex:439` to `442`, which sits after the corollary: the maximum runs over nonempty subsets and each subset carries its own indicator, so the `0/0` maximand at `S = ∅` and the negative value at a general subset both go away (R1 and R7).
-
 The paper then optimizes over all subsets.
 
-**Lean** (`StackSVD/Weighted.lean`, since F28):
+**Lean** (`StackSVD/Weighted.lean`):
 
 ```lean
 theorem stackPerfW_binary_tendsto_gaussian [NeZero M] [∀ N, IsProbabilityMeasure (μ N)]
@@ -1644,7 +1625,7 @@ says the same in the sentence after the corollary.
 and `[∀ N, IsProbabilityMeasure (μ N)]` is technical. `[NeZero S.card]` is the paper's own
 "assuming at least one table is above the threshold of detectability", stated here for a
 general `S`. `hc : ∀ i, 0 < c i` and `hreg : ∀ i, (m.tbl i).Regime (c i)` are paper-implicit,
-from `eq:RMT_limit` (`main_paper.tex:262`) and `assum:main` (`main_paper.tex:271`).
+from `eq:RMT_limit` and `assum:main`.
 `hG : m.JointGaussianNoise` is restrictive in its Gaussian half and paper-implicit in its
 independence half, as in 3.4. `S : Finset (Fin M)` is data, and it widens the paper's claim
 rather than narrowing it: the paper fixes `S` to the detectable set, and the Lean statement
@@ -1689,7 +1670,7 @@ this section.
 
 **Scope.** Same as the paper. The strict detectable set uses `c_i < θ_i⁴`, so a table exactly
 on the threshold is discarded; this matters for `remark:svd_outperform_stack`
-(`notes/paper_edits.md` E6).
+(section 5.6).
 
 **Audit trail.** `notes/archive/class_A.md`, `notes/archive/audit_weighted_2026-08-30.md`,
 `notes/archive/audit_global_2026-08-31.md`.
@@ -1714,25 +1695,11 @@ as long as $\sum_i \theta_i^4/ c_i > 1$, otherwise $\gamma\opt = 0$.
 \end{thm}
 ```
 
-**Paper, as amended (E8).** The theorem gains the hypothesis that at least one `θ_i` is positive. At `θ ≡ 0` the stated weights are all zero, the weighted stack is the zero matrix, and the claim fails; the exact replacement is E8.1 in `notes/paper_edits.md`.
+**One hypothesis the paper does not carry.** The Lean theorem adds
+`hθ : ∃ i, θ_i ≠ 0`. At `θ ≡ 0` the stated optimal weights are all zero, the weighted stack
+is the zero matrix, and the claim fails there. The paper excludes no parameter point.
 
-```latex
-\begin{thm}
-    \label{thm:stacksvd_weighted} Under \Cref{assum:general_noise,assum:main}, and with $\theta_i > 0$ for at least one $i$, \stacksvd is optimally weighted as
-    \begin{equation*}
-    w_i\opt \propto \frac{\theta_i}{\sqrt{\theta_i^2 + c_i}},
-\end{equation*}
-which yields performance
-\begin{equation*}
-    (v^\top \hat{v}_\stacksvd)^2 \pto \gamma\opt \quad \text{ the unique solution $x \in (0,1)$ of } \sum_{i=1}^M \theta_i^4 \frac{1-x}{c_i + x\theta_i^{2}} = 1,
-\end{equation*}
-as long as $\sum_i \theta_i^4/ c_i > 1$, otherwise $\gamma\opt = 0$.
-\end{thm}
-```
-
-**Paper, as amended (E9 and E10), no change to the environment.** E9.5 repairs the inequality at `main_paper.tex:1612`, which points the wrong way, and states instead the sign equivalence that the next item uses; E10.2 names the adaptation of Theorem 2.3 of `10.3150/19-BEJ1129` from white noise to the block variance profile at `main_paper.tex:1372`.
-
-**Lean.** Layer 1 (`StackSVD/Weighted.lean`, since F28) and Gaussian (`RMT/Het/Sup.lean`):
+**Lean.** Layer 1 (`StackSVD/Weighted.lean`) and Gaussian (`RMT/Het/Sup.lean`):
 
 ```lean
 theorem thm_stacksvd_weighted [NeZero M] (m : MultiTableModel μ M n d) (c : Fin M → ℝ)
@@ -1776,7 +1743,7 @@ the limit at any weight vector. `thm_stacksvd_weighted_gaussian_margin`, `_margi
 
 - `hc : ∀ i, 0 < c i`: `eq:RMT_limit`.
 - `hθ : ∃ i, θ_i ≠ 0`: at `θ = 0` the optimal weight vector is zero, the weighted stack is
-  the zero matrix, and the claim is false. Not in the paper; in the paper as amended (E8).
+  the zero matrix, and the claim is false. The paper has no such hypothesis.
   The Layer 1 proof does not use it (`law.align` is rewritten with `Scalars.L_optW_eq hc`,
   `StackSVDWeighted.lean:1003`); it works in the Gaussian form, where
   `Scalars.optWstack_ne_zero hc hθ` supplies the nonzero weight vector that
@@ -1786,18 +1753,18 @@ the limit at any weight vector. `thm_stacksvd_weighted_gaussian_margin`, `_margi
 
 **Hypotheses beyond the paper.** `[NeZero M]` is technical: `stackPerfW` reads the shared `v`
 off table `0` (`StackSVDWeighted.lean:1251`), so `Fin M` must be nonempty for the statement to
-elaborate. `hc : ∀ i, 0 < c i` is paper-implicit, from `eq:RMT_limit` (`main_paper.tex:262`).
-`hθ : ∃ i, θ_i ≠ 0` is restrictive (finding E8): it removes the one parameter point `θ = 0`, where the
+elaborate. `hc : ∀ i, 0 < c i` is paper-implicit, from `eq:RMT_limit`.
+`hθ : ∃ i, θ_i ≠ 0` is restrictive: it removes the one parameter point `θ = 0`, where the
 paper's own weights `w_i⋆ ∝ θ_i/√(θ_i² + c_i)` are the zero vector, the weighted stack is the
-zero matrix, and the `v_max` of `stacksvd.def` (`main_paper.tex:301`) is an arbitrary unit
+zero matrix, and the `v_max` of `stacksvd.def` is an arbitrary unit
 vector, so the paper's `γ_opt = 0` fails there. Every `θ ≠ 0` stays covered, in both regimes.
 `law : m.HeteroLaw w⋆ c` (Layer 1 only) is paper-implicit: the `align` field is
-`eq:weighted_norm` (`main_paper.tex:1416`) at `b = v`, reduced to `L(w)`, and the `topSimple`
+`eq:weighted_norm` at `b = v`, reduced to `L(w)`, and the `topSimple`
 field is the simple top eigenvalue that the definition of `v̂_stacksvd` presumes.
-`hreg : ∀ i, (m.tbl i).Regime (c i)` (Gaussian only) is paper-implicit, `assum:main`
-(`main_paper.tex:271`). `hG : m.JointGaussianNoise` (Gaussian only) has two halves, as in 3.4.
-The Gaussian half is restrictive against the four-moment class of `assum:general_noise`
-(`main_paper.tex:246`); it costs every non-Gaussian law of that class (user decision Q3). The
+`hreg : ∀ i, (m.tbl i).Regime (c i)` (Gaussian only) is paper-implicit, `assum:main`.
+`hG : m.JointGaussianNoise` (Gaussian only) has two halves, as in 3.4.
+The Gaussian half is restrictive against the four-moment class of `assum:general_noise`;
+it costs every non-Gaussian law of that class (question Q3). The
 independence half is paper-implicit, since `assum:general_noise` makes the entries i.i.d.
 across the table index `i` as well. No `IsProbabilityMeasure` instance appears in either form:
 at Layer 1 nothing pins the measure (modeling choice 2), and in the Gaussian form `hG` gives
@@ -1807,8 +1774,8 @@ it.
 
 1. The limit is a **total** function `Scalars.stackSVDLimitW`, with `0` below the threshold
    `∑ θ_i⁴/c_i > 1`. The paper's two cases are inside it. `Lw θ c 0 = 0` is a convention.
-2. `HeteroLaw.align` is stated at `L(w)` (`main_paper.tex:1434`), one deterministic step past
-   the BEJ1129 display it cites (`:1414`). The Gaussian proof proves that field directly, so
+2. `HeteroLaw.align` is stated at `L(w)` (the display that takes `b = v` in `eq:weighted_norm`), one deterministic step past
+   the BEJ1129 display it cites (`eq:weighted_norm`). The Gaussian proof proves that field directly, so
    the bridge is part of the proof, not a restatement of a black box (`notes/FLAGGED.md`, D21).
 3. The optimality claim `Lw θ c w ≤ stackSVDLimitW θ c` is a separate scalar theorem
    `Scalars.L_le_opt`, proved by a simplex optimization with Cauchy-Schwarz. The bundle
@@ -1821,7 +1788,7 @@ of it is `w_i X_i`. Layer 1 is then two lines: `thm_stacksvd_weighted`
 (`StackSVDWeighted.lean:1268`) and rewrites `Scalars.Lw θ c w⋆` into `Scalars.stackSVDLimitW θ c`
 with `Scalars.L_optW_eq` (`StackSVDWeighted.lean:1003`). That rewrite carries the paper's
 appendix computation. `Scalars.assumption4_and_L_optW_of_thr` (`StackSVDWeighted.lean:864`) runs
-the change of variables of `main_paper.tex:1595`: at the root `r` of
+`eq:var_change_wstacksvd` and the weight choice after it in the proof of `thm:stacksvd_weighted`: at the root `r` of
 `∑_i θ_i⁴(1-r)/(c_i + rθ_i²) = 1` it sets `γ₁ = 1/(1-r)`, checks the secular equation through
 `Scalars.sum_secular_eq_neg_one` (`StackSVDWeighted.lean:274`), and gets `L(w⋆) = r`.
 `Scalars.assumption4_optW_iff` (`StackSVDWeighted.lean:1016`) identifies `eq:assumption4` at
@@ -1871,33 +1838,6 @@ Q11 and decisions D22, D27, D28 record the route change to the sharp edge.
 \end{thm}
 ```
 
-**Paper, as amended (E1).** The optimality claim becomes a bound over every nonzero weighting, deterministic or data dependent, with no eigengap condition, and the stated weighting attains it; the exact replacement is E1.1 in `notes/paper_edits.md`.
-
-```latex
-\begin{thm}
-    \label{thm:svdstack_weighted}
-    Under \Cref{assum:general_noise,assum:main}, set
-    \begin{equation*}
-        S = \sum_i \frac{\beta_i^2}{1-\beta_i^2}.
-    \end{equation*}
-    No weighting of \svdstack, deterministic or data-dependent, beats $S/(S+1)$: for every $\varepsilon > 0$,
-    \begin{equation*}
-        \mathbb{P}\left( \sup_{w \neq 0} |\langle v, \hat{v}_\svdstack(w) \rangle|^2 > \frac{S}{S+1} + \varepsilon \right) \to 0,
-    \end{equation*}
-    where the supremum runs over all nonzero $w \in \R^M$. The weighting
-    \begin{equation}\label{svdstack.weight}
-        w_i \opt = \theta_i \sqrt{\frac{\theta_i^2+1}{\theta_i^2+c_i}} \mathds{1} \left\{ \theta_i^4 > c_i\right\},
-    \end{equation}
-    attains this bound when $\beta_{1}>0$, and is then an optimal weighting:
-    \begin{equation*}
-        |\langle v, \hat{v}_\svdstack(w\opt) \rangle|^2 \pto \frac{S}{S+1}.
-    \end{equation*}
-    (When $\beta_1 = 0$, $S = 0$ and the bound already gives $|\langle v, \hat{v}_\svdstack(w) \rangle|^2 \pto 0$ for every nonzero $w$.)
-\end{thm}
-```
-
-**Paper, as amended (E1 and E9), no change to the environment.** E1.3 puts the uniform bound into the proof at `main_paper.tex:1284`, before the per-weight limit; E1.2 adds the bound to Case 3 at `:1223`, where the paper gives none; E9.4 restricts the `w̃ ≤ 1` condition at `:1331` to the undetectable tables, since `w̃_i = 1/√(1-β_i²) > 1` on a detectable table, so no weighting satisfies both conditions (R3).
-
 **Lean** (`SVDStack/Weighted.lean`):
 
 ```lean
@@ -1945,8 +1885,7 @@ uniform in `w`: with probability tending to one, no weight vector beats `S/(S+1)
 signature carries `hthr : ∃ k, 0 < β k` for the packaging with the attainment clause; the
 uniform conjunct itself, `svdstackPerfW_uniform_bound` (`SVDStack/Rayleigh.lean:542`), needs
 only `hc`, `hβdef`, `law` and `hI`. That
-closes the paper's optimality claim without an eigengap condition, which is
-`notes/paper_edits.md` E1.
+closes the paper's optimality claim without an eigengap condition.
 
 **Hypotheses in words.**
 
@@ -1964,23 +1903,23 @@ closes the paper's optimality claim without an eigengap condition, which is
 
 **Hypotheses beyond the paper.** `[NeZero M]` is technical, for the reason of 3.4: table `0`
 names the shared `v`. `[∀ N, IsProbabilityMeasure (μ N)]` (Gaussian only) is technical.
-`hc : ∀ i, 0 < c i` is paper-implicit, `eq:RMT_limit` (`main_paper.tex:262`).
+`hc : ∀ i, 0 < c i` is paper-implicit, `eq:RMT_limit`.
 `hβdef : ∀ i, β i = beta (m.tbl i).θ (c i)` is technical: it names `β` so that the statement can
 quote the paper's `β_i`, and it constrains no model. `hthr : ∃ k, 0 < β k` is paper-implicit, the
 theorem's own `β₁ > 0`. `law : ∀ i, (m.tbl i).SingleTableLaw (c i)` (Layer 1 only) is
-paper-implicit: it is `prop:single_table` for each table, which the paper's proof cites at
-`main_paper.tex:1284`. `hI : m.IndepNoise` (Layer 1 only) is paper-implicit, since
-`assum:general_noise` (`main_paper.tex:246`) makes the entries i.i.d. across the table index; it
+paper-implicit: it is `prop:single_table` for each table, which the paper's proof cites.
+`hI : m.IndepNoise` (Layer 1 only) is paper-implicit, since
+`assum:general_noise` makes the entries i.i.d. across the table index; it
 is the weakest form of that half, because the marginals stay arbitrary.
-`hreg : ∀ i, (m.tbl i).Regime (c i)` (Gaussian only) is paper-implicit, `assum:main`
-(`main_paper.tex:271`). `hG : m.JointGaussianNoise` (Gaussian only) splits as in 4.1: the
+`hreg : ∀ i, (m.tbl i).Regime (c i)` (Gaussian only) is paper-implicit, `assum:main`.
+`hG : m.JointGaussianNoise` (Gaussian only) splits as in 4.1: the
 Gaussian half is restrictive against `assum:general_noise` and costs every non-Gaussian law of
-that four-moment class (user decision Q3), the independence half is paper-implicit. Inside the
+that four-moment class (question Q3), the independence half is paper-implicit. Inside the
 optimality quantifier of `thm_svdstack_weighted_gaussian_opt`, `∀ i, 0 ≤ w i` is restrictive
-against the theorem's own `w ∈ R^M` (`main_paper.tex:453`; the estimator `svdstack.def` at
-`:308` takes any `w`), while `main_paper.tex:300` writes `w ∈ R^M_{≥0}`; the uniform bound of
+against the theorem's own `w ∈ R^M` (the opening paragraph of Section `sec:optimal_weighting`; the estimator `svdstack.def`
+takes any `w`), while the text before `stacksvd.def` writes `w ∈ R^M_{≥0}`; the uniform bound of
 `_opt_full` has no sign condition. `TopSimple (AbetaW w β)` is paper-implicit,
-the proviso "provided that `W A_β W` has a unique largest eigenvalue" of `main_paper.tex:1284`;
+the proviso "provided that `W A_β W` has a unique largest eigenvalue" of the proof of `thm:svdstack_weighted`;
 `thm_svdstack_weighted_gaussian_opt_full` removes both. The base theorem
 `thm_svdstack_weighted_general` asks neither `0 ≤ w i` nor `2 ≤ M`, so on those two points the
 Lean form is broader than the paper.
@@ -1996,7 +1935,7 @@ Lean form is broader than the paper.
    cross-table independence; nothing else about the noise enters at Layer 1 (L4).
 
 **Proof sketch.** The estimator has two stages, so the proof reduces the `d × d` problem to an
-`M × M` one, along the display at `main_paper.tex:1282`. On an almost sure event
+`M × M` one, along the first display of the proof of `thm:svdstack_weighted`. On an almost sure event
 `svdstackGramW_eq` (`SVDStack/Weighted.lean:544`) rewrites `∑_i w_i² P_i` as `Ṽ_wᵀ Ṽ_w`, and
 `svdstackPerfW_eq_of_goodEventW` (`SVDStack/Weighted.lean:689`) turns the performance into
 `‖P_top(Ṽ_w Ṽ_wᵀ) Ṽ_w v‖² / λ_max(Ṽ_w Ṽ_wᵀ)`. The probabilistic input is two limits: `align`
@@ -2031,8 +1970,10 @@ not read `w`, by the squared norm of the projection of `v` on the row space of `
 (`SVDStack/Rayleigh.lean:542`) is the union bound that `thm_svdstack_weighted_gaussian_opt_full`
 (`SVDStack/Rayleigh.lean:590`) reports.
 
-**Scope.** Matches the paper as amended (E1): the uniform bound is the amended statement.
-Against the printed statement the uniform bound is stronger.
+**Scope.** The paper states the optimality over the weightings whose `W A_β W` has a unique
+largest eigenvalue. The uniform bound of `_opt_full` is stronger: it holds over every nonzero
+weighting, deterministic or data dependent, with no eigengap condition, and the stated
+weighting attains it.
 
 **Audit trail.** `notes/archive/thm_svdstack_weighted.md`,
 `notes/archive/audit_weighted_2026-08-30.md` (decision D10),
@@ -2165,16 +2106,16 @@ own conditions written out. The abstract setting `{nn : ℕ}` with `{σ q : Fin 
 general than the paper, not less: the diagonal is arbitrary, and the paper's block `Σ` is the
 instance `sigmaStack`. `hlam : ∀ i, σ i ≠ lam` in `det_Rmat_sub` and
 `mem_spectrum_iff_secularDiag` is paper-implicit, since the paper's `f(λ)` divides by
-`w_j² - λ` (`main_paper.tex:1381`). `hS : ∀ i ∈ S, σ i = t` in
+`w_j² - λ` (`lem:secular_equation`). `hS : ∀ i ∈ S, σ i = t` in
 `card_sub_one_le_finrank_eigenspace` is paper-implicit, the block form of `Σ`
-(`main_paper.tex:1360`). `hlam : (⨆ i, σ i) < lam` with `e : secularDiag σ q lam = 0`, and the
+(the definition of `Σ` before `eq:assumption4`). `hlam : (⨆ i, σ i) < lam` with `e : secularDiag σ q lam = 0`, and the
 scalar `hg : ∃ g, Scalars.IsGammaTop θ w g`, are paper-implicit: they are `γ₁ > max_i w_i²` and
-the secular equation of `main_paper.tex:1370`, the existence half of `eq:assumption4`.
+the secular equation of `lem:secular_equation`, the existence half of `eq:assumption4`.
 `hu : ∀ i, ∑ k, u i k ^ 2 = 1` is paper-implicit, because block `i` of the paper's `ũ₀` is
 `θ_i w_i u_i` with `‖u_i‖ = 1`. `hν : ∀ i, 0 < ν i` and `hM : 0 < M` are technical: an empty block
 or an empty table index leaves no top eigenvalue to name, and the paper has `n_i ≥ 1` and
 `M ≥ 1`. `hq : q ≠ 0` and `hnn : 0 < nn` in `root_above_unique`, `lamMax_Rmat_eq`,
-`topSimple_Rmat` and `topSpace_Rmat_eq_span` left the four signatures on 2026-09-07 (F30). Both
+`topSimple_Rmat` and `topSpace_Rmat_eq_span` are no longer in the four signatures. Both
 binders are derivable: `secularDiag σ q lam` is the constant `1` when `q = 0`, so the root
 hypothesis `e` already excludes `q = 0`, and a nonzero `q` on `Fin nn` forces `0 < nn`. The two
 new lemmas, `ne_zero_of_secularDiag_eq_zero` and `pos_of_secularDiag_eq_zero`
@@ -2222,7 +2163,7 @@ this to the paper's block matrix: `secularDiag_stack` (`Secular.lean:399`) colla
 sum to `Scalars.secular`, `iSup_sigmaStack` (`Secular.lean:420`) matches `max_p σ_p` with
 `Scalars.wSqMax`, `isGammaTop_iff_stack` (`Secular.lean:436`) makes the scalar and the spectral
 root conditions one statement, and `u0Stack_ne_zero` (`Secular.lean:443`) shows `ũ₀ ≠ 0`
-directly (since F30 the four claim-3 theorems derive it from the root instead);
+directly (the four claim-3 theorems derive it from the root instead);
 `lamMax_Rstack_eq_gammaTop` (`Secular.lean:468`) and `topSpace_Rstack_eq_span`
 (`Secular.lean:481`) are the instances. Mathlib supplies `spectrum_diagonal` and
 `finrank_span_eq_card`, and nothing else enters, because the section has no measure and no
@@ -2247,7 +2188,7 @@ limit; there is no Gaussian form and no Layer 2, since `heteroLaw_of_gaussian` p
 \end{prop}
 ```
 
-**Lean** (`StackSVD/Weighted.lean`, since F28; the scalar half is `Scalars.svdstackOpt_le_binary` and the
+**Lean** (`StackSVD/Weighted.lean`; the scalar half is `Scalars.svdstackOpt_le_binary` and the
 strict `Scalars.svdstackOpt_lt_binary`):
 
 ```lean
@@ -2284,14 +2225,14 @@ supercritical tables).
 **Hypotheses beyond the paper.** `[NeZero M]` is technical: the shared `v` is read off table
 `0` and the kept tables are stacked, so `Fin M` must be nonempty for the statement to
 elaborate. `[∀ N, IsProbabilityMeasure (μ N)]` is technical. `hc : ∀ i, 0 < c i` is
-paper-implicit, from `eq:RMT_limit` (`main_paper.tex:262`). `hreg : ∀ i, (m.tbl i).Regime (c i)`
-is paper-implicit, from `assum:main` (`main_paper.tex:271`). `hdet : ∃ i, c i < (m.tbl i).θ ^ 4`
+paper-implicit, from `eq:RMT_limit`. `hreg : ∀ i, (m.tbl i).Regime (c i)`
+is paper-implicit, from `assum:main`. `hdet : ∃ i, c i < (m.tbl i).θ ^ 4`
 is paper-implicit: the paper's weights `w_i = 1{β_i > 0}` are the indicator of that set, and
-`cor.2` (`main_paper.tex:429`) reads a limit on a nonempty subset only; with `hdet` false the
+`cor.2` reads a limit on a nonempty subset only; with `hdet` false the
 weight vector is zero and the estimator is undefined. `hc1 : ∀ i, c i < (m.tbl i).θ ^ 4 → c i ≤ 1`
 is not beyond the paper, since it is the paper's `c_i ≤ 1` restricted to the kept tables. `hG :
 m.JointGaussianNoise` has two halves. The Gaussian half is restrictive against the four-moment
-class of `assum:general_noise` (`main_paper.tex:246`), user decision Q3; what is lost is every
+class of `assum:general_noise`, question Q3; what is lost is every
 non-Gaussian noise law with four bounded moments. The independence half is paper-implicit,
 since `assum:general_noise` makes the entries i.i.d. across the table index `i` as well. The
 strict facade replaces `hdet` by `hcard : 2 ≤ (Finset.univ.filter fun i => c i < (m.tbl i).θ ^ 4).card`,
@@ -2302,7 +2243,7 @@ which is the paper's own `β₂ > 0`.
 1. The comparison is a conjunction of a convergence statement and a scalar inequality, so the
    reader sees both what converges and what is compared.
 2. The weights are the indicator of `{i : c_i < θ_i⁴}`, the strict detectable set of `cor.2`
-   (see the scope note of section 3.7 and `notes/paper_edits.md` E6).
+   (see the scope note of section 3.7 and section 5.6).
 
 **Proof sketch.** The statement is a convergence claim and a scalar inequality, and the two
 halves share no step. The convergence is `cor.2` read at the detectable set.
@@ -2346,14 +2287,9 @@ section 1.
 \end{thm}
 ```
 
-**Paper, as amended (E8).** The proposition gains the same hypothesis as `thm:stacksvd_weighted`, since its non-strict clause fails at `θ ≡ 0`; the exact replacement is E8.2 in `notes/paper_edits.md`.
-
-```latex
-\begin{thm}
-    \label{prop:dominance}
-    Assume $\theta_i > 0$ for at least one $i$. Optimally weighted \stacksvd dominates unweighted \stacksvd and optimally weighted \svdstack, providing strict improvement above its recovery threshold when $\theta_i^2/c_i$ is not constant across $i$, and when at least two $\theta_i$ are nonzero (respectively).
-\end{thm}
-```
+**One hypothesis the paper does not carry.** The Lean theorem adds
+`hθ : ∃ i, θ_i ≠ 0`, the same hypothesis as `thm:stacksvd_weighted` in section 4.1: the
+non-strict clause fails at `θ ≡ 0`.
 
 **Lean** (`RMT/Het/Sup.lean`; the scalar halves are `Scalars.svdstackOpt_le_stackSVDLimitW`
 and `Scalars.stackSVDLimit_le_stackSVDLimitW`):
@@ -2383,22 +2319,22 @@ None carries `hθ`, which `Scalars.exists_ne_zero_of_thr` (`Scalars.lean:372`) d
 - `m`, `c`: the tables and the aspect ratios.
 - `hc : ∀ i, 0 < c i`: `eq:RMT_limit`.
 - `hθ : ∃ i, (m.tbl i).θ ≠ 0`: at `θ = 0` the optimal weight vector is zero, the weighted
-  stack is the zero matrix, and the claim is false. Not in the paper; in the paper as amended
-  (E8); the same hypothesis as in section 4.1.
+  stack is the zero matrix, and the claim is false. The paper has no such hypothesis; it is
+  the same one as in section 4.1.
 - `hreg`, `hG`: the regime of every table and the joint Gaussian law.
 - The theorem takes no `[IsProbabilityMeasure]` instance: `JointGaussianNoise` already pins
   each `μ N`.
 
 **Hypotheses beyond the paper.** `[NeZero M]` is technical: `stackPerfW` reads the shared `v`
 off table `0`, so `Fin M` must be nonempty. `hc : ∀ i, 0 < c i` is paper-implicit, from
-`eq:RMT_limit` (`main_paper.tex:262`), and `hreg : ∀ i, (m.tbl i).Regime (c i)` is
-paper-implicit, from `assum:main` (`main_paper.tex:271`). `hθ : ∃ i, (m.tbl i).θ ≠ 0` is
-restrictive (finding E8, as in 4.1): at `θ ≡ 0` the optimal weights are all zero, the weighted stack is the zero matrix,
+`eq:RMT_limit`, and `hreg : ∀ i, (m.tbl i).Regime (c i)` is
+paper-implicit, from `assum:main`. `hθ : ∃ i, (m.tbl i).θ ≠ 0` is
+restrictive (as in 4.1): at `θ ≡ 0` the optimal weights are all zero, the weighted stack is the zero matrix,
 and its top eigenvector is arbitrary, so the paper's estimator is not defined there. The three
 strict facades do not carry `hθ`, because `Scalars.exists_ne_zero_of_thr` (`Scalars.lean:372`)
 derives it from their threshold hypothesis. `hG : m.JointGaussianNoise` splits as in 5.1: the
 Gaussian half is restrictive against the four-moment class of `assum:general_noise`
-(`main_paper.tex:246`, user decision Q3), and the independence half is paper-implicit. The
+(question Q3), and the independence half is paper-implicit. The
 statement takes no `[IsProbabilityMeasure]` binder. The strict facades add
 `hthr : 1 < ∑_i θ_i⁴/c_i`, `htwo` and `hnc`, which are the paper's own three side conditions
 (above the recovery threshold, at least two nonzero `θ_i`, and `θ_i²/c_i` not constant).
@@ -2507,7 +2443,7 @@ supplied below).
 
 **Hypotheses beyond the paper.** `[NeZero M]` and `[∀ N, IsProbabilityMeasure (μ N)]` are
 technical. `hθ : ∀ i, (m.tbl i).θ = 1` and `hreg : ∀ i, (m.tbl i).Regime (Scalars.inadC M i)`
-are the paper's own instance (`θ_i = θ_0 = 1`, `c_i = 2i − 1` at `main_paper.tex:666`), not
+are the paper's own instance (`θ_i = θ_0 = 1`, `c_i = 2i − 1` after `prop:binarystacksvd_inadmissable`), not
 extra hypotheses; the Lean family reads `c_i = 2i + 1` only because `Fin M` counts from `0`.
 `S : Finset (Fin M)` is a quantifier rather than a hypothesis, and `[NeZero S.card]` is
 technical: on the empty subset the weight vector is zero and the estimator is undefined, which
@@ -2515,9 +2451,9 @@ is why the bundled theorem writes `S.Nonempty` instead. `hε : 0 < ε` and `hε1
 paper's `ε ∈ (0,1)`. `hM : exp(-γ) * exp(2/ε) ≤ M` is weaker than the paper's
 `M = ⌈e^{-γ} exp(2/ε)⌉`, and the existential theorem states the ceiling itself. `hG :
 m.JointGaussianNoise` splits as in 5.1: Gaussian noise is restrictive against the four-moment
-class of `assum:general_noise` (`main_paper.tex:246`, user decision Q3), and independence
+class of `assum:general_noise` (question Q3), and independence
 across tables is paper-implicit. The two general svdstack theorems quoted above add
-`hc : ∀ i, 0 < c i` (paper-implicit, `eq:RMT_limit` at `main_paper.tex:262`), `hβdef` and
+`hc : ∀ i, 0 < c i` (paper-implicit, `eq:RMT_limit`), `hβdef` and
 `hβ0` (derivable at the instance, in two lines, by `beta_one_inadC_eq_zero` of
 `SVDStack/Inad.lean:27`) and `hwne : ∃ k, w k ≠ 0` (technical, and discharged at the instance
 because `optW 0 = 1`). `prop_binarystacksvd_inadmissable_exists` keeps only `hε` and `hε1`.
@@ -2702,8 +2638,8 @@ theorem thm_theta_est_gaussian [∀ N, IsProbabilityMeasure (μ N)]
     TendstoInProb μ (fun N ω => m.thetaHat i j ci cj N ω) (m.tbl j).θ
 ```
 
-**Lean, general noise** (`ThetaEst.lean` for Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`,
-2026-09-08, and `General/Layer1.lean` for Stage 1, 2026-09-09; the definitions `NoiseLaw`,
+**Lean, general noise** (`ThetaEst.lean` for Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`
+and `General/Layer1.lean` for Stage 1; the definitions `NoiseLaw`,
 `noiseMatrix` and `JointGeneralNoise` are quoted in section 2.6):
 
 ```lean
@@ -2728,7 +2664,7 @@ theorem thm_theta_est_of_general [∀ N, IsProbabilityMeasure (μ N)]
     TendstoInProb μ (fun N ω => m.thetaHat i j ci cj N ω) (m.tbl j).θ
 ```
 
-The form without `hedge`, `thm_theta_est_of_moments` (`General/Layer1.lean`, 2026-09-10), has
+The form without `hedge`, `thm_theta_est_of_moments` (`General/Layer1.lean`), has
 the same binders minus the edge; it is `thm_theta_est_of_general` applied to
 `lamMax_W0_edge_of_general` at table `i`:
 
@@ -2766,25 +2702,25 @@ than assumed, and `hci`, which strengthens from `0 ≤ ci` to `0 < ci`. The proo
 **Hypotheses beyond the paper.** `hij : i ≠ j` (Gaussian only) is paper-implicit, since the
 paper's `X_1` and `X_2` are two different tables; it also removes the need for a `[NeZero M]`
 binder. `hci : 0 ≤ ci` (Layer 1) and `hci : 0 < ci` (Gaussian) are paper-implicit, from
-`eq:RMT_limit` (`main_paper.tex:262`); the Layer 1 form is the weaker of the two, because it
+`eq:RMT_limit`; the Layer 1 form is the weaker of the two, because it
 also allows `c_i = 0`. `law : (m.tbl i).SingleTableLaw ci` is paper-implicit in the Layer 1
 form: it is `prop:single_table`, which the paper's proof applies to `X_1`.
 `est : m.ThetaEstLaw i j cj` is paper-implicit in the same way: its two fields are the two
 concentration steps that the paper's proof takes from `lem:noise_projection_concentration`
 and the independence of the tables (section 2.6). `hregi` and `hregj` (Gaussian only) are
-paper-implicit, from `assum:main` (`main_paper.tex:271`). `[∀ N, IsProbabilityMeasure (μ N)]`
+paper-implicit, from `assum:main`. `[∀ N, IsProbabilityMeasure (μ N)]`
 (Gaussian only) is technical. `hG : m.JointGaussianNoise` (Gaussian only) is restrictive in
 its Gaussian half, as in 3.4: the paper asks only for the four-moment class of
-`assum:general_noise` (`main_paper.tex:246`, user decision Q3), and the Layer 1 form holds
+`assum:general_noise` (question Q3), and the Layer 1 form holds
 for every noise law that satisfies the single-table law and the two cross-table limits. The
-independence half of `hG` is paper-implicit. Until F31 (2026-09-08) the Layer 1 form took
+independence half of `hG` is paper-implicit. An earlier Layer 1 form took
 `hG` itself, the one rank-one exception (D35 of `notes/FLAGGED.md`). The general form
-`thm_theta_est_general` (2026-09-08) removes the Gaussian restriction from the two cross-table
+`thm_theta_est_general` removes the Gaussian restriction from the two cross-table
 limits: `hν` and `hG : m.JointGeneralNoise ν` together are `assum:general_noise` of the paper
 (a fixed law for every `N`, mean `0`, variance `1`, finite fourth moment; the paper's "fourth
 moment bounded" reads, for one fixed law, as "finite"). What stays restrictive there is
 `law : (m.tbl i).SingleTableLaw ci`, the single-table law of table `i` as a hypothesis. Its
-general-noise discharge is Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`, landed 2026-09-09:
+general-noise discharge is Stage 1 of `notes/NONGAUSSIAN_SCOPE.md`:
 `thm_theta_est_of_general` above drops `law` and takes `hac`, `hregi` and the edge of table
 `i` in its place (section 3.1 for those two binders beyond the paper). `hregi` is not
 needed in the general form, because the single-table law of table `i` enters as a hypothesis
@@ -2859,12 +2795,14 @@ law.
 
 ### 5.5 `app:wstacksvd_mle`, the MLE identity and its marginalization
 
-**Paper** (`main_paper.tex:1630` to `:1700`; the appendix has no theorem environment, so the
+**Paper** (Appendix `app:wstacksvd_mle`; the appendix has no theorem environment, so the
 statement below is a paraphrase): the marginal maximum likelihood estimate of `v`,
 after marginalizing Gaussian `u_i`, is
 `v̂_MLE = v_max(∑_i θ_i²/(c_i+θ_i²) X_iᵀ X_i)`, which is exactly weighted stackSVD.
 
-**Paper, as amended (E5), no change to any environment.** E5.2 names the step at `main_paper.tex:1651` as a standard Gaussian marginalization, so the reader separates it from the computation that follows. The Lean `thm_wstacksvd_mle_marginal` proves it.
+**The covariance step.** The step after `eq:weightedStackSVD_form` is a standard Gaussian
+marginalization, and the appendix runs it together with the computation that follows. The
+Lean proves it on its own, as `thm_wstacksvd_mle_marginal`.
 
 **Lean** (`MLE.lean`, `MLEConverse.lean`):
 
@@ -2935,15 +2873,15 @@ with the weights `θ_i²/(c_i + θ_i²)`.
 
 **Hypotheses beyond the paper.** `[NeZero M]` is technical: the sum runs over `Fin M` and the
 marginalization reads `d N` off table `0`. `hc : ∀ i, 0 < c i` is paper-implicit, from
-`eq:RMT_limit` (`main_paper.tex:262`); it is also what makes `Σ_i(v)` invertible, which the
+`eq:RMT_limit`; it is also what makes `Σ_i(v)` invertible, which the
 appendix's Sherman-Morrison step needs. `hv : v ⬝ᵥ v = 1` and `hx : ‖x‖ = 1` are the paper's
 own `‖v‖₂ = 1`. `N : ℕ` and `ω : Ω N` are the point at which the identity holds, not
 hypotheses; there is no limit, no regime and no measure hypothesis, so `assum:main`
-(`main_paper.tex:271`) never enters this section. `thm_wstacksvd_mle_marginal` takes nothing
+never enters this section. `thm_wstacksvd_mle_marginal` takes nothing
 further: the positivity `0 < n_i` and `0 < d` that the density needs comes from the model
 fields `(m.tbl i).hn N` and `(m.tbl 0).hd N`. Gaussian noise is not a restriction here,
 because `reJointLaw` is a separate measure that the appendix itself defines as Gaussian, and
-the theorem says nothing about the law of `m`; `assum:general_noise` (`main_paper.tex:246`) is
+the theorem says nothing about the law of `m`; `assum:general_noise` is
 therefore not in play. No hypothesis of the three statements beyond `[NeZero M]` narrows the
 paper's claim.
 
@@ -2955,8 +2893,7 @@ paper's claim.
    audit, `notes/archive/L5_mle_marginal.md`): the random-effects model is the measure
    `reJointLaw`, its Lebesgue density is `reDensity`, and `log reDensity` at the data is
    `mleLogLik` at `c_i = n_i/d` up to the constant `(∑_i n_i) d/2 · log(2π)`. The split
-   between the two halves remains visible in the Lean names, which is what `notes/paper_edits.md`
-   E5 item 3 asks the paper to make visible as well.
+   between the two halves remains visible in the Lean names.
 2. The identity is stated as "constant plus `d/2` times the Rayleigh form", not as an
    `argmax`. The converse theorem turns it into the two-sided statement about maximizers.
 3. `Matrix.det_one_add_replicateCol_mul_replicateRow` (the Weinstein-Aronszajn identity at a
@@ -3011,8 +2948,8 @@ is claimed, and nothing about the distribution of `m`.
 **Audit trail.** `notes/archive/mle_identity.md`,
 `notes/archive/agent_reports/mle_identity.md`, `notes/archive/agent_reports/q2_mle_converse_remark_ic.md`,
 `notes/archive/audit_independent_D33_2026-09-02.md` section 4; for the marginalization,
-`notes/archive/L5_mle_marginal.md` (statements, modeling choices, the per-unit delegation
-record, the numeric audit with seed `20260903`).
+`notes/archive/L5_mle_marginal.md` (statements, modeling choices, the numeric audit with seed
+`20260903`).
 
 ### 5.6 The two remarks
 
@@ -3028,10 +2965,6 @@ Unweighted \stacksvd can outperform optimally weighted \svdstack, particularly w
     Unweighted \svdstack can outperform binary-weighted \stacksvd when tables have highly imbalanced signal strengths.
 \end{remark}
 ```
-
-**Paper, as amended (E6), no change to the environment.** E6.1 rewrites the paragraph on the improvement over binary-weighted stackSVD, inside the justification at `main_paper.tex:603`: `θ_3 = (c_3+1)^{1/4}` puts table 3 inside `S`, so binary stackSVD is the full stack, whose limit tends to 0 as `c_3` grows, against `6/7` for SVDstack (0.1413 and 0.8570 at `c_3 = 10⁴`). The paragraph's
-"binary-weighted stackSVD" is the rule of `cor.2` (keep the tables above the threshold,
-`main_paper.tex:612`), not the maximum over subsets.
 
 **Lean** (`Remarks.lean`, `RemarksUniform.lean`). Each remark is an explicit instance of the
 closed forms. Declarations: `remark_stack_outperform_svd_stack`,
@@ -3107,15 +3040,15 @@ value at most `2008/2310 = 0.8693`, while optimally weighted and unweighted svds
 
 **Hypotheses beyond the paper.** `[NeZero M]` and `[∀ N, IsProbabilityMeasure (μ N)]` are
 technical. `hθ` and `hreg` are the paper's own instances, written as hypotheses on a model
-rather than as a construction: `θ_i = c_i = 1` for `remark:stack_outperform_svd`
-(`main_paper.tex:571`), and `θ = (√5, 4)`, `c = (1, 38.4)` for `remark:svd_outperform_stack`
-(`main_paper.tex:617`). `hM : 2 ≤ M` in `remark_stack_outperform_svd_stack` is the paper's
+rather than as a construction: `θ_i = c_i = 1` for `remark:stack_outperform_svd`,
+and `θ = (√5, 4)`, `c = (1, 38.4)` for `remark:svd_outperform_stack`.
+`hM : 2 ≤ M` in `remark_stack_outperform_svd_stack` is the paper's
 `M > 1`. In `remark_svd_outperform_stack_pair_stack`, `hM : 4θ₀⁴ ≤ M c₀` is weaker than the
 paper's `M > 4θ₀⁴/c₀`, since the equality case also gives zero; `hc : 0 < c₀` is
-paper-implicit, from `eq:RMT_limit` (`main_paper.tex:262`); and `hne : i₀ ≠ i₁` is
+paper-implicit, from `eq:RMT_limit`; and `hne : i₀ ≠ i₁` is
 paper-implicit, since the paper names two distinct tables. `hG : m.JointGaussianNoise` splits
 as in 5.1: Gaussian noise is restrictive against the four-moment class of
-`assum:general_noise` (`main_paper.tex:246`, user decision Q3), and independence across tables
+`assum:general_noise` (question Q3), and independence across tables
 is paper-implicit. The two existential theorems keep only `M` with `hM : 2 ≤ M` (the first)
 and nothing at all (the second), because they build the model.
 
@@ -3158,13 +3091,13 @@ discharges its own law by `SpikedModel.singleTableLaw_of_gaussian` (`RMT/Full.le
 both built by `Sat.Rank1.model` (`Sat.lean:82`) with integer row counts that realize `c`
 exactly (`38.4 = 192/5`).
 
-**Scope, and one paper finding.** The `M = 3` instance of `remark:svd_outperform_stack` uses
-`θ = (2, 2, c₃^{1/4})`, so table 3 sits exactly on the threshold `θ₃⁴ = c₃`. Under the strict
-detectable set of `cor.2` that table is discarded, binary stackSVD converges to
-`62/72 = 0.861`, and svdstack converges to `6/7 = 0.857`. The paper's claim is the other way
-around at that instance. `remark_svd_outperform_stack_three_binary` states the true
-comparison. The fix `θ₃ = (c₃+1)^{1/4}` restores the paper's claim; this is
-`notes/paper_edits.md` E6.
+**Scope, and one boundary case.** `remark_svd_outperform_stack_three_binary` states the
+`M = 3` comparison at `θ = (2, 2, c₃^{1/4})`, where table 3 sits exactly on the threshold
+`θ₃⁴ = c₃`. The strict detectable set of `cor.2` discards that table, binary stackSVD
+converges to `62/72 = 0.861`, and svdstack converges to `6/7 = 0.857`, so the comparison runs
+the other way at that point. The paper's own example takes `θ₃ = c₃^{1/4} + ε` with `ε > 0`,
+which keeps table 3 inside the detectable set; "binary-weighted stackSVD" there is the rule
+of `cor.2` (keep the tables above the threshold), not the maximum over subsets.
 
 **Audit trail.** `notes/archive/remark_facades.md`,
 `notes/archive/agent_reports/remark_facades.md`, `scripts/numeric/check_remark_examples.py` (deterministic,
@@ -3173,40 +3106,39 @@ PASS), `notes/archive/audit_independent_D33_2026-09-02.md` section 5.
 ## 6. Rank `r`: unaligned subspaces (Section 7) and the exactly aligned case (Appendix E)
 
 Where each result lives in the paper. Sections 6.2 to 6.5 below are **Section 7** of the main
-text (`sec:general_rankr_unaligned`, `main_paper.tex:749`). Section 6.1 is **Appendix D**
-(`sec:unaligned_rank_r`, `:1941`), the proof appendix of that section. Sections 6.6 and 6.7
-are **Appendix E** (`sec:rank_r`, `:2290`), the exactly aligned scenario; they are corollaries
+text (`sec:general_rankr_unaligned`). Section 6.1 is **Appendix D**
+(`sec:unaligned_rank_r`), the proof appendix of that section. Sections 6.6 and 6.7
+are **Appendix E** (`sec:rank_r`), the exactly aligned scenario; they are corollaries
 stated only there, not in the main text. Section 6.8 is stated and proved entirely inside
-**Appendix D** (`sec:insufficiency_of_global_weights_stacksvd`, `:2087`); the main text only
-points to it (`:912`). Section 6.9 is the reverse: its statement is in the main text
-(`:915`, in the weighted stackSVD subsection that starts at `:906`), and its proof is in
-**Appendix D** (`sec:appendix_insufficiency_single_weights_stacksvd`, `:2169`). Section 6.8
-is formalized at Layer 1 and Gaussian (Track G); section 6.9 is formalized at Layer 1
-(`prop_singleweight_suboptimality_of_law`, under the hypothesis `hlaw`) and, since 2026-09-07,
-unconditionally on its Gaussian witness (`prop_singleweight_suboptimality_gaussian`, F18b).
+**Appendix D** (`sec:insufficiency_of_global_weights_stacksvd`); the main text only
+points to it (the paragraph before `prop:singleweight_suboptimality`). Section 6.9 is the reverse: its statement is in the main text
+(`prop:singleweight_suboptimality`, in the weighted stackSVD subsection `sec:weighted_stacksvd_unaligned`), and its proof is in
+**Appendix D** (`sec:appendix_insufficiency_single_weights_stacksvd`). Section 6.8
+is formalized at Layer 1 and for Gaussian noise; section 6.9 is formalized at Layer 1
+(`prop_singleweight_suboptimality_of_law`, under the hypothesis `hlaw`) and
+unconditionally on its Gaussian witness (`prop_singleweight_suboptimality_gaussian`).
 
 The model of Section 7 is `assum:unaligned`:
 
 ```latex
-\begin{assum}[Unaligned subspaces]\label{assum:unaligned}
-    The matrices $\{X_i \}$ are generated according to the following model:
-    \begin{equation*}
-        X_i = U_i \Theta_i (V R_i)^{\top} + E_i
-    \end{equation*}
-    where $R_i \in \mathbb{O}(r,r_i)$ and
+\begin{assum}\label{assum:unaligned}
+    The matrices $\{X_i \}$ are generated as below,
+    where $\Theta_i \in \R^{r_i \times r_i}_{>0}$ is diagonal, $U_i \in \mathbb{O}(n_i, r_i)$, and $R_i \in \mathbb{O}(r,r_i)$.
+    Additionally, the noise conditions of \Cref{assum:general_noise} and RMT scaling limits of \eqref{eq:RMT_limit} are satisfied, and $\{R_i\}$ span $\R^r$: \looseness=-1
     \begin{align*}
-    \operatorname{Rank}\left(\sum_i R_i R_i^\top \right) = r
+        X_i = U_i \Theta_i (V R_i)^{\top} + E_i\\ \operatorname{Rank}\Big(\sum_i R_i R_i^\top \Big) = r
     \end{align*}
-    Additionally, the noise conditions of \Cref{assum:general_noise} and RMT scaling limits of \Cref{eq:RMT_limit} are satisfied. $\Theta_i \in \R^{r_i \times r_i}$ is diagonal with positive entries and $U_i \in \mathbb{O}(n_i, r_i)$.
 \end{assum}
 ```
+
+(Quoted from `main_paper.tex` with its `%` comment lines left out.)
 
 In Lean this is `UnalignedModelR μ M n d r rk` (general `r_i`) and `UnalignedModel μ M n d r`
 (`r_i = 1`). `assum:rank_r` is the exactly aligned case: `rk = alignedRk M r` and `R_i = 1`.
 
 ### 6.1 `lem:general_rank_delocalization` (Appendix D)
 
-**Paper** (`main_paper.tex:1948`).
+**Paper** (`lem:general_rank_delocalization`).
 
 ```latex
 \begin{lemma}\label{lem:general_rank_delocalization}
@@ -3219,7 +3151,7 @@ In Lean this is `UnalignedModelR μ M n d r rk` (general `r_i`) and `UnalignedMo
 \end{lemma}
 ```
 
-**Lean** (`RankR/GeneralMain.lean` at general `r_i`; `RankR/Unweighted.lean` at `r_i = 1`, since F28):
+**Lean** (`RankR/GeneralMain.lean` at general `r_i`; `RankR/Unweighted.lean` at `r_i = 1`):
 
 ```lean
 theorem lem_general_rank_delocalization_general (m : UnalignedModelR μ M n d r rk)
@@ -3282,7 +3214,7 @@ theorem prop_general_rank_unweighted_svdstack_general_gaussian
     TendstoInProb μ (fun N ω => m.perfRG N ω) (limitRG β m.R)
 ```
 
-The `r_i = 1` twin is `prop_general_rank_unweighted_svdstack_gaussian` (`RankR/Unweighted.lean`, since F28).
+The `r_i = 1` twin is `prop_general_rank_unweighted_svdstack_gaussian` (`RankR/Unweighted.lean`).
 The paper-literal `‖V̂ᵀ V‖_F²` forms are
 `prop_general_rank_unweighted_svdstack_general_frobenius` (with a frame that exists with
 probability tending to one) and `_frobenius_eig` (at the canonical frame, no frame
@@ -3335,8 +3267,6 @@ Under \Cref{assum:unaligned}
 \end{prop}
 ```
 
-**Paper, as amended (E9), no change to the environment.** E9.3 adds one sentence at `main_paper.tex:842`: at a tie across index `r` the top-`r` eigenspace carries no `d × r` frame, so `V̂_stacksvd` denotes any orthonormal basis of it on the event that the gap at index `r` is positive, whose probability tends to 1 (R8).
-
 **Lean** (`RankR/SubspaceGaussian.lean`):
 
 ```lean
@@ -3354,11 +3284,10 @@ theorem prop_stacksvd_subspace_general_gaussian [NeZero M] [∀ N, IsProbability
 ```
 
 Layer 1 forms: `prop_stacksvd_subspace` and `prop_stacksvd_subspace_general`, both in
-`RankR/SubspaceMain.lean` since F28 (2026-09-08; were `RankR/Subspace.lean` and
-`RankR/SubspaceG.lean`). Paper-literal Frobenius forms at
+`RankR/SubspaceMain.lean`. Paper-literal Frobenius forms at
 `r_i = 1`: `prop_stacksvd_subspace_frobenius` and `_frobenius_eig` (`RankR/Frobenius.lean`),
 discharged by `prop_stacksvd_subspace_frobenius_eig_gaussian` (`RankR/SubspaceGaussian.lean`).
-At general `r_i` (F23, `RankR/SubspaceGaussian.lean` section 4b) the same three
+At general `r_i` (`RankR/SubspaceGaussian.lean` section 4b) the same three
 forms are `prop_stacksvd_subspace_general_frobenius`, `_general_frobenius_eig` and
 
 ```lean
@@ -3378,7 +3307,7 @@ projector-sum surrogate `perfStackRG` equal to the Frobenius norm is proved almo
 every large `N` (`ae_topGap_stackGramG`, `topGap_stackGramG_whp_of_gaussian`).
 
 **Hypotheses in words.** Only the model, the regime and the Gaussian noise. No eigengap of
-`C`, no distinct-spike condition. That matches `main_paper.tex:842`.
+`C`, no distinct-spike condition. That matches the remark after `prop:stacksvd_subspace`.
 
 - `[NeZero M]`: at least one table. Without it the stack has no rows.
 - `[∀ N, IsProbabilityMeasure (μ N)]`: each `μ N` is a probability measure.
@@ -3401,13 +3330,13 @@ every large `N` (`ae_topGap_stackGramG`, `topGap_stackGramG_whp_of_gaussian`).
 `Rank(∑ R_i R_iᵀ) = r`, so the paper's rank condition is not assumed (section 1). The
 narrowing: at general `r_i` each table is a `SpikedModelR`, whose fields
 `hθnn` and `hθanti` force nonnegative and distinct `θ_ij` inside a table. Only `hθanti` narrows
-the paper: `assum:unaligned` (`main_paper.tex:762`) says "`Θ_i ∈ R^{r_i × r_i}` is diagonal
-with positive entries", and `hθnn` (`0 ≤ θ`, F8) is wider than that. The paper makes no
-ordering assumption (`main_paper.tex:767`) and assumes distinct entries for svdstack only
-(`:768`). So `prop_stacksvd_subspace_general_gaussian` is narrower than the paper at a table
+the paper: `assum:unaligned` says "`Θ_i ∈ R^{r_i × r_i}_{>0}` is
+diagonal", and `hθnn` (`0 ≤ θ`) is wider than that. The paper makes no
+ordering assumption (in the text after `assum:unaligned`) and assumes distinct entries for svdstack only
+(there too). So `prop_stacksvd_subspace_general_gaussian` is narrower than the paper at a table
 with a repeated `θ_ij`. No stacksvd proof in this section reads either field, although nine
 files elsewhere in the tree do read them (`notes/FLAGGED.md` item (4)), so an order-free
-model would carry the same proof (Track A audit finding F1, `notes/FLAGGED.md` D-A1);
+model would carry the same proof (`notes/FLAGGED.md` D-A1);
 `notes/REVISION_LIST.md` R18 carries the per-field, per-result survival table.
 
 **Audit trail.** `notes/archive/prop_stacksvd_subspace.md`,
@@ -3415,27 +3344,14 @@ model would carry the same proof (Track A audit finding F1, `notes/FLAGGED.md` D
 `notes/archive/audit_independent_trackA_2026-09-02.md` (verdict: pass with findings, 1 must-fix, a
 scope documentation item, since addressed by the docstring at `SubspaceGaussian.lean`).
 
-### 6.4 `thm:gen_rank_weight_svdstak`
+### 6.4 `thm:gen_rank_weight_svdstack`
 
 **Paper.**
 
 ```latex
-\begin{thm}\label{thm:gen_rank_weight_svdstak}
-Suppose that $\beta_{ij} > 0$ for all $i,j$.
-Then the optimal weights for \svdstack under \Cref{assum:unaligned} are $W\opt = \diag(1/\sqrt{1 - \beta_{ij}^2})$.
-Specifically,
-\begin{equation*}
-    \left\| \Vsvdstack(W\opt)^{\top} V \right\|_F^2 \ip L\opt := r - \sum_{\ell = 1}^r \lambda_{\tilde{r} + 1 - \ell} (A_{\beta, R}^{-1/2} (W\opt)^{-2} A_{\beta,R}^{-1/2})
-\end{equation*}
-\end{thm}
-```
-
-**Paper, as amended (E2).** The hypothesis `β_ij > 0` is dropped, which is what the Lean theorem carries; the exact replacement is E2.2 in `notes/paper_edits.md`. E2.4 rewrites Step 2 of the proof (`main_paper.tex:2062`), which reads "`diag(β)` is invertible by assumption", so that the bound holds at every `N` and the attainment at `W⋆` holds at every rank of `B_R`.
-
-```latex
 \begin{thm}\label{thm:gen_rank_weight_svdstack}
-% Then the optimal weights for \svdstack under \Cref{assum:unaligned} are $W\opt = \diag(1/\sqrt{1 - \beta_{ij}^2})$. 
-Under \Cref{assum:unaligned}, \svdstack can be optimally weighted with $W\opt = \diag(1/\sqrt{1 - \beta_{ij}^2})$. 
+Suppose that $\beta_{ij} > 0$ for all $i,j$.
+Then, under \Cref{assum:unaligned},\svdstack can be optimally weighted with $W\opt = \diag(1/\sqrt{1 - \beta_{ij}^2})$. 
 Specifically,
 \begin{equation*}
     \left\| \Vsvdstack(W\opt)^{\top} V \right\|_F^2 \ip L\opt := r - \sum_{\ell = 1}^r \lambda_{\tilde{r} + 1 - \ell} (A_{\beta, R}^{-1/2} (W\opt)^{-2} A_{\beta, R}^{-1/2})
@@ -3443,10 +3359,17 @@ Specifically,
 \end{thm}
 ```
 
-**Lean.** At `r_i = 1` (`RankR/WeightedMain.lean`, since F28; was `RankR/Weighted.lean`):
+**What the Lean theorem does not need.** The paper assumes `β_ij > 0` for all `i, j`, and the
+footnote before the theorem sets aside the `W` that give no eigengap in `W A_{β,R} Wᵀ`.
+`thm_gen_rank_weight_svdstack_general_r_full_gaussian` needs neither: it bounds every `W`,
+the stated `W⋆` attains the bound, and no rank condition on `B_R` enters. Step 2 of the
+paper's proof reads "`diag(β)` is invertible by assumption"; the Lean bound holds at every
+`N` and at every rank of `B_R`.
+
+**Lean.** At `r_i = 1` (`RankR/WeightedMain.lean`):
 
 ```lean
-theorem thm_gen_rank_weight_svdstak (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
+theorem thm_gen_rank_weight_svdstack (m : UnalignedModel μ M n d r) (c β : Fin M → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
     (hrM : r ≤ M)
     (hrankB : (BR β m.R).rank = r)
@@ -3459,7 +3382,7 @@ At general `r_i`, with Gaussian noise, the paper-literal corollary and the stron
 (`RankR/GeneralGaussian.lean`):
 
 ```lean
-theorem thm_gen_rank_weight_svdstak_general_r_paper_gaussian
+theorem thm_gen_rank_weight_svdstack_general_r_paper_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ)
     (hc : ∀ i, 0 < c i) (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -3470,7 +3393,7 @@ theorem thm_gen_rank_weight_svdstak_general_r_paper_gaussian
         TendstoInProb μ (fun N ω => m.perfRGW W N ω) (limitRGW W β m.R) ∧
           limitRGW W β m.R ≤ limitOptG β m.R _
 
-theorem thm_gen_rank_weight_svdstak_general_r_full_gaussian
+theorem thm_gen_rank_weight_svdstack_general_r_full_gaussian
     [∀ N, IsProbabilityMeasure (μ N)] (m : UnalignedModelR μ M n d r rk)
     (c : Fin M → ℝ) (β : (i : Fin M) → Fin (rk i) → ℝ) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i j, β i j = beta ((m.tbl i).θ j) (c i))
@@ -3497,10 +3420,10 @@ every one is listed here. The performance `perfRGW W` is the trace form
 `tr((WṼV)ᵀ specInvTop(WṼṼᵀWᵀ, r) (WṼV))` (`RankR/General.lean:537`); it equals
 `‖V̂_svdstack(W)ᵀ V‖_F²` at a top-`r` eigenframe (`frobSq_vhatSvdstackGW`,
 `RankR/GeneralFrob.lean:322`), and the theorem in that Frobenius form,
-`thm_gen_rank_weight_svdstak_general_r_frobenius_eig` (`RankR/GeneralFrob.lean:440`), is
+`thm_gen_rank_weight_svdstack_general_r_frobenius_eig` (`RankR/GeneralFrob.lean:440`), is
 proved under `rank B_R = r` only.
 
-Layer 1, `thm_gen_rank_weight_svdstak` (`r_i = 1`):
+Layer 1, `thm_gen_rank_weight_svdstack` (`r_i = 1`):
 
 - `m : UnalignedModel μ M n d r`, `c β : Fin M → ℝ`: the model, the aspect ratios, the
   per-table overlaps.
@@ -3528,37 +3451,37 @@ Gaussian at general `r_i`, both blocks:
   `r ≤ r̃`, and is therefore the wider statement.
 - The third conjunct of `_full_gaussian` is the upper bound uniform in `W`: with probability
   tending to one, no weight matrix beats `L⋆ + ε`. That removes the eigengap side condition
-  from the paper's optimality claim; this is `notes/paper_edits.md` E2.
+  from the paper's optimality claim.
 
-**Modeling choices** (`notes/archive/thm_gen_rank_weight_svdstak.md`, D15 and D16 of `notes/FLAGGED.md`).
+**Modeling choices** (`notes/archive/thm_gen_rank_weight_svdstack.md`, D15 and D16 of `notes/FLAGGED.md`).
 
 1. `rank B_R = r` is the hypothesis of the eigenframe form; it is equivalent to the eigengap
    at `W⋆`. The weaker pair `∃ k, 0 < β k` plus `Rank(∑ R_i R_iᵀ) = r` does not give that gap:
    at `M = 3`, `r = 2`, `R = (e₁, e₂, e₁)`, `β = (0.5, 0, 0.5)` the gap at `W⋆` is `0`
    (D16, with the counterexample). The attainment itself needs no rank hypothesis:
-   `thm_gen_rank_weight_svdstak_norank` (`RankR/WeightedUpper.lean:799`, `r_i = 1`) and
-   `thm_gen_rank_weight_svdstak_general_r_norank` (`RankR/WeightedUpperG.lean:289`, general
+   `thm_gen_rank_weight_svdstack_norank` (`RankR/WeightedUpper.lean:799`, `r_i = 1`) and
+   `thm_gen_rank_weight_svdstack_general_r_norank` (`RankR/WeightedUpperG.lean:289`, general
    `r_i`) prove the convergence of the trace form at `W⋆` from `hc`, `hβdef`, `r ≤ r̃`, the law
    and the Gaussian or independent noise.
-2. The optimality claim is a conjunct of `thm_gen_rank_weight_svdstak_max`
+2. The optimality claim is a conjunct of `thm_gen_rank_weight_svdstack_max`
    (`RankR/WeightedMain.lean:173`) and of the quoted `_full_gaussian`, not of the first quoted
-   signature `thm_gen_rank_weight_svdstak`, which is the convergence alone.
+   signature `thm_gen_rank_weight_svdstack`, which is the convergence alone.
 3. There is no `0 < r` hypothesis on the `r_i = 1` form: at `r = 0` both sides are `0`.
 
 **Scope.** The Lean statement is wider than the paper's on the hypothesis, and the
-uniform-in-`W` bound is stronger than the paper's conclusion. The paper's removal remark at
-`main_paper.tex:901` (a component with `β_ij = 0` can be dropped) is **not** formalized and is
-wrong in general: removal can break `Rank(∑ R_i R_iᵀ) = r`, after which `W⋆` has no eigengap
+uniform-in-`W` bound is stronger than the paper's conclusion. The removal remark after
+`thm:gen_rank_weight_svdstack` (a component with `β_ij = 0` can be dropped), now deleted from the paper, was
+**not** formalized and is wrong in general: removal can break `Rank(∑ R_i R_iᵀ) = r`, after which `W⋆` has no eigengap
 (question Q8, with a counterexample and a Monte Carlo rate).
 
-**Audit trail.** `notes/archive/thm_gen_rank_weight_svdstak.md`,
+**Audit trail.** `notes/archive/thm_gen_rank_weight_svdstack.md`,
 `notes/archive/audit_rank_r_weighted_2026-08-30.md`,
 `notes/archive/audit_rank_r_weighted_post_2026-08-30.md`,
 `notes/archive/audit_independent_trackB_2026-09-02.md`.
 
 ### 6.5 The worked example of Section 7
 
-**Paper**: `eq:psi_equation` (`main_paper.tex:848`) sets `M = 2`, `r = 2`, `r_i = 1`,
+**Paper**: `eq:psi_equation` sets `M = 2`, `r = 2`, `r_i = 1`,
 `R_1 = (1, 0)ᵀ`, `R_2 = (sin ψ, cos ψ)ᵀ`, and gives the two closed forms
 `eq:perf_rankr_ex_svdstack` and `eq:perf_rankr_ex_stacksvd`.
 
@@ -3589,7 +3512,7 @@ paper's alignment `R_1 = (1,0)ᵀ`, `R_2 = (sin ψ, cos ψ)ᵀ`; `hc : 0 < c` an
 `hreg : ∀ i, (m.tbl i).Regime c` are `eq:RMT_limit` at a shared `c`; `hG` is the joint
 Gaussian law. The Layer 1 forms are `example_perfR_tendsto` (`RankR/Example.lean`, hypothesis
 `law : ∀ i, (m.tbl i).SingleTableLaw c`) and `example_perfStackR_tendsto`
-(`RankR/SubspaceMain.lean`, since F28; hypothesis `law : m.SubspaceLaw (2 * c)`).
+(`RankR/SubspaceMain.lean`; hypothesis `law : m.SubspaceLaw (2 * c)`).
 
 **Scope.** The example is stated on `UnalignedModel`, the `r_i = 1` model, which has no
 `hθanti` field at all (section 1.1). So the equal strengths `θ_1 = θ_2 = θ` of the paper's
@@ -3600,20 +3523,7 @@ figure are inside the class for every `θ`, and no ordering question arises here
 
 ### 6.6 `thm:rank_r_svdstack` (Appendix E)
 
-**Paper** (`main_paper.tex:2401`).
-
-```latex
-\begin{cor} [Specialization of \Cref{thm:gen_rank_weight_svdstak}]\label{thm:rank_r_svdstack}
-Under \Cref{assum:rank_r,assum:general_noise}, assuming that a) $\theta_{ij} \neq \theta_{ik}$ for all $i$, for all $j\neq k$, and b) $S_{j}\neq S_k$ for all $j\neq k$,
-rank-$r$ weighted \svdstack satisfies:
-\begin{align*}
-    \left(v_j^\top \hat{v}_{j,\svdstack}\right)^2 &\pto \frac{S_j}{S_j+1} \quad \text{ for $j=1,2,\hdots,r$},\\
-    \left\| V^\top \hat{V}_\svdstack \right\|_F^2 &\pto \sum_j \frac{S_j}{S_j+1}.
-\end{align*}
-\end{cor}
-```
-
-**Paper, as amended (E4).** The corollary does not call itself a specialization of `thm:gen_rank_weight_svdstak`, since that theorem labels no component; the exact replacement is E4.1 in `notes/paper_edits.md`.
+**Paper** (`thm:rank_r_svdstack`).
 
 ```latex
 \begin{cor}\label{thm:rank_r_svdstack} %[Generalization of \Cref{thm:rank_r_svdstack}]
@@ -3654,7 +3564,7 @@ theorem thm_rank_r_svdstack_component_gaussian [∀ N, IsProbabilityMeasure (μ 
 separation `SaggSep β` (`RankR/AlignedComponent.lean:162`), which `saggSep_of_model` (`:535`)
 derives from the model's own ordering. The aggregate clause reads `perfRGW (optWG β)`, the
 trace form; its Frobenius form at an eigenframe is proved under `rank B_R = r` only
-(`thm_gen_rank_weight_svdstak_general_r_frobenius_eig`, `RankR/GeneralFrob.lean:440`).
+(`thm_gen_rank_weight_svdstack_general_r_frobenius_eig`, `RankR/GeneralFrob.lean:440`).
 
 **Hypotheses in words.** The component block is abridged only inside the conclusion: the two
 `…` stand for the same pair of arguments in both places, `(m.isHermitian_gramWG (optWG β) N ω)`
@@ -3689,14 +3599,12 @@ and `(by simpa using le_rtot_alignedRk hM)`, so the frame reads
    to the event of probability tending to one.
 2. No `S_j > 0` hypothesis. The necessity scan (seed 20260904) shows the clause holds at
    `S_j = 0` with limit `0`: `(v_1ᵀ v̂_1)²` falls from 0.0277 at `d = 200` to 0.0011 at
-   `d = 1600`. So `notes/paper_edits.md` E4 item 2, which asked for `S_j > 0`, is withdrawn
-   (`notes/archive/paper_edits_amendments.md` amendment 1), and the two documents agree. A
-   later change to either one has to move the other.
+   `d = 1600`.
 
-**Scope, and a paper finding.** The paper calls this corollary a specialization of
-`thm:gen_rank_weight_svdstak`. It is not: the component clause is not a corollary of the
-aggregate Frobenius statement, and it needed its own proof (`RankR/AlignedComponent.lean`,
-`RankR/AlignedMain.lean`). This is `notes/paper_edits.md` E4. One narrowing, the same as in
+**Scope.** The corollary is not a specialization of `thm:gen_rank_weight_svdstack`: that
+theorem labels no component, so the component clause is not a corollary of its aggregate
+Frobenius statement and needed its own proof (`RankR/AlignedComponent.lean`,
+`RankR/AlignedMain.lean`). One narrowing, the same as in
 section 6.7: with `hR : ∀ i, m.R i = 1` and the model field `hθanti : StrictAnti θ` in every
 table, every table ranks the `r` global components in the same strict order (a common
 component order). The paper's hypothesis (a) asks only that the `θ_ij` be distinct inside
@@ -3711,7 +3619,7 @@ minor).
 **Beyond the paper (F2).** Asymptotic orthogonality of the svdstack columns
 themselves, at the aligned model's optimal weights `W⋆`: the off-diagonal entries of
 `V̂_svdstack(W⋆)ᵀ V` tend to `0` in probability. The paper states asymptotic orthogonality for
-the stacksvd columns only (`main_paper.tex:926`, repeated at `:2318`).
+the stacksvd columns only (in `sec:weighted_stacksvd_unaligned`, repeated in `sec:fullySharedRankr_stacksvd`).
 
 **Lean** (`RankR/AlignedOrth.lean`):
 
@@ -3762,23 +3670,10 @@ the two-index Bessel squeeze, not the aggregate-clause route (`notes/archive/F_b
 
 ### 6.7 `thm:rank_r_stacksvd` (Appendix E)
 
-**Paper** (`main_paper.tex:2337`).
+**Paper** (`thm:rank_r_stacksvd`).
 
 ```latex
 \begin{cor}\label{thm:rank_r_stacksvd}
-Under \Cref{assum:rank_r,assum:general_noise}, and assuming that $\tilde{\theta}_{jj} \neq \tilde{\theta}_{jk}$ for all weightings $j$, for all components $k\neq j$ (\Cref{eq:stacksvd_apptildTheta}),
-rank-$r$ weighted \stacksvd satisfies:
-\begin{align*}
-    \left(v_j^\top \hat{v}_{j,\stacksvd}\right)^2 &\pto \gamma_j \quad \text{ for $j=1,2,\hdots,r$},\\
-    \left\| V^\top \hat{V}_\stacksvd \right\|_F^2 &\pto \sum_j \gamma_j.
-\end{align*}
-\end{cor}
-```
-
-**Paper, as amended (E7.1, applied 2026-09-09).** The user's own edit of `main_paper.tex` fixes the corollary a different way than the proposed E7.1 replacement: instead of restricting to the ordered class, it states the hypothesis as `λ_jj ≠ λ_jk`, the secular roots E7.3's amended `alg:rank_r_stacksvd` ranks by, so the corollary holds for unordered `θ` too; see the "As applied" block of E7.1 in `notes/paper_edits.md`.
-
-```latex
-\begin{cor}\label{thm:rank_r_stacksvd}%[Generalization of \Cref{thm:rank_r_stacksvd}]
 Under \Cref{assum:rank_r,assum:general_noise}, and assuming that $\lambda_{jj} \neq {\lambda}_{jk}$ for all weightings $j$, for all components $k\neq j$ (\Cref{eq:stacksvd_lambda}),
 rank-$r$ weighted \stacksvd satisfies:
 \begin{align*}
@@ -3788,7 +3683,13 @@ rank-$r$ weighted \stacksvd satisfies:
 \end{cor}
 ```
 
-**Paper, as amended (E3 and E7), no change to the environment.** E3.1 gives `γ_j` the value 0 below the threshold in `eq:stacksvd_gammak` (`main_paper.tex:2331`), which sits outside the corollary; E7.2 asks that the outliers `ρ_jk` of the detectable components be distinct, in the sentence at `:2368`; E7.3 replaces the rank of `θ̃_jj` by the rank of the outlier `ρ_jj` among those outliers (`ρ_jk` is the map `MPhet.rhoHet` of the largest secular root `λ_jk`, the quantity `ellSup` in `RankR/Het/Scalars.lean:307` ranks), in line `alg_line:stacksvd_rank` of `alg:rank_r_stacksvd`. The two edits change the two definitions the statement reads, `γ_j` below the threshold and `ℓ_j`, and leave the environment as it is.
+**The definitions the statement reads.** `γ_j` is `eq:stacksvd_gammak`, which the paper
+gives the value `0` below the threshold. `ℓ_j` is the rank of `λ_jj` among the largest
+secular roots `λ_jk` of `eq:stacksvd_lambda`, the rank that line
+`alg_line:stacksvd_rank` of `alg:rank_r_stacksvd` computes. In Lean `ℓ_j` is
+`Scalars.ellSup`, which ranks the outliers `ρ_jk = MPhet.rhoHet λ_jk`
+(`RankR/Het/Scalars.lean:307`); `Scalars.ellSup_eq_ellR` identifies it with `Scalars.ellR`
+inside `assum:rank_r`.
 
 **Lean.** Layer 1 (`RankR/StackMain.lean`) and Gaussian (`RankR/Het/Sup.lean`):
 
@@ -3820,15 +3721,15 @@ Split forms: `thm_rank_r_stacksvd_proj`, `_inner`, `_frobenius`, each with a `_g
   the implication; they are conditions for the law to hold (decision item 16 of `FLAGGED.md`).
 - `hR : ∀ i, m.R i = 1` and the model class `alignedRk M r` are `assum:rank_r`.
 - `hc` and `hreg` are `eq:RMT_limit`; `hG` is `assum:general_noise` in the Gaussian case.
-- The paper's separation `θ̃_jj ≠ θ̃_jk` is **not** a hypothesis: `SpikedModelR.hθanti`
+- The paper's separation `λ_jj ≠ λ_jk` is **not** a hypothesis: `SpikedModelR.hθanti`
   orders the strengths strictly in every table, so it holds inside the class
   (`Scalars.rhoHet_lt_of_lt`) as soon as some table carries component `j`.
-- `hnz : ∀ j, ∃ i, 0 < (m.tbl i).θ j` (F8) says that at least one table carries
+- `hnz : ∀ j, ∃ i, 0 < (m.tbl i).θ j` says that at least one table carries
   each component. When it fails at `j`, every weight `w_ij = θ_ij/√(θ_ij² + c_i)` is `0`, so
-  `X_stack^(j) = 0` and the paper's own `θ̃_jj ≠ θ̃_jk` fails too (for `r ≥ 2`; at `r = 1` the
+  `X_stack^(j) = 0` and the paper's own `λ_jj ≠ λ_jk` fails too (for `r ≥ 2`; at `r = 1` the
   side condition is empty, and the paper's `γ_1` is undefined, since its equation reads
   `0 = 1`); `hnz` is implied by the paper's hypothesis for `r ≥ 2` and is extra at `r = 1`,
-  and the amended statement (E7.1) carries it. Tables with `θ_ij = 0` have weight
+  and the paper's own hypothesis carries it. Tables with `θ_ij = 0` have weight
   `0`, and the proof drops them through
   the sub-model of `RankR/Het/Sub.lean` (`UnalignedModelR.sub`, `key_of_gaussian`).
 
@@ -3836,8 +3737,8 @@ Split forms: `thm_rank_r_stacksvd_proj`, `_inner`, `_frobenius`, each with a `_g
 decision items 15 and 17 of `FLAGGED.md`).
 
 1. `γ_j := Scalars.gammaR`, total: the rank-one limit `stackSVDLimitW` read on column `j`,
-   with value `0` at or below the threshold `∑_i θ_ij⁴/c_i ≤ 1`. The paper defines `γ_j` only
-   above the threshold; this is `notes/paper_edits.md` E3.
+   with value `0` at or below the threshold `∑_i θ_ij⁴/c_i ≤ 1`, which is what
+   `eq:stacksvd_gammak` says.
 2. `ℓ_j := Scalars.ellR`, 0-based and total. The paper's 1-based rank is `ellR + 1`.
 3. The overlap is `overlapIdx` at index `ℓ_j`; the sign of `v̂_j` is fixed by
    `⟪v̂_j, v_j⟫ ≥ 0`.
@@ -3848,7 +3749,7 @@ decision items 15 and 17 of `FLAGGED.md`).
    outliers, with a second bulk theorem at every index at or above `numSup`. Inside the class
    `ellSup = ellR`.
 
-**Scope, and paper finding E7.** The spectral index of the statement is
+**Scope.** The spectral index of the statement is
 `Scalars.ellR m.thetaAligned c j`, the paper's `ℓ_j`, in every place it occurs: inside
 `stackOverlapJ` and `vhatStackR` (`RankR/StackGamma.lean:346, :362`) and inside the
 `crossProj` and `simpleIdxJ` fields of `HeteroLawR`. It equals the component index `j` only
@@ -3858,19 +3759,16 @@ through `ellR_thetaAligned` (`RankR/StackGamma.lean:323`), which takes two side 
 `thm_rank_r_stacksvd_gaussian` has both, so there `ℓ_j = j`.
 
 The model class carries `hθnn` and `hθanti` in every table plus `R_i = 1`, which is the
-paper's own observation at `main_paper.tex:2369` ("if `θ_ij` follow the same ordering in each
+paper's own observation before `alg:rank_r_stacksvd` ("if `θ_ij` follow the same ordering in each
 table, then the ordering is preserved for each weighting, and so `ℓ_j = j`"). The paper's
-worked example of `alg:rank_r_stacksvd` (`main_paper.tex:2359`), `θ_1 = (2, 1)` and
+worked example of `alg:rank_r_stacksvd` (in the text before it), `θ_1 = (2, 1)` and
 `θ_2 = (1, 10)`, is therefore **not** an `UnalignedModelR` with `R_i = 1`. The paper allows an
-unordered `θ` and asks only `θ̃_jj ≠ θ̃_jk` (`:2306`, with the condition and the conclusion at
-`:2368` and `:2369`). At unordered `θ` the paper's `ℓ_j` is not the outlier rank, and more
-than generality is at stake: with the paper's own `ℓ_j` the first display is **false** on an
-explicit `M = 2`, `r = 2` instance, where index 0 carries `0.571 ± 0.008` and the paper's index
-1 carries `0.011 ± 0.003` at `d = 1200`. Inside the ordered class the display holds. The
-proposed fix (outlier rank, or an ordering hypothesis) is `notes/paper_edits.md` E7. `Scalars.ellR`
+unordered `θ` and asks `λ_jj ≠ λ_jk` (`thm:rank_r_stacksvd`); `alg:rank_r_stacksvd` ranks `λ_jj` among
+the `λ_jk` (`eq:stacksvd_lambda`), which is the outlier rank. The Lean statement stays inside
+the ordered class, where `ℓ_j = j` (the text before `alg:rank_r_stacksvd`). `Scalars.ellR`
 is kept general so the statement does not change if the class is widened.
 
-**Numeric check.** The wave-2b audit instantiated `thm_rank_r_stacksvd_gaussian` on a
+**Numeric check.** An audit instantiated `thm_rank_r_stacksvd_gaussian` on a
 concrete Gaussian model in Lean: `M = 2`, `r = 2`, `n_i N = d N = N + 3` (so `c = (1, 1)`),
 `θ = [[3, 3/2], [5/2, 1]]`, `μ N = Measure.pi (fun i => gaussianMatrix (N+3) (N+3))`. Every
 hypothesis discharges, the instance compiles, and `#print axioms` on it gives the three
@@ -3889,7 +3787,7 @@ scope note).
 
 ### 6.8 `prop:gen_rank_stacksvd_singleweight` (Appendix D)
 
-**Paper** (`main_paper.tex:2104` to `:2121`).
+**Paper** (`assum:gen_rank_stacksvd_eig_sep` and `prop:gen_rank_stacksvd_singleweight`).
 
 ```latex
 \begin{assum}\label{assum:gen_rank_stacksvd_eig_sep}
@@ -3912,27 +3810,29 @@ scope note).
 \end{prop}
 ```
 
-**Paper, as amended (E11), no change to the environment.** E11.1 adds one sentence after the proposition: the distinctness of the `γ_ℓ` carries the value of the formula, not only the proof, because at a tied root the `z_ℓ` are fixed only up to a rotation inside the tied plane and a sum of reciprocals is not invariant.
+**Why the distinctness clause matters.** The distinctness of the `γ_ℓ` carries the value of
+the formula, not only the proof. At a tied root the `z_ℓ` are fixed only up to a rotation
+inside the tied plane, and a sum of reciprocals is not invariant under that rotation.
 
-`G = A Aᵀ + Σ` is the covariance of the paper's `X_stack(w)` (`main_paper.tex:2087` to
-`:2103`, the setup at the top of this section). `Σ = diag(w_1² I_{n_1}, …, w_M² I_{n_M})`, and
+`G = A Aᵀ + Σ` is the covariance of the paper's `X_stack(w)` (the setup at the top of
+`sec:insufficiency_of_global_weights_stacksvd`). `Σ = diag(w_1² I_{n_1}, …, w_M² I_{n_M})`, and
 `A` stacks the rows `w_i U_i Θ_i R_iᵀ`. The model is `assum:unaligned`, given in full at the
 top of section 6.
 
-**Lean.** Layer 1 (`RankR/SingleWeight/`) and Gaussian (`RankR/SingleWeight/Het/`, Track G
-of `notes/archive/trackG_plan.md`, 2026-09-05). The deterministic scalar layer
+**Lean.** Layer 1 (`RankR/SingleWeight/`) and Gaussian (`RankR/SingleWeight/Het/`; the plan
+is `notes/archive/trackG_plan.md`). The deterministic scalar layer
 (`RankR/SingleWeight/Scalars.lean`):
 
 ```lean
 /-- `S_i = R_i Θ_i² R_iᵀ`, the signal covariance of table `i` in the shared basis. It is the
-matrix that carries `Θ_i` into the displays of `main_paper.tex:2115` and `:2119`. -/
+matrix that carries `Θ_i` into the two displays of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def sigMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (i : Fin M) :
     Matrix (Fin r) (Fin r) ℝ :=
   R i * Matrix.diagonal (fun j => θ i j ^ 2) * (R i)ᵀ
 
-/-- `∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ`, the matrix of `main_paper.tex:2115`. -/
+/-- `∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ`, the matrix of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def secMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w : Fin M → ℝ) (γ : ℝ) :
@@ -3940,7 +3840,7 @@ noncomputable def secMat {M r : ℕ} {rk : Fin M → ℕ}
   ∑ i, (w i ^ 2 / (γ - w i ^ 2)) • sigMat θ R i
 
 /-- `∑_i w_i²/(γ - w_i²)² R_i Θ_i² R_iᵀ`, the matrix inside the denominator of
-`main_paper.tex:2119`. It is `- d/dγ (secMat θ R w γ)`. The paper writes the denominator
+the limit of `prop:gen_rank_stacksvd_singleweight`. It is `- d/dγ (secMat θ R w γ)`. The paper writes the denominator
 `(w_i² - γ)²`, which is the same number. -/
 noncomputable def secDerivMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
@@ -3949,15 +3849,15 @@ noncomputable def secDerivMat {M r : ℕ} {rk : Fin M → ℕ}
   ∑ i, (w i ^ 2 / (γ - w i ^ 2) ^ 2) • sigMat θ R i
 
 /-- `γ` is a root of the rank-`r` secular equation above `max_i w_i²`
-(`main_paper.tex:2115`). The rank-one twin is `Scalars.IsGammaTop`
+(`prop:gen_rank_stacksvd_singleweight`). The rank-one twin is `Scalars.IsGammaTop`
 (`StackSVDWeighted.lean:107`). -/
 def IsSecularRoot {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w : Fin M → ℝ) (γ : ℝ) : Prop :=
   Scalars.wSqMax w < γ ∧ (1 - secMat θ R w γ).det = 0
 
-/-- The first half of **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`): a
-root of the secular equation gives the matrix of `main_paper.tex:2115` a unit eigenvector
+/-- The first half of **`prop:gen_rank_stacksvd_singleweight`**: a
+root of the secular equation gives the matrix of the proposition a unit eigenvector
 `z_ℓ` with eigenvalue `1`. Route: `1 - secMat` is singular, so its kernel is nonzero
 (`Matrix.exists_mulVec_eq_zero_iff`); normalize any kernel vector. -/
 theorem exists_unit_eigvec_secMat {M r : ℕ} {rk : Fin M → ℕ}
@@ -3967,7 +3867,7 @@ theorem exists_unit_eigvec_secMat {M r : ℕ} {rk : Fin M → ℕ}
     ∃ z : EuclideanSpace ℝ (Fin r), ‖z‖ = 1 ∧
       secMat θ R w γ *ᵥ WithLp.ofLp z = WithLp.ofLp z
 
-/-- One summand of the limit of `main_paper.tex:2119`. -/
+/-- One summand of the limit of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def swTerm {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w c : Fin M → ℝ) (γ : ℝ)
@@ -3975,7 +3875,7 @@ noncomputable def swTerm {M r : ℕ} {rk : Fin M → ℕ}
   (1 - ∑ i, c i * w i ^ 4 / (γ - w i ^ 2) ^ 2) /
     (γ * (WithLp.ofLp z ⬝ᵥ (secDerivMat θ R w γ *ᵥ WithLp.ofLp z)))
 
-/-- The right side of `main_paper.tex:2119`, the limit of
+/-- The right side of the limit display of
 `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def swLimit {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
@@ -3991,18 +3891,18 @@ structure EigSep {M r : ℕ} {rk : Fin M → ℕ}
   root : ∀ l, IsSecularRoot θ R w (γ l)
   /-- the roots are listed in strictly decreasing order, so no two of them are tied -/
   sorted : StrictAnti γ
-  /-- `z_ℓ` is a unit eigenvector of the matrix of `main_paper.tex:2115` at eigenvalue `1` -/
+  /-- `z_ℓ` is a unit eigenvector of `secMat θ R w (γ ℓ)` at eigenvalue `1` -/
   eigvec : ∀ l, ‖z l‖ = 1 ∧ secMat θ R w (γ l) *ᵥ WithLp.ofLp (z l) = WithLp.ofLp (z l)
-  /-- the detectability threshold of `main_paper.tex:2106` -/
+  /-- the detectability threshold of `assum:gen_rank_stacksvd_eig_sep` -/
   thresh : ∀ l, ∑ i, c i * w i ^ 4 / (γ l - w i ^ 2) ^ 2 < 1
 ```
 
 The performance functional (`RankR/SingleWeight/Defs.lean`):
 
 ```lean
-/-- The performance of single-weight stacksvd (`main_paper.tex:2089`): `‖V̂_stacksvd(w)ᵀ V‖_F²`
-in index projector form, `∑_l ∑_k overlapIdx (X_stack(w)) l v_k`. At a simple `l`-th
-eigenvalue each summand is `(v̂_lᵀ v_k)²` (`perfSW_eq_inner_sq`). -/
+/-- The performance `‖V̂_stacksvd(w)ᵀ V‖_F²` of single-weight stacksvd, in index projector form
+`∑_l ∑_k overlapIdx (X_stack(w)) l v_k` (Section `sec:insufficiency_of_global_weights_stacksvd`).
+At a simple `l`-th eigenvalue each summand is `(v̂_lᵀ v_k)²` (`perfSW_eq_inner_sq`). -/
 noncomputable def perfSW (m : UnalignedModelR μ M n d r rk) (w : Fin M → ℝ) (N : ℕ)
     (ω : Ω N) : ℝ :=
   ∑ l : Fin r, ∑ k : Fin r, overlapIdx (m.stackXW w N ω) (l : ℕ) (m.colVecG N k)
@@ -4103,30 +4003,30 @@ Numeric check: the two sides agree to 3.6e-15 over the scan of
 - `sigMat`, `secMat`, `secDerivMat` carry `θ` and `R` as explicit functions, the paper's
   `Θ_i` and `R_i`, at general `rk : Fin M → ℕ` (the paper's `r_i`).
 - `IsSecularRoot θ R w γ`: `γ` is above `max_i w_i²` and solves the determinant equation of
-  `main_paper.tex:2115`.
+  the proof of `prop:gen_rank_stacksvd_singleweight`.
 - `exists_unit_eigvec_secMat`: given a root `h : IsSecularRoot θ R w γ`, a unit `z` with
   `secMat θ R w γ *ᵥ z = z` exists. This is the first sentence of the proposition, and it
   carries no probability and no `SingleWeightLaw`.
-- `swTerm`, `swLimit`: the summand and the sum of `main_paper.tex:2119`, read at any `γ` and
+- `swTerm`, `swLimit`: the summand and the sum of the limit of `prop:gen_rank_stacksvd_singleweight`, read at any `γ` and
   `z`, not only at a root; `EigSep` and `SingleWeightLaw` are what make them the right
   numbers.
 - `EigSep θ R w c γ z`: `root` says each `γ l` solves the secular equation; `sorted` says the
   `r` values are strictly decreasing, so index `l` is unambiguous; `eigvec` says `z l` is the
   unit eigenvector `exists_unit_eigvec_secMat` gives at `γ l`; `thresh` is the paper's
-  detectability sum of `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2106`).
+  detectability sum of `assum:gen_rank_stacksvd_eig_sep`.
 - `m : UnalignedModelR μ M n d r rk`: the model of `assum:unaligned`, general `R_i`, without
   the paper's `Rank(∑ R_i R_iᵀ) = r` (section 1).
 - `w c : Fin M → ℝ`: the one weight per table and the aspect ratios.
 - `perfSW m w N ω`: `‖V̂_stacksvd(w)ᵀ V‖_F²` in projector form; `vhatSW m w l N ω` is `v̂_l`,
   signed by `⟪v̂_l, v_l⟫ ≥ 0`.
 - `SingleWeightLaw m w c γ z`: `align` is the per-pair random matrix theory limit of
-  `main_paper.tex:2153`; `simpleIdx` gives simplicity at every sorted index `l < r`, which
+  the proof of `prop:gen_rank_stacksvd_singleweight`; `simpleIdx` gives simplicity at every sorted index `l < r`, which
   turns the projector sum into the paper's `(v̂_lᵀ v_k)²`
   (`prop_gen_rank_stacksvd_singleweight_inner`).
 - `hsep : SingleWeight.EigSep …`: `assum:gen_rank_stacksvd_eig_sep`, on the theorem's own `γ`
   and `z`.
 - `law : m.SingleWeightLaw w c γ z`: the random matrix theory input, a hypothesis at Layer 1
-  as everywhere in this development (`CLAUDE.md` hard rule 2), and discharged for Gaussian
+  as everywhere in this development, and discharged for Gaussian
   noise by `singleWeightLaw_of_gaussian`.
 - `hc : ∀ i, 0 < c i` and `hreg`: `eq:RMT_limit`, the regime `n_i/d → c_i`; `hG` is
   `assum:general_noise` in the Gaussian case (both as in `thm_rank_r_stacksvd_gaussian`,
@@ -4143,8 +4043,8 @@ Numeric check: the two sides agree to 3.6e-15 over the scan of
 
 **Hypotheses beyond the paper.** `EigSep.sorted : StrictAnti γ` strengthens the paper's "the
 top `r` eigenvalues of `G` … are distinct" (`assum:gen_rank_stacksvd_eig_sep`) to a strict
-order on the sequence `γ`, not only pairwise inequality; this is finding E11 (section 7.2):
-without it the limit is not determined by `(γ, z)` alone, because at a tied root the
+order on the sequence `γ`, not only pairwise inequality. Without it the limit is not
+determined by `(γ, z)` alone, because at a tied root the
 performance (a sum of reciprocals) changes with which basis of the tied eigenspace is used
 for `z`, unless that basis is chosen orthogonal for the quadratic form `secDerivMat`
 (`notes/archive/singleweight_plan.md` scan 3.1). `sorted` is restrictive in that narrow sense (it
@@ -4153,8 +4053,8 @@ derivable from the paper's own clause otherwise. `EigSep.eigvec` is paper-implic
 paper's `z_ℓ` is "a unit eigenvector"; making it an explicit field of the hypothesis, rather
 than reconstructing it inside the theorem, is a naming choice, not a strengthening, since
 `exists_unit_eigvec_secMat` proves one exists at every root. `SingleWeightLaw` itself is the
-Layer 1 black box, paper-implicit from `eq:RMT_limit` and the appendix proof at
-`main_paper.tex:2123` to `:2167` (Theorem 1 of `liu2023asymptotic`, applied as in
+Layer 1 black box, paper-implicit from `eq:RMT_limit` and the appendix proof of
+`prop:gen_rank_stacksvd_singleweight` (Theorem 1 of `liu2023asymptotic`, applied as in
 `thm:stacksvd_weighted`); no field of it adds a condition beyond that citation, and the
 Gaussian discharge proves it from the model. The weights carry no condition, as in the
 paper. The almost sure simplicity of the weighted Gram matrix
@@ -4206,7 +4106,7 @@ collapses to `∑_l swTerm … (γ l) (z l) = swLimit …`. Same shape as
 binder, since the pairwise limit already holds under the law alone (its mirror
 `thm_rank_r_stacksvd_inner`, `RankR/StackMain.lean:150`, carries none either).
 
-The Gaussian discharge (`RankR/SingleWeight/Het/`, 8 files, 4387 lines, Track G) mirrors
+The Gaussian discharge (`RankR/SingleWeight/Het/`, 8 files, 4387 lines) mirrors
 the chain of `RankR/Het/` (section 6.7) at general `R_i` and replaces the per-column
 secular scalars by the matrix ones: (1) `Het/Scalars.lean` defines the matrix `F(x)` of
 resolvent limits (`swFmat`), the outlier `ρ_l = swRho c w (γ l)` of a root `γ_l` (the
@@ -4226,7 +4126,7 @@ overlap of a column off the frame (`align_detZ`). (4) `Het/Outliers.lean` applie
 (`tendstoInProb_normSq_specProj_Ioi_tau_sw`). (5) `Het/Align.lean` reads the sorted
 eigenvalue `l` (`tendstoInProb_eigVal_sw`) and the projector overlap at index `l`
 (`align_sw_of_gaussian`) from two counts at `ρ_l ∓ δ`, as `RankR/Het/Align.lean` does.
-(6) `Het/Sub.lean` (F18c) drops the tables of weight zero: the sub-model `subRk` on the
+(6) `Het/Sub.lean` drops the tables of weight zero: the sub-model `subRk` on the
 support of `w` has the same weighted Gram matrix (`stackGramW_subRk`), so the almost sure
 simplicity of `RankR/Het/Simplicity.lean`, which needs every weight nonzero, transfers
 (`simpleSpec_ae_stackGramW_of_exists`); and `EigSep.exists_ne_zero` supplies the one table
@@ -4238,11 +4138,11 @@ shift `exists_shift_sw`, and the facades from Layer 1 on the shifted model.
 (`exists_unit_eigvec_secMat`) needs no discharge: it is deterministic. `SingleWeightLaw`
 has an explicit witness through the discharge for any Gaussian model that meets `EigSep`;
 no separate rank-one instance is written (section 8.1): the natural one needs a bridge from
-`MultiTableModel` to `UnalignedModelR` that does not exist yet (F18a's bridge item). The
+`MultiTableModel` to `UnalignedModelR` that does not exist yet. The
 discharge alone does not close `prop:singleweight_suboptimality` (section 6.9): its `hlaw`
 asks for the limit at every positive weight pair of the witness, where `EigSep` fails at
 extreme weight ratios and the paper's `swLimitEx` has undetectable branches (risk 4 of
-`notes/archive/trackG_plan.md`). Item F18b (2026-09-07) proves those branches separately
+`notes/archive/trackG_plan.md`). Those branches are proved separately
 (`RankR/SingleWeight/Tie.lean`, `Regimes.lean`, `Het/OneOutCount.lean`, `Het/OneOutDet.lean`,
 `Het/OneOutAlign.lean`, `Het/OneOutBulk.lean`, `Suboptimality.lean`), so `hlaw` is a theorem
 (`hlaw_witness`) and section 6.9 is unconditional.
@@ -4254,23 +4154,20 @@ performance formula matches Monte Carlo simulation within about 1 standard error
 on two general-`R_i` instances and on the paper's own suboptimality instance
 (`notes/archive/singleweight_plan.md` section 2).
 
-**Audit trail.** `notes/archive/singleweight_plan.md` (status user OK 2026-09-05, statements as
-compiled), hypothesis necessity scan of the same note section 3 (all four clauses of
-`assum:gen_rank_stacksvd_eig_sep` needed for the value, not only the proof route; the
-distinctness finding is E11), adversarial risk review section 7 (four risks, none overturning
-the statement). Proved 2026-09-05; delegation record in the plan note section 6. Gaussian
+**Audit trail.** `notes/archive/singleweight_plan.md` (statements as compiled), hypothesis
+necessity scan of the same note section 3 (all four clauses of
+`assum:gen_rank_stacksvd_eig_sep` needed for the value, not only the proof route),
+adversarial risk review section 7 (four risks, none overturning the statement). Gaussian
 discharge: `notes/archive/trackG_plan.md` (the route, the unit table, the risks, and section 8, the
-execution record with the model and the coordinator's check per unit), the numeric checks
+execution record), the numeric checks
 of `notes/archive/trackG_specs/` (`check_trackG.py`, `check_trackG_mc.py`, `check_frame.py`,
-`audit_G0.py`; seed 20260905), decisions D37 (`hw`, resolved by F18c the same day) and D38
-(`hrn`, the shift) of `notes/FLAGGED.md`. The user OK'd the Layer 1 statements; the
-Gaussian signatures were fixed by Claude (D37, D38) and wait for the user's review at the
-handoff.
+`audit_G0.py`; seed 20260905), and decisions D37 (`hw`) and D38
+(`hrn`, the shift) of `notes/FLAGGED.md`.
 
 ### 6.9 `prop:singleweight_suboptimality`
 
-**Paper** (`main_paper.tex:912` to `:917`, the statement; `:2171` to `:2194`, the instance of
-the proof).
+**Paper** (the statement and the paragraph before it; the instance of the proof is in
+`sec:appendix_insufficiency_single_weights_stacksvd`).
 
 ```latex
 \paragraph*{General (single) weighting} Alternatively, we can consider using a single weight per matrix. However, while we can compute the asymptotic performance as a function of the weighting vector and the rotation matrices, it does not yield a closed form optimization and requires knowledge of the $R_i$ (\Cref{prop:gen_rank_stacksvd_singleweight} in \Cref{sec:insufficiency_of_global_weights_stacksvd}).
@@ -4281,7 +4178,7 @@ Nevertheless, through a more careful analysis of the example in \Cref{fig:unalig
 \end{prop}
 ```
 
-The instance, from the proof (`main_paper.tex:2171` to `:2194`):
+The instance, from the proof (`sec:appendix_insufficiency_single_weights_stacksvd`):
 
 ```latex
 We now apply the result to demonstrate that unweighted \svdstack can outperform optimally weighted \stacksvd with a single weight per table in the general rank setting. Take 
@@ -4292,7 +4189,7 @@ We now apply the result to demonstrate that unweighted \svdstack can outperform 
         0 \\ 1
     \end{bmatrix}, \Theta_1 = \Theta_2 = \diag(\theta_0), \quad \theta_0^4 > c_0, \quad c_1 = c_2 = c_0.
 \end{equation}
-To derive the performance of optimally weighted \svdstack (which coincides with unweighted \svdstack in this setting), we may apply Theorem \ref{thm:gen_rank_weight_svdstak} with
+To derive the performance of optimally weighted \svdstack (which coincides with unweighted \svdstack in this setting), we may apply Theorem \ref{thm:gen_rank_weight_svdstack} with
 \begin{equation*}
     A_{\beta, R} = \begin{bmatrix}
         1 & 0 \\ 0 & 1
@@ -4313,13 +4210,13 @@ When $w_1 = w_2$, the performance is obtained by a result for unweighted \stacks
 **Lean.** Two forms: `prop_singleweight_suboptimality_of_law`, with the hypothesis `hlaw`
 (the single-weight limit on the witness at every positive weight pair) in place of its
 proof, and `prop_singleweight_suboptimality_gaussian`, unconditional, which discharges
-`hlaw` by `hlaw_witness` (`RankR/SingleWeight/Suboptimality.lean`, F18b, 2026-09-07). The witness
+`hlaw` by `hlaw_witness` (`RankR/SingleWeight/Suboptimality.lean`). The witness
 model is a Gaussian model (`RankR/SingleWeight/Example.lean`,
 `RankR/SingleWeight/Existence.lean`). The instance's scalars:
 
 ```lean
 /-- `γ_ℓ = w_ℓ²(1 + θ_0²)`, the `ℓ`-th secular root of the instance
-(`main_paper.tex:2190`). -/
+(the last display of `sec:appendix_insufficiency_single_weights_stacksvd`). -/
 noncomputable def gammaEx (θ₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : ℝ := w l ^ 2 * (1 + θ₀ ^ 2)
 
 noncomputable def swTermEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : ℝ :=
@@ -4327,7 +4224,7 @@ noncomputable def swTermEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : 
       (gammaEx θ₀ w l - w (other l) ^ 2) ^ 2) / (θ₀ ^ 2 * (1 + θ₀ ^ 2))
 
 /-- Root `ℓ` of the instance is detectable: `γ_ℓ = w_ℓ²(1 + θ_0²)` lies above every `w_i²`,
-and the threshold sum of `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2106`) is below
+and the threshold sum of `assum:gen_rank_stacksvd_eig_sep` is below
 `1`. The two clauses are `IsSecularRoot`'s first clause and `EigSep.thresh` at `c = c_0`,
 written on the instance. -/
 def DetectableEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : Prop :=
@@ -4335,12 +4232,12 @@ def DetectableEx (θ₀ c₀ : ℝ) (w : Fin 2 → ℝ) (l : Fin 2) : Prop :=
     ∑ i, c₀ * w i ^ 4 / (gammaEx θ₀ w l - w i ^ 2) ^ 2 < 1
 
 open Classical in
-/-- The closed form of the instance, total in `w` (`main_paper.tex:2190` to `:2191`). Three
+/-- The closed form of the instance, total in `w` (the last display of `sec:appendix_insufficiency_single_weights_stacksvd`). Three
 branches, in this order.
 
 1. Both roots detectable: the sum of the two terms of the paper's display.
 2. Exactly one root detectable: that one term. The other component sits in the bulk and
-   contributes nothing (`main_paper.tex:2187`).
+   contributes nothing (the sentence before that display).
 3. Neither root detectable: `0`.
 
 The `if` conditions are `DetectableEx θ₀ c₀ w 0` and `DetectableEx θ₀ c₀ w 1`, in that
@@ -4418,7 +4315,7 @@ theorem prop_singleweight_suboptimality_gaussian :
   constant is rational (`θ_0² = 64/25`, `θ_0⁴ = 4096/625 > 1`, `β_0² = 39/64`,
   `2β_0² = 39/32`).
 - `gammaEx`, `swTermEx`, `DetectableEx`, `swLimitEx`: the closed form of
-  `main_paper.tex:2190` to `:2191`, made total (modeling choice 1 below).
+  the last display of `sec:appendix_insufficiency_single_weights_stacksvd`, made total (modeling choice 1 below).
 - `swLimitEx_lt`'s `0 < w 0` and `0 < w 1`: both table weights are positive, the paper's
   implicit reading of "a single weight per table" (modeling choice 2 below, and see
   "Hypotheses beyond the paper").
@@ -4430,7 +4327,7 @@ theorem prop_singleweight_suboptimality_gaussian :
   hypothesis of the `_of_law` form. It is what the paper's appendix proof reads off
   `prop_gen_rank_stacksvd_singleweight` on `mdl`. `hlaw_witness` proves it in three
   regimes. Both secular roots detectable and `w 0 ≠ w 1`: the Gaussian discharge of
-  `SingleWeightLaw` (section 6.8, Track G) applies, since `Regimes.lean` shows `EigSep` on
+  `SingleWeightLaw` (section 6.8) applies, since `Regimes.lean` shows `EigSep` on
   the witness there (`eigSep_of_detectable`) and `swLimit = swLimitEx` (`hlaw_both`).
   Exactly one root detectable (an extreme weight ratio, where `EigSep` fails and
   `swLimitEx` has one term): the count of eigenvalues above the edge is at most one
@@ -4455,11 +4352,12 @@ surviving table spans only one direction, so the secular equation has only 1 roo
 2` are needed for the sum `swLimit` to be defined at all (plan scan 3.6, the same failure the
 rank condition of `assum:unaligned` triggers at scan 3.4). That is why the existence statement
 requires `0 < w i` (plan section 4.3, modeling choice 5). `hlaw` of the `_of_law` form is
-paper-implicit: it is exactly what the appendix proof at `main_paper.tex:2171` to `:2194`
+paper-implicit: it is exactly what the appendix proof in `sec:appendix_insufficiency_single_weights_stacksvd`
 establishes, once `prop:gen_rank_stacksvd_singleweight` is available, and `hlaw_witness`
-proves it (F18b). One difference from the paper's text: where exactly one root is
-detectable the paper states only the bound `β_0²` ("bounded above by", `:2187`), and the
-Lean proves the exact limit `swTermEx l₀ < β_0²` (`notes/paper_edits.md` E12).
+proves it. One difference from the paper's text: where exactly one root is
+detectable the paper states only the bound `β_0²` ("bounded above by", before the last
+display), with no argument for it. The Lean proves the exact limit there,
+`swTermEx l₀ < β_0²`, the summand of the larger weight in the paper's own display.
 
 **Modeling choices** (`notes/archive/singleweight_plan.md` sections 4.3 and 7).
 
@@ -4485,7 +4383,7 @@ Lean proves the exact limit `swTermEx l₀ < β_0²` (`notes/paper_edits.md` E12
    the proof of `swLimitEx_lt` never reads `EigSep` or `SingleWeightLaw`, only the closed-form
    value on the instance. `hlaw_witness` discharges it on `mdl`. Its one-root helper
    `align_bulk_sw_one` takes a detectability hypothesis `hnd : ¬ DetectableEx (8/5) 1 w l₁`
-   that the statement OK'd on 2026-09-06 lacked; without it the claim is false where both
+   that an earlier form of the statement lacked; without it the claim is false where both
    roots are detectable (decision D39 of `notes/FLAGGED.md`; the endpoint is unchanged).
 
 **Proof sketch.** `swTermEx_lt` (`Example.lean:119`, private) is the term-by-term bound: each
@@ -4508,7 +4406,7 @@ tie goes to `hlaw_tie`; otherwise the smaller weight's root `l₁` is detectable
 (`DetectableEx` is decidable classically), which sends the pair to `hlaw_both` or `hlaw_one`
 (the larger weight's root is detectable whenever the smaller one is, `detectableEx_of_le`,
 and always is on this instance, `Regimes.lean`). `hlaw_one` writes `perfSW` as the sum over
-the two sorted indices (`Fin.sum_univ_two`); index `0` follows Track G's sandwich of the
+the two sorted indices (`Fin.sum_univ_two`); index `0` follows the Gaussian discharge's sandwich of the
 outlier between `swRho ± δ` with the count of `Het/OneOutCount.lean` in place of `EigSep`,
 and index `1` is `align_bulk_sw_one`: the second eigenvalue sits in the edge window
 (`Frame.eigenvalues₀_le_of_two_cols`, `R6het.lamMax_add_vecMulVec_le_of_secular_pos`, since
@@ -4517,13 +4415,13 @@ the undetectable root gives a positive secular value at the edge), and
 `overlapIdx_le_of_eigVal_ge`.
 
 **Scope.** Both halves of the claim are theorems: the svdstack half `witness_perfRG_tendsto`
-and the stacksvd half `hlaw_witness` (F18b, 2026-09-07, 7 files, 2149 lines:
+and the stacksvd half `hlaw_witness` (7 files, 2149 lines:
 `Tie.lean`, `Regimes.lean`, `Het/OneOutCount.lean`, `Het/OneOutDet.lean`,
 `Het/OneOutAlign.lean`, `Het/OneOutBulk.lean`, `Suboptimality.lean`; plan
 `notes/archive/F18b_plan.md`). `prop_singleweight_suboptimality_gaussian` is the
-unconditional statement, with the conclusion of the `_of_law` form. The removal remark of
-`main_paper.tex:901`, cited in the same paragraph as this proposition's setup, is a separate
-claim and stays not formalized (question Q8, section 7.3).
+unconditional statement, with the conclusion of the `_of_law` form. The removal remark after
+`thm:gen_rank_weight_svdstack` was a separate claim; it is not formalized and is deleted in the revised
+paper (question Q8, section 7.3).
 
 **Numeric check.** `notes/archive/singleweight_plan.md` section 2.4: at `θ_0 = 1.6`, `c_0 = 1` the
 general formula of section 6.8 and this closed form agree to 2.2e-16 at three values of
@@ -4533,9 +4431,9 @@ at 0.9 standard errors, section 2.3). At `θ_0 = 8/5` (this instance's value) `b
 39/64` and `2 betaSq (8/5) 2 = 0.999297753 < 39/32`, both exact rational checks inside the
 Lean proof (`norm_num`), not floating point.
 
-**Audit trail.** `notes/archive/singleweight_plan.md` (status user OK 2026-09-05), section 2.4 (the
+**Audit trail.** `notes/archive/singleweight_plan.md`, section 2.4 (the
 closed-form numeric check), section 3.6 (the `w_i = 0` necessity scan), section 7 risk 4 (the
-excluded-boundary supremum, resolved by the total `swLimitEx`). Proved 2026-09-05.
+excluded-boundary supremum, resolved by the total `swLimitEx`).
 
 ## 7. Known gaps and findings
 
@@ -4543,18 +4441,17 @@ excluded-boundary supremum, resolved by the total `swLimitEx`). Proved 2026-09-0
 
 | Paper result | Label | Why not |
 |---|---|---|
-| The removal remark | `main_paper.tex:901` | not formalized, and wrong in general; see question Q8 and section 6.4. |
+| The removal remark | none (a comment after `thm:gen_rank_weight_svdstack`) | not formalized, and wrong in general; deleted in the revised paper (question Q8, section 6.4). |
 
-One more paper result was formalized at Layer 1 only until 2026-09-07: the suboptimality
-corollary `prop:singleweight_suboptimality` (`main_paper.tex:915`, section 6.9), proved
-under the hypothesis `hlaw` (the single-weight stacksvd limit on the two-table witness at
-every positive weight pair). Item F18b proves `hlaw` (`hlaw_witness`), and
+The suboptimality corollary `prop:singleweight_suboptimality` (section 6.9) has a Layer 1
+form under the hypothesis `hlaw` (the single-weight stacksvd limit on the two-table witness
+at every positive weight pair). `hlaw_witness` proves `hlaw`, so
 `prop_singleweight_suboptimality_gaussian` is unconditional. Its input, single-weight
-rank-`r` stackSVD (`prop:gen_rank_stacksvd_singleweight`, `:2112`, the limit of stacksvd
+rank-`r` stackSVD (`prop:gen_rank_stacksvd_singleweight`, the limit of stacksvd
 under one weight per table, section 6.8), is proved at Layer 1 and for Gaussian noise
-(`prop_gen_rank_stacksvd_singleweight_gaussian`, Track G); its Gaussian theorem needs the
+(`prop_gen_rank_stacksvd_singleweight_gaussian`); its Gaussian theorem needs the
 separation assumption `EigSep`, which fails on the witness at an extreme weight ratio, so
-F18b adds a one-component outlier law and an edge window for those ratios, and the
+the tree adds a one-component outlier law and an edge window for those ratios, and the
 unweighted rank-`r` law at the tie. `SingleWeightLaw` has no separate rank-one witness in
 `Sat.lean` (section 8.1); the discharge itself exhibits it on any Gaussian model that meets
 `EigSep`.
@@ -4572,26 +4469,26 @@ Two model-level restrictions, both recorded:
    `SVDStack/Rayleigh.lean`) reads the noise through `MultiTableModel.IndepNoise`
    (independent tables with arbitrary laws, `SVDStack/Gram.lean`; L4 of the
    external statement audit, `notes/archive/L4_indepnoise.md`), so the same holds there.
-   `thm_theta_est` (5.4) reads the noise through `MultiTableModel.ThetaEstLaw` (section 2.6)
-   since F31 (2026-09-08): item P with a random direction (`‖E_j v̂_i‖² → c_j`) and the cross
+   `thm_theta_est` (5.4) reads the noise through `MultiTableModel.ThetaEstLaw` (section 2.6):
+   item P with a random direction (`‖E_j v̂_i‖² → c_j`) and the cross
    term (`u_jᵀ E_j v̂_i → 0`), which for Gaussian noise are Chebyshev bounds with second
    moments under `gaussianMatrix` (`noise_projection_topDir_tendsto`, `cross_term_tendsto`);
    with arbitrary marginals both limits fail, so a non-Gaussian discharge needs a moment
    hypothesis, not only independence (`notes/FLAGGED.md`, D35, superseded in its Layer 1
-   half by F31). Until F31 the Layer 1 form took `hG : m.JointGaussianNoise` itself, the
-   one rank-one exception (user decision Q3; external statement audit finding 8). Since
-   2026-09-08 the two limits are also proved for any fixed law with mean `0`, variance `1`
+   half). An earlier Layer 1 form took `hG : m.JointGaussianNoise` itself, the
+   one rank-one exception (question Q3; external statement audit finding 8). The two limits
+   are also proved for any fixed law with mean `0`, variance `1`
    and a finite fourth moment (`thetaEstLaw_of_general`, section 5.4).
 2. **Ordering of spikes inside a table.** `SpikedModelR.hθanti` and `hθnn` order the
-   `θ_ij` strictly and make them nonnegative (F8: a zero last spike is allowed). The paper assumes distinct entries for svdstack
+   `θ_ij` strictly and make them nonnegative (a zero last spike is allowed). The paper assumes distinct entries for svdstack
    only. See sections 6.3 and 6.7.
 
 **The Furedi-Komlos exponent.** The four-moment edge of section 3.1 rested on one
 combinatorial count: a closed walk of length `2k` on the complete bipartite graph
 `Fin n × Fin d`, with no entry visited exactly once and with one vertex fewer than a tree
 walk, costs at most `(2k)^12 / min(n, d)` per missing vertex (the Furedi-Komlos count;
-Furedi and Komlos 1981 page 237, Anderson, Guionnet and Zeitouni Lemma 2.1.23). It was
-proved 2026-09-10 evening in three new modules of `RMT/General/Edge/`: `Code.lean`,
+Furedi and Komlos 1981 page 237, Anderson, Guionnet and Zeitouni Lemma 2.1.23). It is
+proved in three modules of `RMT/General/Edge/`: `Code.lean`,
 `Dyck.lean` and `CountBound.lean`. The route codes each step of a walk and bounds the bad
 ones by a credit-debt induction (`Code.lean`), bounds the tree-walk cell from below by a
 Narayana double rotation (`Dyck.lean`), and assembles the two into the count
@@ -4605,13 +4502,8 @@ Every result is stated as convergence **in probability**. The paper says the sam
 stated almost surely. Two facts inside the development are almost sure and finite-`N`, and
 they are strengthenings, not gaps: `SingleTableLaw.topSimple` and `TableLawR.simple`.
 
-**Two paper results that an auditor will grep and not find.** `prop:maxrow`
-(`main_paper.tex:2628`) and `cor:domination` (`:2679`) are **commented out** in the source of
-the AoS resubmission, together with the `\maxrow` estimator they describe. They are not part
-of the paper's claims and nothing formalizes them.
-
-**One paper lemma with no section here.** `lem:noise_projection_concentration`
-(`main_paper.tex:2496`), `‖E_2 a‖₂² → c_2` for a unit `a` independent of `E_2`, is proved, not
+**One paper lemma with no section here.** `lem:noise_projection_concentration`,
+`‖E_2 a‖₂² → c_2` for a unit `a` independent of `E_2`, is proved, not
 assumed, as `SpikedModel.noise_projection_tendsto` in `ThetaEst.lean`. It is item P of the
 roadmap and it is used only inside `thm:theta_est` (section 5.4).
 
@@ -4622,53 +4514,47 @@ that it is not doing hidden work.
 | Hypothesis | Where | What it does |
 |---|---|---|
 | `[∀ N, IsProbabilityMeasure (μ N)]` | every Gaussian theorem | each `μ N` is a probability measure. Implicit in the paper. Where `JointGaussianNoise` is present it is derivable, and several theorems (for example `prop_dominance_gaussian`) do without it. |
-| `[NeZero M]`, `hM : 0 < M` | the rank-`r` results, and the 26 rank-one declarations listed in `notes/archive/F22_nezero.md` (every one writes the binder in its quoted source text; see section 0 item 3) | at least one table, so the stack has rows and `r ≤ r̃` holds. |
+| `[NeZero M]`, `hM : 0 < M` | the rank-`r` results, and the 26 rank-one declarations listed in `notes/archive/F22_nezero.md` (every one writes the binder in its quoted source text; see section 0 item 2) | at least one table, so the stack has rows and `r ≤ r̃` holds. |
 | `[NeZero S.card]`, `S.Nonempty` | `cor.2`, section 5.3 | the kept subset is nonempty; the paper's "assuming at least one table is above the threshold". |
 | `hr : 0 < r` | the rank-`r` theorems of `RankR/` that read a top-`r` eigenframe | the shared subspace is nontrivial, so the frame exists. At `r = 0` both sides are `0`, which is why the `r_i = 1` form of section 6.4 drops it. It is also absent from eight declarations that never read it (`topGap_gram_whp`, `topGap_gramW_whp`, `topGap_gramG_whp`, `topGap_gramWG_whp` and the four `prop_*_frobenius_eig*` that forwarded it); it stays everywhere else. Note that `hr : 0 < r` in `LinAlg/Eigen.lean`, `LinAlg/SpecProjPerturb.lean`, `RMT/MP7.lean` and `RMT/T.lean` binds a different `r` (a spectral rank of a bare matrix, or a real number), not the model's shared dimension. |
 | `hrr : r ≤ rtot rk`, `hrM : r ≤ M` | sections 6.2, 6.4 | the paper's `r ≤ r̃`; the top-`r` spectral objects of `A_{β,R}` need it. |
 | `hc : 0 < c i` | almost everywhere | `eq:RMT_limit`'s `c_i ∈ (0, ∞)`. Section 6.3 needs only `0 < ∑ i, c i`. |
 | `hβdef`, `hθ`, `hR` | many | naming hypotheses. They tie a free variable to the model and prove nothing. |
 
-### 7.2 The paper findings E1 to E12 (`notes/paper_edits.md`)
+### 7.2 Where the Lean statements differ from the paper
 
-Each item is a proposal for the author. Every one names a Lean anchor.
+Four differences remain between the paper as it now reads (`main_paper.tex`) and the Lean
+statements. Each one is described again in the section of the result it belongs to.
 
-| # | Result | Finding |
-|---|---|---|
-| E1 | `thm:svdstack_weighted` (line 502) | the optimality claim holds over **all nonzero** weight vectors, with no eigengap condition. Anchor: `thm_svdstack_weighted_gaussian_opt_full` (`SVDStack/Rayleigh.lean`). |
-| E2 | `thm:gen_rank_weight_svdstak` (line 893) | `β_ij > 0` and the footnote can go; the upper bound holds for every `W` and is attained at `W⋆`, with no rank condition. Anchor: `thm_gen_rank_weight_svdstak_general_r_full_gaussian`. |
-| E3 | `eq:stacksvd_gammak` (line ~2331) | `γ_j` should be defined below the threshold too (value `0`), so the corollary reads as one statement. Anchor: `Scalars.gammaR`. |
-| E4 | `thm:rank_r_svdstack` (line ~2400) | it is not a specialization of `thm:gen_rank_weight_svdstak`: the component clause needs its own proof. Item 2 of E4 (asking for `S_j > 0`) should itself be revised; the clause holds at `S_j = 0` with limit `0`. Anchors: `thm_rank_r_svdstack_component_gaussian`, `thm_rank_r_svdstack_aggregate_gaussian`. |
-| E5 | minor items | `thm:simple_thm1` is valid for every `M ≥ 1`; the strict clauses of `thm:stacksvd_binary_optimal_svd_stack` and `prop:dominance` need no change; the MLE appendix should name the marginalization as a standard fact; the two remarks need no change. |
-| E6 | `remark:svd_outperform_stack` (line 603) | the `M = 3` example sits exactly on the threshold, so binary stackSVD reaches `62/72 = 0.861` against svdstack's `6/7 = 0.857`, the reverse of the claim. `θ₃ = (c₃+1)^{1/4}` restores it. Anchor: `remark_svd_outperform_stack_three_binary`. |
-| E7 | `thm:rank_r_stacksvd` (line ~2306), `alg:rank_r_stacksvd` (line 2382) | the index `ℓ_j` is wrong at unordered `θ`; an instance with closed-form outlier locations and Monte Carlo limits contradicts the first display there (numerical evidence, not a certified refutation). Inside the ordered class it is right. Anchors: `Scalars.ellR`, `Scalars.ellSup`, `Scalars.ellSup_eq_ellR`. |
-| E8 | `thm:stacksvd_weighted` (line 463), `prop:dominance` (line 634) | both are false at `θ ≡ 0`: the stated optimal weights are all zero, the weighted stack is the zero matrix, and `(vᵀ v̂)²` is `1`, not the claimed `γ⋆ = 0`. Anchor: `hθ : ∃ i, θ_i ≠ 0` in `thm_stacksvd_weighted_gaussian` and `prop_dominance_gaussian`; `notes/REVISION_LIST.md` R5. |
-| E9 | eight errata (lines 376, 442, 1331, 1612, 842, 909, 1345, 212) | `M ≥ 2` missing; a maximum over a set that contains `∅`; a weight condition that describes an empty set; a reversed inequality; `V̂_stacksvd` not unique at a tie; two counts `2^M` that include the empty weighting; a caption that cites the wrong theorem for `S`. `notes/REVISION_LIST.md` R1 to R4 and R8. |
-| E10 | the citation of `10.3150/19-BEJ1129` (lines 403, 1372) | The paper describes Theorem 2.3 of that reference as heteroscedastic; the reference (Ding 2020) assumes white noise (Assumption 1.1) and has no variance-profile model. The heteroscedastic input is proved in the tree: `heteroLaw_of_gaussian` (`RMT/Het/Sup.lean`), section 4. Verified 2026-09-02 from arXiv:1702.06975. |
-| E11 | `assum:gen_rank_stacksvd_eig_sep` (line 2104), `prop:gen_rank_stacksvd_singleweight` (line 2112) | At a tied root the eigenvectors `z_ℓ` of the tied plane are defined up to a rotation, and the performance formula (a sum of reciprocals) changes with the choice unless the `z_ℓ` are orthogonal for the form `K(γ_ℓ)`; so the distinctness clause matters for the value, not only for the proof. A remark, not an error. Closed form plus Monte Carlo (`scripts/numeric/check_singleweight.py`, seed 20260905). Anchor: `EigSep.sorted` (`RankR/SingleWeight/Scalars.lean`, section 6.8), the field that turns the paper's distinctness clause into a strict order. |
-| E12 | the proof of `prop:singleweight_suboptimality` (line 2187) | the branch where the eigenvalue separation assumption fails says only that the performance is bounded above by `β_0²`, with no argument; the Lean proves the exact limit there, the summand of the larger weight in the paper's own display, which is strictly below `β_0²`. A remark, not an error (F18b, 2026-09-07). Anchors: `swLimitEx` (`RankR/SingleWeight/Example.lean`), `hlaw_one` and `prop_singleweight_suboptimality_gaussian` (`RankR/SingleWeight/Suboptimality.lean`). |
+| Result | Difference |
+|---|---|
+| `thm:gen_rank_weight_svdstack` (6.4) | The paper assumes `β_ij > 0` for all `i, j` and keeps the footnote that sets aside the `W` with no eigengap in `W A_{β,R} Wᵀ`. Lean needs neither: the upper bound holds for every `W` and is attained at `W⋆`, with no rank condition on `B_R`. Anchor: `thm_gen_rank_weight_svdstack_general_r_full_gaussian`. |
+| `thm:stacksvd_weighted` (4.1), `prop:dominance` (5.2) | The paper excludes no parameter point. Both Lean theorems carry `hθ : ∃ i, θ_i ≠ 0`, because at `θ ≡ 0` the stated optimal weights are all zero, the weighted stack is the zero matrix, and `(vᵀ v̂)²` is `1` and not the stated `γ⋆ = 0`. Anchors: `thm_stacksvd_weighted_gaussian`, `prop_dominance_gaussian`; `notes/REVISION_LIST.md` R5. |
+| `assum:gen_rank_stacksvd_eig_sep`, `prop:gen_rank_stacksvd_singleweight` (6.8) | The distinctness of the `γ_ℓ` carries the value of the formula, not only the proof: at a tied root the `z_ℓ` are fixed up to a rotation inside the tied plane, and a sum of reciprocals is not invariant under it unless the `z_ℓ` are orthogonal for the form `K(γ_ℓ)`. Lean states the clause as the strict order `EigSep.sorted` (`RankR/SingleWeight/Scalars.lean`). Closed form plus Monte Carlo: `scripts/numeric/check_singleweight.py`, seed 20260905. |
+| `prop:singleweight_suboptimality` (6.9) | Where the eigenvalue separation assumption fails, the paper states only that the performance is bounded above by `β_0²`, with no argument. Lean proves the exact limit there, the summand of the larger weight in the paper's own display, which is strictly below `β_0²`. Anchors: `swLimitEx` (`RankR/SingleWeight/Example.lean`), `hlaw_one` and `prop_singleweight_suboptimality_gaussian` (`RankR/SingleWeight/Suboptimality.lean`). |
 
-Read `notes/paper_edits.md` for the proposed text of each item. Status of every item on 2026-09-02
-is `proposed`; none is applied to the paper.
+Two further points that the Lean covers and the paper's text does not state:
+`thm:simple_thm1` holds for every `M ≥ 1`, at `M = 1` through `prop:single_table`
+(section 3.6); and the covariance step of `app:wstacksvd_mle` is a standard Gaussian
+marginalization, proved on its own as `thm_wstacksvd_mle_marginal` (section 5.5).
 
 ### 7.3 Open questions that concern scope (`notes/FLAGGED.md`)
 
 | # | Question |
 |---|---|
 | Q2 | When `A_β = I` (exactly one `β_i > 0`) the Python and R reference code disagree and the paper leaves the case open. Lean excludes it through `hthr`. |
-| Q3 | Layer 1 is Gaussian-only through `JointGaussianNoise`; `assum:general_noise` is wider. Kept, by user decision 2026-08-29. Since 2026-09-02 (L4) the rank-one SVDstack family takes `IndepNoise` instead; since 2026-09-08 (F31) `thm_theta_est` takes `ThetaEstLaw` (section 2.6), so no rank-one Layer 1 theorem keeps `JointGaussianNoise` (D35, superseded). Since 2026-09-08 (Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`) `ThetaEstLaw` is also discharged for any fixed law with mean 0, variance 1 and finite fourth moment (`thetaEstLaw_of_general`, `thm_theta_est_general`, section 5.4), the first non-Gaussian discharge; the single-table law stays Gaussian-only. |
-| Q5 | The `M = 3` remark example sits on the threshold. Now `notes/paper_edits.md` E6. |
+| Q3 | Layer 1 was Gaussian-only through `JointGaussianNoise`; `assum:general_noise` is wider. The rank-one SVDstack family now takes `IndepNoise` instead (L4), and `thm_theta_est` takes `ThetaEstLaw` (section 2.6), so no rank-one Layer 1 theorem keeps `JointGaussianNoise` (D35, superseded). `ThetaEstLaw` is also discharged for any fixed law with mean 0, variance 1 and finite fourth moment (Stage 0 of `notes/NONGAUSSIAN_SCOPE.md`: `thetaEstLaw_of_general`, `thm_theta_est_general`, section 5.4), and `SingleTableLaw` at the same class with a density and the edge (Stage 1, section 3.1). |
+| Q5 | The `M = 3` example of `remark:svd_outperform_stack` sat exactly on the threshold. Resolved: the paper takes `θ_3 = c_3^{1/4} + ε`; see the scope note of section 5.6. |
 | Q6 | `thm:simple_thm1` is cor. 1, not cor. 2. Fixed in `notes/README.md`. |
 | Q7 | Five rank-`r` design decisions. Answered: `r_i = 1` first; performance as `tr(Bᵀ specInvTop A r B)`; `SubspaceLaw` as the single new structure; build Ky Fan; the Gaussian rank-`r` law was later proved, so item (5) is closed. |
-| Q8 | The paper's removal remark (line 901) is wrong in general. Not formalized. |
-| Q9 | The paper writes `prop:stacksvd_general` where it means `prop:stacksvd_subspace` (line 842). Label typo. |
-| Q10 | Four appendix results had no Lean: `prop:singleweight_suboptimality`, `prop:gen_rank_stacksvd_singleweight`, `thm:rank_r_stacksvd`, `thm:rank_r_svdstack`. The last two are now proved (sections 6.6, 6.7). The first two now have Lean as well (2026-09-05): both are formalized at Layer 1 (sections 6.8, 6.9); the Gaussian discharge of `SingleWeightLaw` landed the same day (Track G), so `prop:gen_rank_stacksvd_singleweight` has its `_gaussian` theorem, and `prop:singleweight_suboptimality` got its unconditional `_gaussian` theorem on 2026-09-07 (F18b). Only the removal remark remains in the table of section 7.1. |
+| Q8 | The paper's removal remark (after `thm:gen_rank_weight_svdstack`) is wrong in general. Not formalized. Resolved: the revised paper deletes the remark. |
+| Q9 | Resolved: the revised paper cites `prop:stacksvd_general` for the argument and `prop:stacksvd_subspace` for the repeated-eigenvalue sentence (after `prop:stacksvd_subspace`), so there is no label typo. |
+| Q10 | Four appendix results had no Lean: `prop:singleweight_suboptimality`, `prop:gen_rank_stacksvd_singleweight`, `thm:rank_r_stacksvd`, `thm:rank_r_svdstack`. All four are now proved (sections 6.6 to 6.9): the last two directly, the first two at Layer 1 and then for Gaussian noise, `prop:gen_rank_stacksvd_singleweight` through the discharge of `SingleWeightLaw` and `prop:singleweight_suboptimality` unconditionally on its witness. Only the removal remark remains in the table of section 7.1. |
 | Q11, Q12 | The exact heteroscedastic edge. Closed: `heteroEdge_of_gaussian` proves it for Gaussian noise by a sharp Sudakov-Fernique bound, so `thm_stacksvd_weighted_gaussian` is unconditional. |
 | Q14 | The second external review of the audit pack. Verdicts recorded. |
-| Q15 | The MLE and remark statements. Answered "OK both" on 2026-09-01. |
-| Q16 item 1 | Keep the ordered class and state the rank-`r` weighted result at `ℓ_j = j`, or add a permutation `R_i` route for the paper's example. **Open.** Claude's recommendation is to keep the class, since the general-`R_i` theorems already cover the permuted case for svdstack. |
-| Q16 item 2 | The component-clause statement form of `thm:rank_r_svdstack` (canonical frame, `hS : StrictAnti`). **Closed**: user OK 2026-09-05 ("prove simplest rank r (S_I sorted)"). |
-| Q16 last | Whether `notes/paper_edits.md` E1 to E11 go to the paper before or after the external audit. **Closed** 2026-09-05: after; the audit reads the paper as it is, with E1 to E11 as the list of clarifications the authors will make. |
+| Q15 | The MLE and remark statements. Answered: both stand as written. |
+| Q16 item 1 | Keep the ordered class and state the rank-`r` weighted result at `ℓ_j = j`, or add a permutation `R_i` route for the paper's example. **Open.** The class is kept for now, since the general-`R_i` theorems already cover the permuted case for svdstack. |
+| Q16 item 2 | The component-clause statement form of `thm:rank_r_svdstack`. **Closed**: the clause is stated at the canonical frame with `hS : StrictAnti (Sagg β)` (section 6.6). |
 
 ### 7.4 Numerical checks
 
@@ -4707,35 +4593,34 @@ the authors' analysis code (the `stackedSVD` repository).
 
 ```sh
 cd lean && lake exe cache get && lake build   # rechecks every proof
-cd .. && scripts/check_sorries.sh                   # then the eight gates, see scripts/README.md
+cd .. && scripts/check_sorries.sh                   # then the seven gates, see scripts/README.md
 ```
 
 (On the development server a capped wrapper, `lake-build-capped.sh 12`, stands in for bare `lake build`.)
 
 Build of record: root `lake build` of 2026-09-08 08:14:24 to 08:16:49 EDT
-(`lake-build-capped.sh 6`) on the Lean tree of commit `8736b2a` (F31, `thm_theta_est` at
+(`lake-build-capped.sh 6`) on the Lean tree of commit `8736b2a` (`thm_theta_est` at
 Layer 1), which is that of the current head: **8930 jobs, exit 0**, 0 errors, 3 jobs
 rebuilt (`ThetaEst.lean` 39 s, `Main.lean` 34 s, the root 32 s), 5 replayed (the vendored
-COLT83 files, the only jobs with a stored log); 0 linter warnings in our 162 files. Seven
-gates on that tree, each exit 0 (gates 1 to 6 at 08:30:09 to 08:31:57 EDT, gate 7 at
-08:20:53 to 08:29:05 EDT): `check_sorries.sh` 0 sorry sites in 0 declarations; `check_axioms.sh`
+COLT83 files, the only jobs with a stored log); 0 linter warnings in our 162 files. The
+gates on that tree, each exit 0 (the quick ones at 08:30:09 to 08:31:57 EDT, the kernel
+gate at 08:20:53 to 08:29:05 EDT): `check_sorries.sh` 0 sorry sites in 0 declarations; `check_axioms.sh`
 **4622 declarations** audited (4622 2329), no axiom outside `propext`, `Classical.choice`
 and `Quot.sound`, no untracked `sorry`; `check_root_imports.py` 182 modules, 162 ours, all
 162 inside the audited closure; `check_theorems_sigs.py` 128 signatures, 116 verbatim, 12
 documented abbreviations; `check_layering.sh` 3 endpoints, 0 forbidden hits;
-`check_paper_edits.py` 29 replacements, 6 amended blocks; `check_kernel.sh` 183 modules
-replayed through the kernel, 0 problems, every one of the 183 oleans of the package (492
-s, 3 workers). Before that (`18452a2`, `Main.lean` and F30, 2026-09-07 21:55:38 to
-22:16:22 EDT, 3 rebuilt, 5 replayed; seven gates 22:16:52 to 22:26:48 EDT): 8930 jobs,
+`check_kernel.sh` 183 modules replayed through the kernel, 0 problems, every one of the 183
+oleans of the package (492 s, 3 workers). Before that (`18452a2`, 2026-09-07 21:55:38 to
+22:16:22 EDT, 3 rebuilt, 5 replayed; the gates 22:16:52 to 22:26:48 EDT): 8930 jobs,
 4618 declarations (4618 2324), 182 modules, 162 ours, 126 signatures, 114 verbatim, 12
-documented abbreviations, 29 replacements, 183 modules replayed (507 s). Before that
-(`926701c`, the linter campaign, 2026-09-07 18:14:06 to 18:34:34 EDT, 114 rebuilt, 5
+documented abbreviations, 183 modules replayed (507 s). Before that
+(`926701c`, the linter pass, 2026-09-07 18:14:06 to 18:34:34 EDT, 114 rebuilt, 5
 replayed): 8929 jobs, 4576 declarations (4576 2323), 181 modules, 161 ours, 126
-signatures, 114 verbatim, 12 documented abbreviations, 29 replacements. Before that (`85e6a0e`, F18c,
+signatures, 114 verbatim, 12 documented abbreviations. Before that (`85e6a0e`,
 2026-09-05 19:23:32 to 19:24:29 EDT, 1 rebuilt, 73 replayed; the header run of Appendix A
 of `AUDIT_DOC.md` at 19:36 EDT on the docs commit `9c82538`, the same Lean tree): 8922
 jobs, 4519 declarations (4519 2249), 174 modules, 154 ours, 125 signatures, 113 verbatim,
-12 documented abbreviations, 28 replacements.
+12 documented abbreviations.
 
 Two gates:
 
@@ -4829,7 +4714,7 @@ model is above the detection threshold, so every limit is strictly positive (ran
 `SingleWeightLaw` (section 6.8) has no separate witness in this module: the natural
 candidate is a rank-one model with one table at `θ = 0`, and no
 `MultiTableModel`-to-`UnalignedModelR` bridge exists to build it (`SpikedModelR.hθnn` allows
-`θ = 0` since F8; the multi-table map is still to write). Since 2026-09-05 the Gaussian
+`θ = 0`; the multi-table map is still to write). The Gaussian
 discharge `singleWeightLaw_of_gaussian` (`RankR/SingleWeight/Het/Sup.lean`) produces the
 structure on every Gaussian `UnalignedModelR` with `r ≤ ∑ i with w i ≠ 0, n i N` at every
 `N` that meets `EigSep`, which shows the hypothesis set consistent whenever such a model with an `EigSep` instance
@@ -4843,9 +4728,9 @@ three witnesses on every run and they cannot rot. The models come from two audit
 them outside the tree (`notes/archive/audit_independent_D33_2026-09-02.md` and section 5.3 of
 `notes/archive/audit_independent_TrackE_wave2b_2026-09-02.md`).
 
-## 9. Record of the cleanup
+## 9. Signature changes on the cleanup branch
 
-The branch `cleanup` (2026-09-02) removes duplicate lemmas, drops redundant hypotheses, and
+The branch `cleanup` removes duplicate lemmas, drops redundant hypotheses, and
 fixes wrong paper labels in docstrings. It adds no result. Every deleted declaration and every
 changed signature is listed in `notes/archive/cleanup_2026-09-02_removed.md`. Read that file
 before you compare a signature here with an earlier version of the tree.

@@ -9,12 +9,12 @@ import StackedSVD.SVDStack.Main
 # `thm:svdstack_weighted`: weighted svdstack
 
 Fifth module of `StackedSVD.SVDStack`. It proves the weighted svdstack results of the paper
-(`main_paper.tex:503`, proof at `main_paper.tex:1279`). See `notes/archive/thm_svdstack_weighted.md`
+(`thm:svdstack_weighted` and its proof). See `notes/archive/thm_svdstack_weighted.md`
 for the review note and `notes/archive/audit_weighted_2026-08-30.md` for the audit that fixed the
 statements.
 
 Weighted svdstack stacks the scaled rows `w_i v̂_iᵀ` and returns the top right singular vector
-of `W Ṽ` with `W = diag(w)` (`main_paper.tex:309`, `svdstack.def`). Its Gram matrix is
+of `W Ṽ` with `W = diag(w)` (`svdstack.def`). Its Gram matrix is
 `(W Ṽ)ᵀ (W Ṽ) = ∑_i w_i² P_i`, so the whole unweighted machinery applies with the limit
 matrix `A_{β,w} = W A_β W` in place of `A_β`.
 
@@ -67,15 +67,15 @@ theorem abetaW_one (β : Fin M → ℝ) : AbetaW 1 β = Abeta β := by
   simp [AbetaW]
 
 /-- Limit value of `thm:svdstack_weighted` for a weight vector `w`
-(`main_paper.tex:1286`): `(v_max(W A_β W)ᵀ W β)² / λ_max(W A_β W)`. The vector `W β` is the
+(from its proof): `(v_max(W A_β W)ᵀ W β)² / λ_max(W A_β W)`. The vector `W β` is the
 pointwise product `w * β`. -/
 noncomputable def svdstackLimitW (w β : Fin M → ℝ) : ℝ :=
   ((w * β) ⬝ᵥ WithLp.ofLp (vMax (AbetaW w β) (isHermitian_AbetaW w β))) ^ 2
     / lamMax (AbetaW w β) (isHermitian_AbetaW w β)
 
-/-- The paper's displayed weights `eq:svdstack.weight` (`main_paper.tex:505`):
+/-- The paper's displayed weights `eq:svdstack.weight`:
 `w_i = θ_i √((θ_i²+1)/(θ_i²+c_i)) 1{θ_i⁴ > c_i}`. Below the threshold this is `0`, while
-`optW β i = 1`; both give the same limit (`main_paper.tex:1330`, `svdstackLimitW_eq_opt`). -/
+`optW β i = 1`; the limits agree (`svdstackLimitW_eq_opt`; proof of `thm:svdstack_weighted`). -/
 noncomputable def paperW (θ c : ℝ) : ℝ :=
   if c < θ ^ 4 then θ * Real.sqrt ((θ ^ 2 + 1) / (θ ^ 2 + c)) else 0
 
@@ -85,10 +85,10 @@ theorem paperW_nonneg {θ c : ℝ} (hθ : 0 ≤ θ) : 0 ≤ paperW θ c := by
   · positivity
   · exact le_rfl
 
-/-- `optW` is the paper's weight `eq:svdstack.weight` (`main_paper.tex:505`) on a detectable
+/-- `optW` is the paper's weight `eq:svdstack.weight` on a detectable
 table: `1/√(1 - β_i²) = θ_i √((θ_i² + 1)/(θ_i² + c_i))` when `θ_i⁴ > c_i`
-(`main_paper.tex:521`). Below the threshold `β_i = 0`, so `optW β i = 1` while the paper's
-weight is `0`; `svdstackLimitW_eq_opt` shows both give the same limit. -/
+(the text after `thm:svdstack_weighted`). Below the threshold `β_i = 0`, so `optW β i = 1` while the
+paper's weight is `0`; `svdstackLimitW_eq_opt` shows both give the same limit. -/
 theorem optW_eq_paper_weight {θ c : ℝ} (hθ : 0 ≤ θ) (hc : 0 < c) (hthr : c < θ ^ 4) :
     1 / Real.sqrt (1 - beta θ c ^ 2) = θ * Real.sqrt ((θ ^ 2 + 1) / (θ ^ 2 + c)) := by
   have hθ2 : 0 < θ ^ 2 := by nlinarith [sq_nonneg θ, sq_nonneg (θ ^ 2)]
@@ -172,8 +172,8 @@ theorem abetaW_gap (w β : Fin M → ℝ) (h1 : 1 < Fintype.card (Fin M)) {k : F
     linarith
   nlinarith [hlam1, hlam2]
 
-/-- The Sherman-Morrison step of `main_paper.tex:1311`: at the optimal weights the diagonal
-part of `A_{β,w}` is the identity, `A_{β,w⋆} = z zᵀ + I` with `z = w⋆ * β = β/√(1-β²)`. -/
+/-- The Sherman-Morrison step of the proof of `thm:svdstack_weighted`: at the optimal weights the
+diagonal part of `A_{β,w}` is the identity, `A_{β,w⋆} = z zᵀ + I` with `z = w⋆ * β = β/√(1-β²)`. -/
 theorem abetaW_optW_eq (β : Fin M → ℝ) (hβ : ∀ i, 0 ≤ β i ∧ β i < 1) :
     AbetaW (optW β) β = Matrix.vecMulVec (optW β * β) (optW β * β) + 1 := by
   have hpos : ∀ k : Fin M, (0 : ℝ) < 1 - β k ^ 2 := by
@@ -196,8 +196,8 @@ theorem abetaW_optW_eq (β : Fin M → ℝ) (hβ : ∀ i, 0 ≤ β i ∧ β i < 
       Matrix.one_apply_ne h, add_zero, Pi.mul_apply]
     ring
 
-/-- The key deterministic computation of `main_paper.tex:1311` to `:1318`, in the form the
-paper's closing remark (`main_paper.tex:1330`) needs. Write `z = W β` and
+/-- The key deterministic computation of the proof of `thm:svdstack_weighted`, in the form the
+paper's closing remark of that proof needs. Write `z = W β` and
 `D_l = w_l²(1 - β_l²)`, so that `A_{β,w} = z zᵀ + diag D`. If every `D_l ≤ 1`, with equality
 on the detectable tables (`β_l ≠ 0`), then `λ_max = ‖z‖² + 1 = S + 1`, the top eigenvector is
 `z/‖z‖`, and the weighted limit is `S/(S+1)`.
@@ -349,8 +349,8 @@ theorem svdstackLimitW_eq_opt (w β : Fin M → ℝ)
   rw [svdstackLimitW, svdstackLimitOpt, ← hudef, ← hnorm2, hlam, ← hinner, hkey]
 
 /-- The value of the weighted limit at the optimal weights: `S / (S + 1)`
-(`main_paper.tex:1328`). Deterministic. No detectable table is needed: when `β = 0` both
-sides are `0`. -/
+(the end of the proof of `thm:svdstack_weighted`). Deterministic. No detectable table is needed:
+when `β = 0` both sides are `0`. -/
 theorem svdstackLimitW_optW (β : Fin M → ℝ) (hβ : ∀ i, 0 ≤ β i ∧ β i < 1) :
     svdstackLimitW (optW β) β = svdstackLimitOpt β := by
   have hpos : ∀ k : Fin M, (0 : ℝ) < 1 - β k ^ 2 := by
@@ -385,8 +385,8 @@ theorem paperW_sq_mul_one_sub {θ c : ℝ} (hθ : 0 ≤ θ) (hc : 0 < c) (hthr :
     Real.sq_sqrt hpos.le, one_div, inv_mul_cancel₀ hpos.ne']
 
 /-- The paper's displayed weights `eq:svdstack.weight` give the limit `S/(S+1)`, as the
-paper's closing remark says (`main_paper.tex:1330`). Below the threshold the weight is `0`
-and `optW β i = 1`, so the two weight vectors differ, but both satisfy the hypotheses of
+paper's closing remark in the proof of `thm:svdstack_weighted` says. Below the threshold the weight
+is `0` and `optW β i = 1`, so the two weight vectors differ, but both satisfy the hypotheses of
 `svdstackLimitW_eq_opt`. -/
 theorem svdstackLimitW_paperW (θ c β : Fin M → ℝ) (hθ : ∀ i, 0 ≤ θ i) (hc : ∀ i, 0 < c i)
     (hβdef : ∀ i, β i = beta (θ i) (c i)) :
@@ -409,10 +409,10 @@ theorem svdstackLimitW_paperW (θ c β : Fin M → ℝ) (hθ : ∀ i, 0 ≤ θ i
 /-! ### Optimality of the weights `w⋆` -/
 
 -- `hw` is not used by the proof: every quantity sees `w` through `w_i²`. The hypothesis
--- stays because the paper takes `w ∈ R^M_{≥0}` (`main_paper.tex:300`).
+-- stays because the paper takes `w ∈ R^M_{≥0}` (`stacksvd.def`).
 set_option linter.unusedVariables false in
-/-- Optimality of `w⋆` (`main_paper.tex:1296`): every weight vector gives a limit at most
-`S / (S + 1)`. The weighted limit is `(xᵀ β)²` for `x = W v_max(A_{β,w}) / √λ_max(A_{β,w})`,
+/-- Optimality of `w⋆` (the proof of `thm:svdstack_weighted`): every weight vector gives a limit at
+most `S / (S + 1)`. The weighted limit is `(xᵀ β)²` for `x = W v_max(A_{β,w}) / √λ_max(A_{β,w})`,
 which satisfies `xᵀ A_β x = 1`; Cauchy-Schwarz in the `A_β` inner product then bounds
 `(xᵀ β)²` by `βᵀ A_β⁻¹ β = S/(S+1)`. Together with `svdstackLimitW_optW` this is the paper's
 claim that `w⋆` is an optimal weighting. The audit dropped `hwne : ∃ k, w k ≠ 0`: at `w = 0`
@@ -503,7 +503,7 @@ section SVDStackWeighted
 
 /-! ### The weighted estimator -/
 
-/-- `Ṽ_w = W Ṽ`, the `M × d` matrix whose row `i` is `w_i v̂_iᵀ` (`main_paper.tex:515`). -/
+/-- `Ṽ_w = W Ṽ`, the `M × d` matrix whose row `i` is `w_i v̂_iᵀ` (after `thm:svdstack_weighted`). -/
 noncomputable def VtW (m : MultiTableModel μ M n d) (w : Fin M → ℝ) (N : ℕ) (ω : Ω N) :
     Matrix (Fin M) (Fin (d N)) ℝ :=
   Matrix.diagonal w * m.Vt N ω
@@ -896,13 +896,13 @@ private theorem thm_svdstack_weighted_of_card_le_one (m : MultiTableModel μ M n
 
 /-- `thm:svdstack_weighted` for a general weight vector, the weighted `thm_svd_stack_general`.
 `hsimple` is the paper's proviso "provided that `W A_β W` has a unique largest eigenvalue"
-(`main_paper.tex:1284`); `abetaW_gap` and `topSimple_of_gap` discharge it at the optimal
-weights. `hwne` gives `λ_max(A_{β,w}) ≥ w_k² > 0`, which the transfer between `Ṽ_wᵀ Ṽ_w` and
+(the proof of `thm:svdstack_weighted`); `abetaW_gap` and `topSimple_of_gap` discharge it at the
+optimal weights. `hwne` gives `λ_max(A_{β,w}) ≥ w_k² > 0`, which the transfer between `Ṽ_wᵀ Ṽ_w` and
 `Ṽ_w Ṽ_wᵀ` needs. The audit dropped the unused `hc : 0 < c i`.
 
 Cleanup wave 3 dropped two more hypotheses. `hw : 0 ≤ w i` was unused: every quantity sees
 `w` through `w_i²`, so the theorem holds for any real weight vector, while the paper takes
-`w ∈ R^M_{≥0}` (`main_paper.tex:300`; mechanical audit 2026-08-31, finding 8). `h1 : 2 ≤ M`
+`w ∈ R^M_{≥0}` (`stacksvd.def`; mechanical audit 2026-08-31, finding 8). `h1 : 2 ≤ M`
 is gone by the `M = 1` split above. -/
 theorem thm_svdstack_weighted_general (m : MultiTableModel μ M n d) (c β w : Fin M → ℝ)
     (hβdef : ∀ i, β i = beta (m.tbl i).θ (c i))
@@ -986,7 +986,7 @@ theorem thm_svdstack_weighted_general (m : MultiTableModel μ M n d) (c β w : F
   exact hω (m.svdstackPerfW_eq_of_goodEventW w N ω hgood)
 
 omit [NeZero M] in
-/-- `thm:svdstack_weighted` (`main_paper.tex:503`), Layer 1 form (`law` and `hI` in the
+/-- `thm:svdstack_weighted`, Layer 1 form (`law` and `hI` in the
 signature: the single-table law structure for each table, and the independence of the
 tables; L4 of 2026-09-02). At the optimal weights `w_i⋆ = 1/√(1 - β_i²)` the performance of svdstack
 tends to `S/(S+1)`. One detectable table is enough (`hthr`), unlike the unweighted
@@ -1027,10 +1027,10 @@ theorem thm_svdstack_weighted [NeZero M] (m : MultiTableModel μ M n d) (c β : 
   rwa [svdstackLimitW_optW β hβ01] at h
 
 omit [NeZero M] in
-/-- `thm:svdstack_weighted` at the paper's displayed weights `eq:svdstack.weight`
-(`main_paper.tex:505`), the literal statement of the theorem. The weight of an undetectable
+/-- `thm:svdstack_weighted` at the paper's displayed weights `eq:svdstack.weight`,
+the literal statement of the theorem. The weight of an undetectable
 table is `0`, not `optW β i = 1`, and the limit is the same
-(`main_paper.tex:1330`, `svdstackLimitW_paperW`).
+(proof of `thm:svdstack_weighted`, `svdstackLimitW_paperW`).
 
 The paper has no `2 ≤ M` condition and neither does this statement (global audit 2026-08-31,
 finding 9). At `M = 1` the general route is unavailable, because `abetaW_gap` and
@@ -1334,7 +1334,7 @@ theorem thm_svdstack_weighted_zero (m : MultiTableModel μ M n d) (c β w : Fin 
 
 
 omit [NeZero M] in
-/-- `thm:svdstack_weighted` (`main_paper.tex:503`) with every random matrix theory hypothesis
+/-- `thm:svdstack_weighted` with every random matrix theory hypothesis
 discharged. The tables are Gaussian and independent (`hG`) and each is in the proportional
 regime (`hreg`); no `SingleTableLaw` is assumed. Same proof shape as
 `thm_svd_stack_general_gaussian`: apply `SpikedModel.singleTableLaw_of_gaussian` to each
@@ -1366,8 +1366,8 @@ theorem thm_svdstack_weighted_general_gaussian [∀ N, IsProbabilityMeasure (μ 
     (fun i => SpikedModel.singleTableLaw_of_gaussian (hc i) (m.tbl i) (hreg i)
       (m.gaussianNoise_of_joint hG i)) hG.indepNoise
 
-/-- `thm:svdstack_weighted` at the paper's displayed weights `eq:svdstack.weight`
-(`main_paper.tex:505`), with every random matrix theory hypothesis discharged: the tables are
+/-- `thm:svdstack_weighted` at the paper's displayed weights `eq:svdstack.weight`,
+with every random matrix theory hypothesis discharged: the tables are
 Gaussian and independent (`hG`) and each is in the proportional regime (`hreg`); no
 `SingleTableLaw` is assumed. -/
 theorem thm_svdstack_weighted_paper_gaussian [∀ N, IsProbabilityMeasure (μ N)]
@@ -1415,7 +1415,7 @@ theorem thm_svdstack_weighted_zero_gaussian [NeZero M] [∀ N, IsProbabilityMeas
       (m.gaussianNoise_of_joint hG i)) hG.indepNoise
 
 omit [NeZero M] in
-/-- Bundle of `thm:svdstack_weighted` and its optimality (`main_paper.tex:1296`), with every
+/-- Bundle of `thm:svdstack_weighted` and its optimality (from its proof), with every
 random matrix theory hypothesis discharged. At the optimal weights `optW β` the performance of
 svdstack tends to `svdstackLimitOpt β`. For every other weight vector `w` with a nonzero entry,
 nonnegative entries, and a simple top eigenvalue of `A_{β,w}`, the performance tends to

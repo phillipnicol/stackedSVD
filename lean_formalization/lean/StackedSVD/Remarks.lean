@@ -14,11 +14,11 @@ import StackedSVD.SVDStack.Weighted
 `notes/archive/remark_facades.md`. The paper states two remarks with no display and no proof, and
 then prints a numeric instance of each:
 
-* `remark:stack_outperform_svd` (`main_paper.tex:566`): unweighted stacksvd can beat
+* `remark:stack_outperform_svd`: unweighted stacksvd can beat
   optimally weighted svdstack. Instance: `θ_i = c_i = 1` for every table. Every table sits at
   its own detection threshold, so `β = 0` and svdstack has performance `0`, while the stack of
   `M` tables clears the joint threshold and reaches `1 - 2/(M+1)`.
-* `remark:svd_outperform_stack` (`main_paper.tex:588`): unweighted svdstack can beat
+* `remark:svd_outperform_stack`: unweighted svdstack can beat
   binary-weighted stacksvd. Three instances: two equal supercritical tables among `M` null
   tables; `M = 3` with `c = (1, 1, c₃)` and `θ = (2, 2, c₃^{1/4})`; and `M = 2` with
   `θ = (√5, 4)`, `c = (1, 38.4)`.
@@ -278,7 +278,7 @@ variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measu
 
 /-! ### `remark:stack_outperform_svd`, instance (i): `θ_i = c_i = 1` -/
 
-/-- **`remark:stack_outperform_svd`** (`main_paper.tex:566`), stacksvd half: at `θ_i = c_i = 1`
+/-- **`remark:stack_outperform_svd`**, stacksvd half: at `θ_i = c_i = 1`
 and `M ≥ 2` the unweighted stack reaches `1 - 2/(M+1)`. The stack of `M` tables has signal
 `‖θ‖₂² = M` and aspect ratio `‖c‖₁ = M`, so it clears the joint threshold `M > 1`. Instance of
 `thm_simple_thm1_stacksvd_gaussian` at `θ₀ = c₀ = 1`. -/
@@ -294,7 +294,7 @@ theorem remark_stack_outperform_svd_stack [NeZero M] (m : MultiTableModel μ M n
     norm_num
   rwa [heq] at h
 
-/-- **`remark:stack_outperform_svd`** (`main_paper.tex:566`), svdstack half: at `θ_i = c_i = 1`
+/-- **`remark:stack_outperform_svd`**, svdstack half: at `θ_i = c_i = 1`
 every table sits at its own detection threshold `θ_i⁴ = c_i`, so `β = 0` and unweighted
 svdstack has performance `0`, whatever `M` is. Instance of
 `thm_svd_stack_general_zero_gaussian`. The paper says the same of *optimally weighted*
@@ -310,7 +310,7 @@ theorem remark_stack_outperform_svd_svdstack [NeZero M] (m : MultiTableModel μ 
 
 /-! ### `remark:svd_outperform_stack`, instance (ii): two equal supercritical tables -/
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:588`), stacksvd half: with two tables at
+/-- **`remark:svd_outperform_stack`**, stacksvd half: with two tables at
 `θ₀` and `M - 2` null tables, all at aspect ratio `c₀`, the unweighted stack has performance
 `0` as soon as `4θ₀⁴ ≤ M c₀`. The stack's signal is `‖θ‖₂² = 2θ₀²` and its aspect ratio is
 `‖c‖₁ = M c₀`, so the guard of `stackSVDLimit` asks for `4θ₀⁴ > M c₀`. The paper's
@@ -341,7 +341,7 @@ theorem remark_svd_outperform_stack_pair_stack [NeZero M] (m : MultiTableModel �
     nlinarith
   rwa [hlim] at h
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:588`), svdstack half: with the same two
+/-- **`remark:svd_outperform_stack`**, svdstack half: with the same two
 tables at `θ₀` above their own threshold `c₀ < θ₀⁴` and `M - 2` null tables, unweighted
 svdstack reaches `2β₀²/(1 + β₀²)` with `β₀ = beta θ₀ c₀`, whatever `M` is. Instance of
 `thm_svd_stack_general_gaussian`, evaluated by `svdstackLimit_pair`. -/
@@ -387,7 +387,7 @@ private theorem beta_two_one_sq : beta 2 1 ^ 2 = 3 / 4 := by
   rw [Scalars.beta_sq, betaSq, if_pos (by norm_num : (2 : ℝ) ^ 4 > 1)]
   norm_num
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:600`), svdstack half of the paper's
+/-- **`remark:svd_outperform_stack`**, svdstack half of the paper's
 `M = 3` example: `c = (1, 1, c₃)` and `θ = (2, 2, c₃^{1/4})` give `β₁² = β₂² = 3/4` and
 `β₃ = 0`, so unweighted svdstack reaches `2(3/4)/(1 + 3/4) = 6/7`, whatever `c₃` is. -/
 theorem remark_svd_outperform_stack_three_svdstack (m : MultiTableModel μ 3 n₃ d) (c₃ : ℝ)
@@ -417,7 +417,7 @@ theorem remark_svd_outperform_stack_three_svdstack (m : MultiTableModel μ 3 n�
     beta_two_one_sq, show (2 : ℝ) * (3 / 4) / (1 + 3 / 4) = 6 / 7 by norm_num] at h
   exact h
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:604`), stacksvd half of the paper's
+/-- **`remark:svd_outperform_stack`**, stacksvd half of the paper's
 `M = 3` example: the unweighted stack of all three tables has `‖θ‖₂² = 8 + √c₃` and
 `‖c‖₁ = 2 + c₃`, so its limit is the paper's `(16√c₃ + 62)/(c₃ + 17√c₃ + 72)`. That value goes
 to `0` as `c₃` grows (`remark_three_stack_tendsto_zero`). -/
@@ -493,7 +493,7 @@ section Two
 
 variable {n₂ : Fin 2 → ℕ → ℕ}
 
-/-- **`remark:svd_outperform_stack`** (`main_paper.tex:610`), the paper's two-table example.
+/-- **`remark:svd_outperform_stack`**, the paper's two-table example.
 Both tables have `β² = 4/5`. Binary-weighted stacksvd on both tables reaches
 `2008/2310 = 0.8693`, and that is the maximum over the three nonempty subsets, since each
 single table gives `4/5`. Optimally weighted svdstack reaches `S/(S+1) = 8/9 = 0.8889`, which

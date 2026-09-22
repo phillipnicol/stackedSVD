@@ -338,7 +338,7 @@ notes/archive/rmt_roadmap.md
 notes/archive/singleweight_plan.md
 notes/archive/stage1_brief_G7_core.md
 notes/archive/stage1_brief_G7_wrap.md
-notes/archive/thm_gen_rank_weight_svdstak.md
+notes/archive/thm_gen_rank_weight_svdstack.md
 notes/archive/thm_stacksvd_weighted.md
 notes/archive/thm_svd_stack_general.md
 notes/archive/thm_svdstack_weighted.md

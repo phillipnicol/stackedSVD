@@ -14,12 +14,12 @@ existence claim about finitely many real matrices.
 
 ## The paper
 
-`main_paper.tex:2112`, `prop:gen_rank_stacksvd_singleweight`. Stacksvd with one weight `w_i`
+`prop:gen_rank_stacksvd_singleweight`. Stacksvd with one weight `w_i`
 per table has performance controlled by the spectrum of `G = A Aᵀ + Σ`, whose outliers
-`γ_1 > … > γ_r` solve the matrix secular equation
+`γ_1 > … > γ_r` solve the matrix secular equation of `prop:gen_rank_stacksvd_singleweight`
 
 ```
-det( I_r - ∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ ) = 0,      γ > sup_i w_i²    (main_paper.tex:2115)
+det( I_r - ∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ ) = 0,      γ > sup_i w_i²
 ```
 
 and whose eigenvector data enters the limit
@@ -27,7 +27,7 @@ and whose eigenvector data enters the limit
 ```
 ‖V̂_stacksvd(w)ᵀ V‖_F² →p ∑_ℓ  (1 - ∑_i c_i w_i⁴/(γ_ℓ - w_i²)²)
                              / (γ_ℓ z_ℓᵀ [∑_i w_i²/(w_i² - γ_ℓ)² R_i Θ_i² R_iᵀ] z_ℓ)
-                                                                            (main_paper.tex:2119)
+                                                        (prop:gen_rank_stacksvd_singleweight)
 ```
 
 ## Content
@@ -35,8 +35,8 @@ and whose eigenvector data enters the limit
 1. `sigMat`, `secMat`, `secDerivMat`: the three matrices of the two displays.
 2. `IsSecularRoot`: `γ` is a root above `sup_i w_i²`.
 3. `exists_unit_eigvec_secMat`: the first half of the proposition, the unit eigenvector `z_ℓ`.
-4. `swTerm`, `swLimit`: one summand and the whole right side of `main_paper.tex:2119`.
-5. `EigSep`: `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2104`) on the data `(γ, z)`.
+4. `swTerm`, `swLimit`: one summand and the whole right side of the limit above.
+5. `EigSep`: `assum:gen_rank_stacksvd_eig_sep` on the data `(γ, z)`.
 6. `isHermitian_secMat`, `posSemidef_secMat`, `posSemidef_secDerivMat`: the three structural
    facts that the downstream proofs read.
 
@@ -53,14 +53,14 @@ namespace SingleWeight
 /-! ### 1. The three matrices of the proposition -/
 
 /-- `S_i = R_i Θ_i² R_iᵀ`, the signal covariance of table `i` in the shared basis. It is the
-matrix that carries `Θ_i` into the displays of `main_paper.tex:2115` and `:2119`. -/
+matrix that carries `Θ_i` into the two displays of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def sigMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (i : Fin M) :
     Matrix (Fin r) (Fin r) ℝ :=
   R i * Matrix.diagonal (fun j => θ i j ^ 2) * (R i)ᵀ
 
-/-- `∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ`, the matrix of `main_paper.tex:2115`. -/
+/-- `∑_i w_i²/(γ - w_i²) R_i Θ_i² R_iᵀ`, the matrix of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def secMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w : Fin M → ℝ) (γ : ℝ) :
@@ -68,8 +68,8 @@ noncomputable def secMat {M r : ℕ} {rk : Fin M → ℕ}
   ∑ i, (w i ^ 2 / (γ - w i ^ 2)) • sigMat θ R i
 
 /-- `∑_i w_i²/(γ - w_i²)² R_i Θ_i² R_iᵀ`, the matrix inside the denominator of
-`main_paper.tex:2119`. It is `- d/dγ (secMat θ R w γ)`. The paper writes the denominator
-`(w_i² - γ)²`, which is the same number. -/
+the limit of `prop:gen_rank_stacksvd_singleweight`. It is `- d/dγ (secMat θ R w γ)`. The paper
+writes the denominator `(w_i² - γ)²`, which is the same number. -/
 noncomputable def secDerivMat {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w : Fin M → ℝ) (γ : ℝ) :
@@ -77,7 +77,7 @@ noncomputable def secDerivMat {M r : ℕ} {rk : Fin M → ℕ}
   ∑ i, (w i ^ 2 / (γ - w i ^ 2) ^ 2) • sigMat θ R i
 
 /-- `γ` is a root of the rank-`r` secular equation above `max_i w_i²`
-(`main_paper.tex:2115`). The rank-one twin is `Scalars.IsGammaTop`
+(`prop:gen_rank_stacksvd_singleweight`). The rank-one twin is `Scalars.IsGammaTop`
 (`StackSVDWeighted.lean:107`). -/
 def IsSecularRoot {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
@@ -86,8 +86,8 @@ def IsSecularRoot {M r : ℕ} {rk : Fin M → ℕ}
 
 /-! ### 2. The first half of the proposition -/
 
-/-- The first half of **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`): a
-root of the secular equation gives the matrix of `main_paper.tex:2115` a unit eigenvector
+/-- The first half of **`prop:gen_rank_stacksvd_singleweight`**: a
+root of the secular equation gives the matrix of the proposition a unit eigenvector
 `z_ℓ` with eigenvalue `1`. Route: `1 - secMat` is singular, so its kernel is nonzero
 (`Matrix.exists_mulVec_eq_zero_iff`); normalize any kernel vector. -/
 theorem exists_unit_eigvec_secMat {M r : ℕ} {rk : Fin M → ℕ}
@@ -110,7 +110,7 @@ theorem exists_unit_eigvec_secMat {M r : ℕ} {rk : Fin M → ℕ}
 
 /-! ### 3. The limit of the proposition -/
 
-/-- One summand of the limit of `main_paper.tex:2119`. -/
+/-- One summand of the limit of `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def swTerm {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (w c : Fin M → ℝ) (γ : ℝ)
@@ -118,7 +118,7 @@ noncomputable def swTerm {M r : ℕ} {rk : Fin M → ℕ}
   (1 - ∑ i, c i * w i ^ 4 / (γ - w i ^ 2) ^ 2) /
     (γ * (WithLp.ofLp z ⬝ᵥ (secDerivMat θ R w γ *ᵥ WithLp.ofLp z)))
 
-/-- The right side of `main_paper.tex:2119`, the limit of
+/-- The right side of the limit display of
 `prop:gen_rank_stacksvd_singleweight`. -/
 noncomputable def swLimit {M r : ℕ} {rk : Fin M → ℕ}
     (θ : (i : Fin M) → Fin (rk i) → ℝ)
@@ -128,7 +128,7 @@ noncomputable def swLimit {M r : ℕ} {rk : Fin M → ℕ}
 
 /-! ### 4. `assum:gen_rank_stacksvd_eig_sep` -/
 
-/-- `assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2104`) as a structure on the data
+/-- `assum:gen_rank_stacksvd_eig_sep` as a structure on the data
 `(γ, z)`. `sorted` replaces the paper's "the top `r` eigenvalues of `G`, which are distinct":
 `γ` lists the roots in strictly decreasing order, so `γ l` is the `l`-th one and the sorted
 index of the matching outlier of the stack Gram matrix is `l`.
@@ -145,9 +145,9 @@ structure EigSep {M r : ℕ} {rk : Fin M → ℕ}
   root : ∀ l, IsSecularRoot θ R w (γ l)
   /-- the roots are listed in strictly decreasing order, so no two of them are tied -/
   sorted : StrictAnti γ
-  /-- `z_ℓ` is a unit eigenvector of the matrix of `main_paper.tex:2115` at eigenvalue `1` -/
+  /-- `z_ℓ` is a unit eigenvector of `secMat θ R w (γ ℓ)` at eigenvalue `1` -/
   eigvec : ∀ l, ‖z l‖ = 1 ∧ secMat θ R w (γ l) *ᵥ WithLp.ofLp (z l) = WithLp.ofLp (z l)
-  /-- the detectability threshold of `main_paper.tex:2106` -/
+  /-- the detectability threshold of `assum:gen_rank_stacksvd_eig_sep` -/
   thresh : ∀ l, ∑ i, c i * w i ^ 4 / (γ l - w i ^ 2) ^ 2 < 1
 
 /-! ### 5. The three structural facts -/

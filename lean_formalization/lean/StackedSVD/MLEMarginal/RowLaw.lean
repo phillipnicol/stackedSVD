@@ -9,7 +9,7 @@ import StackedSVD.MLEMarginal.Defs
 # The law of one row under the random-effects model (L5, units U3b and U4)
 
 `reRowLaw n d θ v` is `N(0, Σ)` with `Σ = mleCov d (θ² / (n / d)) v`, the paper's
-`Σ_i(v) = (1/d) I + (θ_i² / n_i) v vᵀ` (`main_paper.tex:1652`). The identification goes
+`Σ_i(v) = (1/d) I + (θ_i² / n_i) v vᵀ` (`app:wstacksvd_mle`). The identification goes
 through characteristic functions on `EuclideanSpace ℝ (Fin d)`:
 
 1. `charFun_reRowLaw`: `exp(-(‖t‖²/d + θ² ⟨t, v⟩²/n) / 2)` by `integral_prod_mul`,

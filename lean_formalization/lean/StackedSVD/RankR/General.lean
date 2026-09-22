@@ -19,7 +19,7 @@ and the four reductions of section 6), and `tableLawR_of_singleTableLaw` (task B
 the index-spectral group and is proved there (task B1).
 The review note is `notes/archive/rank_r_general.md` (task T8 of `notes/RANK_R_PLAN.md`).
 
-`assum:unaligned` (`main_paper.tex:753`) gives table `i` an `r_i`-dimensional right singular
+`assum:unaligned` gives table `i` an `r_i`-dimensional right singular
 subspace `V R_i` inside one shared `r`-dimensional subspace `V`:
 
 ```
@@ -29,7 +29,7 @@ X_i = U_i Θ_i (V R_i)ᵀ + E_i,   R_i ∈ O(r, r_i),  Θ_i = diag(θ_i1, …, �
 `RankR/Defs.lean` takes the slice `r_i = 1`, where the per-table input is the proved rank-one
 `SpikedModel.SingleTableLaw`. This file removes that restriction. Every object of
 `RankR/Defs.lean` reappears with the table index `i` replaced by the block index `(i, j)`,
-`i ∈ [M]`, `j ∈ [r_i]`, and `M` replaced by `r̃ = ∑_i r_i` (`main_paper.tex:765`).
+`i ∈ [M]`, `j ∈ [r_i]`, and `M` replaced by `r̃ = ∑_i r_i` (after `assum:unaligned`).
 
 ## Content
 
@@ -46,7 +46,7 @@ X_i = U_i Θ_i (V R_i)ᵀ + E_i,   R_i ∈ O(r, r_i),  Θ_i = diag(θ_i1, …, �
 5. `perfRG`, `limitRG` and their weighted twins `perfRGW`, `limitRGW`, `optWG`, `limitOptG`.
 6. The statements moved to `RankR/GeneralMain.lean`:
    `lem_general_rank_delocalization_general`, `gramR_general`, `VtV_tendsto_general`,
-   `prop_general_rank_unweighted_svdstack_general`, `thm_gen_rank_weight_svdstak_general_r`.
+   `prop_general_rank_unweighted_svdstack_general`, `thm_gen_rank_weight_svdstack_general_r`.
 7. The reductions to the `r_i = 1` slice: `tableLawR_of_singleTableLaw`,
    `BBlock_one_eq_BR`, `DBlock_one_eq_Dmat`, `ABlock_one_eq_AbetaR`, `limitRG_one_eq_limitR`.
 
@@ -63,7 +63,7 @@ the pair of the flat index `p`, and every entry of every block object is read th
 
 `Ṽ` has one row per spike, `v̂_ij`, and `v̂_ij` must be the singular vector of `X_i` that tracks
 the spike `θ_ij`. The model therefore orders the spikes of a table: `SpikedModelR.hθanti` says
-`θ_i1 > θ_i2 > … > θ_i r_i`. This is the paper's own hypothesis at `main_paper.tex:768` ("the
+`θ_i1 > θ_i2 > … > θ_i r_i`. This is the paper's own hypothesis after `assum:unaligned` ("the
 diagonal entries of `Θ_i` are distinct"), made into an order, which is free: a simultaneous
 permutation of the columns of `U_i`, `Θ_i` and `R_i` leaves the model unchanged. With it, the
 `j`-th spike is the `j`-th largest eigenvalue of `X_iᵀ X_i` above the detection threshold, so
@@ -91,8 +91,8 @@ them, `overlapIdx_zero` among them. This file consumes that interface. -/
 of orthonormal columns and `Θ = diag(θ_1, …, θ_rk)`. The rank-`rk` twin of `SpikedModel`.
 
 `hθanti` orders the spikes strictly, which is the paper's distinctness hypothesis
-(`main_paper.tex:768`) plus the free choice of column order; see the header. `hθnn` is
-`assum:unaligned`'s "diagonal with positive entries" weakened to `0 ≤ θ_k` (F8, 2026-09-05):
+(after `assum:unaligned`) plus the free choice of column order; see the header. `hθnn` is
+`assum:unaligned`'s `Θ_i ∈ ℝ^{r_i × r_i}_{>0}` diagonal weakened to `0 ≤ θ_k` (F8, 2026-09-05):
 with `hθanti` it still forces at most one zero spike per table, at the last index
 (`θ_eq_zero_unique`), and a supercritical spike is positive (`θ_pos_of_sup`). The
 weakening matches `SpikedModel.hθ : 0 ≤ θ` at rank one and makes `SpikedModel.toRankR`
@@ -210,7 +210,7 @@ end SpikedModelR
 
 /-! ### 2. The unaligned model at general `r_i` -/
 
-/-- `assum:unaligned` (`main_paper.tex:753`) with no restriction on the `r_i`. `M` tables live
+/-- `assum:unaligned` with no restriction on the `r_i`. `M` tables live
 on one probability space per `N`. A shared `V N ∈ ℝ^{d_N × r}` has orthonormal columns, table
 `i` carries a fixed `R_i ∈ O(r, r_i)`, and the right singular subspace of table `i` is
 `V R_i`.
@@ -233,7 +233,7 @@ structure UnalignedModelR {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)]
 
 /-! ### 3. The block index and the block objects
 
-`rtot rk` is the paper's `r̃ = ∑_i r_i` (`main_paper.tex:765`) and `blk p` is the pair `(i, j)`
+`rtot rk` is the paper's `r̃ = ∑_i r_i` (after `assum:unaligned`) and `blk p` is the pair `(i, j)`
 of the flat index `p`. -/
 
 /-- `r̃ = ∑_i r_i`, the number of spikes across all tables. -/
@@ -255,24 +255,24 @@ section Block
 
 variable {M r : ℕ} {rk : Fin M → ℕ}
 
-/-- The vector `β ∈ ℝ^{r̃}` of the paper (`main_paper.tex:789`), read off the per-table family
-`β_ij`. -/
+/-- The vector `β ∈ ℝ^{r̃}` of the paper (before `prop:general_rank_unweighted_svdstack`), read off
+the per-table family `β_ij`. -/
 noncomputable def betaFlat (β : (i : Fin M) → Fin (rk i) → ℝ) (p : Fin (rtot rk)) : ℝ :=
   β (blk p).1 (blk p).2
 
-/-- `B_R = diag(β) R_stack ∈ ℝ^{r̃ × r}` (`main_paper.tex:1951`): row `(i, j)` is
+/-- `B_R = diag(β) R_stack ∈ ℝ^{r̃ × r}` (`lem:general_rank_delocalization`): row `(i, j)` is
 `β_ij (R_i)_jᵀ`. -/
 noncomputable def BBlock (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) : Matrix (Fin (rtot rk)) (Fin r) ℝ :=
   Matrix.of fun p k => betaFlat β p * R (blk p).1 k (blk p).2
 
-/-- `D = diag(1 - β_ij²) ∈ ℝ^{r̃ × r̃}` (`main_paper.tex:2040`). -/
+/-- `D = diag(1 - β_ij²) ∈ ℝ^{r̃ × r̃}` (the proof of `thm:gen_rank_weight_svdstack`). -/
 noncomputable def DBlock (β : (i : Fin M) → Fin (rk i) → ℝ) :
     Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ :=
   Matrix.diagonal fun p => 1 - betaFlat β p ^ 2
 
-/-- `A_{β,R} = B_R B_Rᵀ + D` (`main_paper.tex:2049`). The paper's entrywise definition
-(`main_paper.tex:779`) is `ABlock_apply`, `ABlock_diag` and `ABlock_intra`. -/
+/-- `A_{β,R} = B_R B_Rᵀ + D` (proof of `thm:gen_rank_weight_svdstack`). The entrywise form of
+Section `sec:subsec_unweighted_unaligned123` is `ABlock_apply`, `ABlock_diag`, `ABlock_intra`. -/
 noncomputable def ABlock (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) :
     Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ :=
@@ -283,9 +283,9 @@ theorem isHermitian_ABlock (β : (i : Fin M) → Fin (rk i) → ℝ)
   Matrix.IsHermitian.add (isHermitian_mul_transpose_self (BBlock β R))
     (Matrix.isHermitian_diagonal _)
 
-/-- The paper's entrywise definition of `A_{β,R}` (`main_paper.tex:779`):
-`[A]_{(i,j),(i',j')} = β_ij β_{i'j'} (R_i)_jᵀ (R_{i'})_{j'}` off the diagonal, and `1` on it
-once `ABlock_diag` is applied. -/
+/-- The paper's entrywise definition of `A_{β,R}` (start of Section
+`sec:subsec_unweighted_unaligned123`): `[A]_{(i,j),(i',j')} = β_ij β_{i'j'} (R_i)_jᵀ (R_{i'})_{j'}`
+off the diagonal, and `1` on it once `ABlock_diag` is applied. -/
 theorem ABlock_apply (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) (p q : Fin (rtot rk)) :
     ABlock β R p q
@@ -306,8 +306,8 @@ theorem ABlock_diag {β : (i : Fin M) → Fin (rk i) → ℝ}
   rw [ABlock_apply, if_pos rfl, hR (blk p).1, Matrix.one_apply_eq]
   ring
 
-/-- Inside one table the off-diagonal entries of `A_{β,R}` vanish, which is the paper's
-`(Ṽ Ṽᵀ)_{(i,j),(i,j')} = 0` for `j ≠ j'` (`main_paper.tex:1972`). Again `R_i ∈ O(r, r_i)`. -/
+/-- Inside one table the off-diagonal entries of `A_{β,R}` vanish; again `R_i ∈ O(r, r_i)`. This is
+`(Ṽ Ṽᵀ)_{(i,j),(i,j')} = 0` for `j ≠ j'` in the proof of `lem:general_rank_delocalization`. -/
 theorem ABlock_intra {β : (i : Fin M) → Fin (rk i) → ℝ}
     {R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ} (hR : ∀ i, (R i)ᵀ * R i = 1)
     {p q : Fin (rtot rk)} (hpq : p ≠ q) (hsame : (blk p).1 = (blk q).1) :
@@ -355,7 +355,7 @@ theorem ABlock_posDef {β : (i : Fin M) → Fin (rk i) → ℝ}
 
 /-- The limit of `prop:general_rank_unweighted_svdstack` at general `r_i`, in the trace form of
 `limitR`: `tr(B_Rᵀ (specInvTop A_{β,R} r) B_R)`, the paper's
-`‖Λ^{-1/2} Qᵀ diag(β) R_stack‖_F²` (`main_paper.tex:802`). -/
+`‖Λ^{-1/2} Qᵀ diag(β) R_stack‖_F²` (`prop:general_rank_unweighted_svdstack`). -/
 noncomputable def limitRG (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) : ℝ :=
   Matrix.trace ((BBlock β R)ᵀ * specInvTop (ABlock β R) (isHermitian_ABlock β R) r *
@@ -363,8 +363,8 @@ noncomputable def limitRG (β : (i : Fin M) → Fin (rk i) → ℝ)
 
 /-! #### The weighted block objects
 
-`main_paper.tex:886` weights `Ṽ` by a full matrix `W ∈ ℝ^{r̃ × r̃}`, so `W` is not required to
-be block diagonal. The optimum is the diagonal `W⋆ = D^{-1/2}` (`main_paper.tex:895`), whose
+The text before `thm:gen_rank_weight_svdstack` weights `Ṽ` by a full `W ∈ ℝ^{r̃ × r̃}`, not
+necessarily block diagonal. The optimum is the diagonal `W⋆ = D^{-1/2}` of that theorem, whose
 entries are the rank-one optimal weights `optW` of `SVDStack/Defs.lean`. -/
 
 /-- `W A_{β,R} Wᵀ`, the limit of the weighted Gram matrix. -/
@@ -393,8 +393,8 @@ noncomputable def limitRGW (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ)
   Matrix.trace ((BBlockW W β R)ᵀ *
     specInvTop (ABlockW W β R) (isHermitian_ABlockW W β R) r * BBlockW W β R)
 
-/-- `W⋆ = D^{-1/2} = diag(1/√(1 - β_ij²))` (`main_paper.tex:895`). Its entries are the rank-one
-optimal weights `optW`, which is the paper's statement that the optimal weighting does not
+/-- `W⋆ = D^{-1/2} = diag(1/√(1 - β_ij²))` (`thm:gen_rank_weight_svdstack`). Its entries are the
+rank-one optimal weights `optW`, which is the paper's statement that the optimal weighting does not
 depend on the `R_i`. -/
 noncomputable def optWG (β : (i : Fin M) → Fin (rk i) → ℝ) :
     Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ :=
@@ -417,7 +417,7 @@ theorem isHermitian_DBlock (β : (i : Fin M) → Fin (rk i) → ℝ) :
   Matrix.isHermitian_diagonal _
 
 /-- `A_{β,R}^{-1/2} D A_{β,R}^{-1/2}`, the matrix whose bottom `r` eigenvalues give `L⋆`
-(`main_paper.tex:898`). -/
+(`thm:gen_rank_weight_svdstack`). -/
 noncomputable def DcongG (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ) :
     Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ :=
@@ -428,8 +428,8 @@ theorem isHermitian_DcongG (β : (i : Fin M) → Fin (rk i) → ℝ)
   isHermitian_inv_mul_mul_inv (isHermitian_DBlock β) (transpose_ABlockSqrt β R)
 
 /-- `L⋆ = r - ∑_{ℓ=1}^{r} λ_{r̃ + 1 - ℓ}(A_{β,R}^{-1/2} D A_{β,R}^{-1/2})`
-(`main_paper.tex:898`). The paper's index `r̃ + 1 - ℓ` at `ℓ = k + 1` is `Fin.rev`, the index
-form of `LinAlg/KyFan.lean`. -/
+(`thm:gen_rank_weight_svdstack`). The paper's index `r̃ + 1 - ℓ` at `ℓ = k + 1` is `Fin.rev`, the
+index form of `LinAlg/KyFan.lean`. -/
 noncomputable def limitOptG (β : (i : Fin M) → Fin (rk i) → ℝ)
     (R : (i : Fin M) → Matrix (Fin r) (Fin (rk i)) ℝ)
     (hr : r ≤ Fintype.card (Fin (rtot rk))) : ℝ :=
@@ -459,8 +459,8 @@ theorem isHermitian_tableGramG (m : UnalignedModelR μ M n d r rk) (i : Fin M) (
   isHermitian_transpose_mul_self ((m.tbl i).X N ω)
 
 /-- `v̂_ij`, the `j`-th right singular vector of table `i`, with the paper's sign convention
-`⟪v̂_ij, (V R_i)_j⟫ ≥ 0` (`main_paper.tex:1958`). The spike order `hθanti` of the model is what
-makes the sorted index `j` the right one; see the header. -/
+`⟪v̂_ij, (V R_i)_j⟫ ≥ 0` (the proof of `lem:general_rank_delocalization`). The spike order `hθanti`
+of the model is what makes the sorted index `j` the right one; see the header. -/
 noncomputable def vhatG (m : UnalignedModelR μ M n d r rk) (i : Fin M) (j : Fin (rk i))
     (N : ℕ) (ω : Ω N) : EuclideanSpace ℝ (Fin (d N)) :=
   if 0 ≤ ⟪vEig (m.tableGramG i N ω) (m.isHermitian_tableGramG i N ω) (j : ℕ),
@@ -506,16 +506,16 @@ theorem norm_colVecG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (k : Fin r) :
 
 /-- Performance of svdstack at general `r_i`: `tr((Ṽ V)ᵀ (specInvTop (Ṽ Ṽᵀ) r) (Ṽ V))`, which
 equals `‖V̂_svdstackᵀ V‖_F²` at any top-`r` eigenframe of `Ṽ Ṽᵀ` with nonnegative eigenvalues
-(`main_paper.tex:1982`; `frobSq_vhatSvdstackG` in `RankR/GeneralFrob.lean`, which needs the
-eigengap `λ_r > λ_{r+1}` for the frame to be the top-`r` one, and `λ_r > 0` for the inverse;
-Track B audit C4). The identity was measured to 3.1e-15 over 96 draws at `M = 2`,
-`r_i = (2, 1)` (`notes/archive/rank_r_general.md`, scan row M2). -/
+(the proof of `prop:general_rank_unweighted_svdstack`; `frobSq_vhatSvdstackG` in
+`RankR/GeneralFrob.lean`, which needs the eigengap `λ_r > λ_{r+1}` for the frame to be the top-`r`
+one, and `λ_r > 0` for the inverse; Track B audit C4). The identity was measured to 3.1e-15 over 96
+draws at `M = 2`, `r_i = (2, 1)` (`notes/archive/rank_r_general.md`, scan row M2). -/
 noncomputable def perfRG (m : UnalignedModelR μ M n d r rk) (N : ℕ) (ω : Ω N) : ℝ :=
   Matrix.trace ((m.VtVG N ω)ᵀ *
     specInvTop (m.gramG N ω) (m.isHermitian_gramG N ω) r * m.VtVG N ω)
 
 /-- `Ṽ_W = W Ṽ`, whose top `r` right singular vectors are `V̂_svdstack(W)`
-(`main_paper.tex:886`). -/
+(before `thm:gen_rank_weight_svdstack`). -/
 noncomputable def VtWG (m : UnalignedModelR μ M n d r rk)
     (W : Matrix (Fin (rtot rk)) (Fin (rtot rk)) ℝ) (N : ℕ) (ω : Ω N) :
     Matrix (Fin (rtot rk)) (Fin (d N)) ℝ := W * m.VtG N ω
@@ -584,7 +584,7 @@ theorem DBlock_one_eq_Dmat (β : Fin M → ℝ) :
   simp [Matrix.submatrix_apply, DBlock, Matrix.diagonal_apply, Dmat, betaFlat, blk_flat,
     flat_zero_eq_iff]
 
-/-- `A_{β,R}` at `r_i = 1` is `AbetaR` of `RankR/Defs.lean` (`main_paper.tex:810`). -/
+/-- At `r_i = 1`, `A_{β,R}` is `AbetaR` (after `prop:general_rank_unweighted_svdstack`). -/
 theorem ABlock_one_eq_AbetaR (β : Fin M → ℝ) (R : Fin M → EuclideanSpace ℝ (Fin r)) :
     (ABlock (rk := fun _ => 1) (fun i _ => β i) (Rone R)).submatrix
         (fun i : Fin M => flat i 0) (fun i : Fin M => flat i 0) = AbetaR β R := by

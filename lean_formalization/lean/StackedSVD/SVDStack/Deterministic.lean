@@ -16,7 +16,7 @@ random symmetric `M × M` matrices with an entrywise limit.
 
 1. `beta_mem_Ico` (`0 ≤ β < 1`) and `one_le_lamMax_Abeta` (`λ_max(A_β) ≥ 1`).
 2. `one_lt_card_fin_of_ne` and the gap bound `abeta_gap` (`λ₁ - λ₂ ≥ β_i β_j`,
-   `main_paper.tex:1195`), step (iv) of the paper's proof.
+   the text after the proof of `lem:entrywise_conv_eigenvec`), step (iv) of the paper's proof.
 3. Section `EntrywiseEigenvec`: `lamMax_tendstoInProb`, `topProj_overlap_tendsto`,
    `topSimple_whp_of_tendsto`, `lamMax_gt_half_whp_of_tendsto`, and the special case
    `lem_entrywise_conv_eigenvec`. These take any symmetric limit matrix, so the weighted
@@ -175,8 +175,8 @@ theorem one_lt_card_fin_of_ne {M : ℕ} {i j : Fin M} (hij : i ≠ j) :
 -- `(A_β)_{kk} = 1` and `(A_β)_{kl} = β_k β_l`. The hypothesis stays in the statement because
 -- the note asks for it (step-8 choice 4).
 set_option linter.unusedVariables false in
-/-- The spectral gap of `A_β` (`main_paper.tex:1195`, step (iv) of the proof of
-`thm:svd_stack_general`): `λ₁(A_β) - λ₂(A_β) ≥ β_i β_j` for any two distinct indices with
+/-- The spectral gap of `A_β` (step (iv) of the proof of `thm:svd_stack_general`; the text after
+the proof of `lem:entrywise_conv_eigenvec`): `λ₁(A_β) - λ₂(A_β) ≥ β_i β_j` for any two distinct
 `β_i > 0` and `β_j > 0`. The paper states it for the two largest entries of a sorted `β`; the
 unsorted form here follows because `β₁ β₂` is the largest pairwise product of a nonnegative
 sorted `β`. The second eigenvalue is `eigenvalues₀ ⟨1, _⟩`, the second entry of Mathlib's

@@ -38,7 +38,7 @@ Numeric check (a session script, not kept): seed 20260901, `θ = (0.5, 0.4, 0.6)
 `d = 400` and `d = 800` (4 draws each) `λ = 13.59 ± 0.15` and `13.59 ± 0.11`, overlap
 `0.008 ± 0.011` and `0.008 ± 0.008`, and every link of the chain above holds on every draw.
 
-Paper: `main_paper.tex` line 462 (`thm:stacksvd_weighted`), line 1409 (`eq:assumption4`).
+Paper: `thm:stacksvd_weighted`, `eq:assumption4`.
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology

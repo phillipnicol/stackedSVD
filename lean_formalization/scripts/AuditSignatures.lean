@@ -259,21 +259,21 @@ every rank-`r` module is in the build, and Parts 2 to 8 below cover it. -/
 #check @StackedSVD.UnalignedModelR.gramR_general
 #check @StackedSVD.UnalignedModelR.VtV_tendsto_general
 #check @StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_conv
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_paper
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_conv
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_paper
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full
 #check @StackedSVD.UnalignedModelR.perfRGW_uniform_bound
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian_one
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian_one
 #check @StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_gaussian_one
 #check @StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_frobenius_eig
 #check @StackedSVD.SpikedModelR.tableLawR_of_gaussian
 #check @StackedSVD.UnalignedModelR.tableLawR_of_gaussian
-#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_full
-#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_full_gaussian
+#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_full
+#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_full_gaussian
 #check @StackedSVD.UnalignedModel.perfRW_uniform_bound
 #check @StackedSVD.UnalignedModel.prop_general_rank_unweighted_svdstack_gaussian
-#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_gaussian
+#check @StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_gaussian
 
 /-! ### Part 5: Track D item D3, the aggregate clause -/
 
@@ -321,21 +321,21 @@ every rank-`r` module is in the build, and Parts 2 to 8 below cover it. -/
 #print axioms StackedSVD.UnalignedModelR.gramR_general
 #print axioms StackedSVD.UnalignedModelR.VtV_tendsto_general
 #print axioms StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_conv
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_paper
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_conv
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_paper
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full
 #print axioms StackedSVD.UnalignedModelR.perfRGW_uniform_bound
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian_one
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian_one
 #print axioms StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_gaussian_one
 #print axioms StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_frobenius_eig
 #print axioms StackedSVD.SpikedModelR.tableLawR_of_gaussian
 #print axioms StackedSVD.UnalignedModelR.tableLawR_of_gaussian
-#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_full
-#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_full_gaussian
+#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_full
+#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_full_gaussian
 #print axioms StackedSVD.UnalignedModel.perfRW_uniform_bound
 #print axioms StackedSVD.UnalignedModel.prop_general_rank_unweighted_svdstack_gaussian
-#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstak_gaussian
+#print axioms StackedSVD.UnalignedModel.thm_gen_rank_weight_svdstack_gaussian
 
 #print axioms StackedSVD.trace_conj_inv_ABlock_aligned
 #print axioms StackedSVD.limitOptG_aligned
@@ -398,10 +398,10 @@ file per the coordinator's concurrency rule) -/
 
 #check @StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_gaussian
 #check @StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_frobenius_eig_gaussian
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_of_rank_gaussian
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_paper_gaussian
-#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_of_rank_gaussian
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_paper_gaussian
+#check @StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian
 #check @StackedSVD.UnalignedModelR.thm_rank_r_svdstack_aggregate_gaussian
 
 /-! ### Part 4.4: Track D item D1 (`RankR/StackGamma.lean`, the definitions; the hypothesis
@@ -496,10 +496,10 @@ spectrum at index `j`, and the three lemmas `LinAlg/Eigen.lean` gained for it) -
 
 #print axioms StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_gaussian
 #print axioms StackedSVD.UnalignedModelR.prop_general_rank_unweighted_svdstack_general_frobenius_eig_gaussian
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_frobenius_eig_gaussian
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_of_rank_gaussian
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_paper_gaussian
-#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstak_general_r_full_gaussian
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_frobenius_eig_gaussian
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_of_rank_gaussian
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_paper_gaussian
+#print axioms StackedSVD.UnalignedModelR.thm_gen_rank_weight_svdstack_general_r_full_gaussian
 #print axioms StackedSVD.UnalignedModelR.thm_rank_r_svdstack_aggregate_gaussian
 
 #print axioms StackedSVD.Scalars.wStackR
@@ -548,7 +548,7 @@ spectrum at index `j`, and the three lemmas `LinAlg/Eigen.lean` gained for it) -
 
 /-! ## Part 5: Track E, the rank-`r` weighted stackSVD endpoint (added 2026-09-02)
 
-`thm:rank_r_stacksvd` (`main_paper.tex:2337`, Appendix E, `sec:rank_r`). Layer 1 takes the
+`thm:rank_r_stacksvd` (Appendix E, `sec:rank_r`). Layer 1 takes the
 hypothesis structure `HeteroLawR`; the Gaussian facade discharges it, so
 `thm_rank_r_stacksvd_gaussian` has model hypotheses only. The model is
 `UnalignedModelR μ M n d r (alignedRk M r)`, the exactly aligned class, with `hθpos` and

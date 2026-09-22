@@ -715,7 +715,7 @@ method_names = ['Unweighted Stack-SVD', 'Weighted Stack-SVD', 'Unweighted SVD-St
 dash_pattern = [[4,4], [5,4],[6,4],[7,4]] 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Script for figure generation for \"Stacked SVD or SVD stacked? Optimal data integration via Random Matrix Theory\" by Baharav*, Nicol* et. al. "
+        description="Script for figure generation for \"Stacked SVD or SVD stacked? A Random Matrix Theory perspective on data integration\" by Baharav*, Nicol* et. al. https://arxiv.org/abs/2507.22170"
                     "Call with --test to use small parameter choices for efficient testing, or larger custom values with command line specification. "
                     "Script by default uses GPUs if available, otherwise falls back to CPU."
     )

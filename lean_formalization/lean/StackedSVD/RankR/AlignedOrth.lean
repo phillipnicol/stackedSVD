@@ -10,8 +10,8 @@ import StackedSVD.RankR.GeneralGaussian
 
 In the exactly aligned rank-`r` model at the optimal weights `W⋆ = optWG β`, the matrix
 `V̂_svdstack(W⋆)ᵀ V` converges to a diagonal matrix: every off-diagonal entry squared tends to
-`0` in probability. The paper states asymptotic orthogonality for the stacksvd columns only
-(`main_paper.tex:926`) and says nothing for svdstack. This file closes that asymmetry.
+`0` in probability. The paper states asymptotic orthogonality for the stacksvd columns only (Section
+`sec:weighted_stacksvd_unaligned`) and says nothing for svdstack. This file closes that asymmetry.
 
 ## Route
 

@@ -14,13 +14,13 @@ import StackedSVD.LinAlg.Eigen
 # The aligned limit spectrum at one component index
 
 Step 2 of `notes/archive/rankr_D4_plan.md` (items 2.1, 2.2, 2.4 to 2.7 and 6.3), the deterministic
-half of the component clause of `thm:rank_r_svdstack` (`main_paper.tex:2405`). Everything here
+half of the component clause of `thm:rank_r_svdstack`. Everything here
 is linear algebra: no probability and no random matrix theory limit law enters.
 
 Write `W⋆ = optWG β`, `A⋆ = W⋆ A_{β,R} W⋆ᵀ`, `C = W⋆ B_R` in the exactly aligned model
 (`r_i = r`, `R_i = I`), and `S_j = Sagg β j`. The chain is
 
-1. `ABlockW_optWG_aligned_eq`: `A⋆ = C Cᵀ + I` (`main_paper.tex:2103`).
+1. `ABlockW_optWG_aligned_eq`: `A⋆ = C Cᵀ + I` (the proof of `thm:gen_rank_weight_svdstack`).
 2. `transpose_BBlockW_optWG_aligned`: `Cᵀ C = diag(S_0, …, S_{r-1})`, so the columns of `C`
    are orthogonal with `‖c_j‖² = S_j`.
 3. `eigenvalues₀_ABlockW_optWG_aligned`: the sorted spectrum of `A⋆` is
@@ -97,8 +97,8 @@ theorem transpose_optWG_mul_optWG {β : (i : Fin M) → Fin (rk i) → ℝ}
   field_simp
   nlinarith [hkey]
 
-/-- **Item 2.1**: `A⋆ = C Cᵀ + I` in the exactly aligned model (`main_paper.tex:2103`), read
-through the flatten bridges of `RankR/Flatten.lean`. -/
+/-- **Item 2.1**: `A⋆ = C Cᵀ + I` in the exactly aligned model (the proof of
+`thm:gen_rank_weight_svdstack`), read through the flatten bridges of `RankR/Flatten.lean`. -/
 theorem ABlockW_optWG_aligned_eq (β : Fin M → Fin r → ℝ) (h1 : ∀ i j, β i j ^ 2 < 1) :
     ABlockW (optWG (rk := alignedRk M r) β) β (alignedR M r)
       = BBlockW (optWG (rk := alignedRk M r) β) β (alignedR M r) *
@@ -464,7 +464,7 @@ theorem svdTerm_lt_of_pos {a b c : ℝ} (hc : 0 < c) (ha : 0 ≤ a) (hab : a < b
   · rw [if_neg hA]
     exact hpos
 
-/-- `S_j` in the paper's data `(θ, c)`: `S_j = ∑_i svdTerm θ_ij c_i` (`main_paper.tex:2395`).
+/-- `S_j` in the paper's data `(θ, c)`: `S_j = ∑_i svdTerm θ_ij c_i` (before `thm:rank_r_svdstack`).
 The rank-`r` twin of `Sval_beta` (`Scalars.lean`). -/
 theorem Sagg_beta (θ : Fin M → Fin r → ℝ) (c : Fin M → ℝ) (hc : ∀ i, 0 < c i) (j : Fin r) :
     Sagg (fun i j => beta (θ i j) (c i)) j = ∑ i, Scalars.svdTerm (θ i j) (c i) := by

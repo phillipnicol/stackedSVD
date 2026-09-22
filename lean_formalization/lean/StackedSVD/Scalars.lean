@@ -618,7 +618,7 @@ theorem stackSVDLimit_le_stackSVDLimitW {θ c : Fin M → ℝ} (hc : ∀ i, 0 < 
 
 /-! ### `thm:simple_thm1` (`cor.1`): equal `θ`, equal `c`
 
-`main_paper.tex:321`. Both halves are stated in the paper's own closed form. The stacksvd
+Both halves are stated in the paper's own closed form. The stacksvd
 half specializes `stackSVDLimit`. The svdstack half needs the spectrum of the equicorrelated
 `A_β = β₀² 11ᵀ + (1-β₀²) I`, which this section computes: `λ_max = 1 + (M-1)β₀²` and
 `(βᵀ v_max)² = M β₀²`, so `svdstackLimit = M β₀²/(1 + (M-1)β₀²)`.
@@ -864,7 +864,7 @@ end EqualTables
 
 /-! ### The strict halves of `prop:dominance`
 
-`main_paper.tex:633`: optimally weighted stacksvd "provid[es] strict improvement above its
+`prop:dominance`: optimally weighted stacksvd "provid[es] strict improvement above its
 recovery threshold when `θ_i²/c_i` is not constant across `i`, and when at least two `θ_i`
 are nonzero (respectively)". The recovery threshold is `∑_i θ_i⁴/c_i > 1`; the paper leaves
 the two other conditions in words, and they become `∃ i j, θ_i² c_j ≠ θ_j² c_i` and
@@ -1096,7 +1096,7 @@ namespace StackedSVD.Scalars
 
 variable {M : ℕ}
 
-/-! ### The best binary weighting: the maximum over subsets (`main_paper.tex:442`)
+/-! ### The best binary weighting: the maximum over subsets (the display after `cor.2`)
 
 `cor.2` fixes one subset, `{i : θ_i⁴ > c_i}`. The paper then optimizes over every subset and
 writes the limit as a maximum of the same ratio. `binaryStackSVDLimitMax` is that maximum.
@@ -1112,13 +1112,13 @@ with the optimally weighted limit is `binaryStackSVDLimitMax_le_stackSVDLimitW` 
 theorem powerset_univ_nonempty : (Finset.univ : Finset (Finset (Fin M))).Nonempty :=
   ⟨∅, Finset.mem_univ _⟩
 
-/-- The limit of optimally binary-weighted stacksvd (`main_paper.tex:442`): the maximum of
+/-- The limit of optimally binary-weighted stacksvd (the display after `cor.2`): the maximum of
 `binaryStackSVDLimit` over every subset of the `M` tables. -/
 noncomputable def binaryStackSVDLimitMax (θ c : Fin M → ℝ) : ℝ :=
   (Finset.univ : Finset (Finset (Fin M))).sup' powerset_univ_nonempty
     fun S => binaryStackSVDLimit S θ c
 
-/-- The paper's ratio at a subset, with the guard removed (`main_paper.tex:442`, first
+/-- The paper's ratio at a subset, with the guard removed (the display after `cor.2`, first
 branch). `binaryStackSVDLimit` is this value when the subset is above the stacksvd threshold,
 and `0` otherwise. -/
 noncomputable def binaryStackSVDRatio (θ c : Fin M → ℝ) (S : Finset (Fin M)) : ℝ :=
@@ -1196,7 +1196,7 @@ theorem binaryStackSVDLimit_univ (θ c : Fin M → ℝ) :
   · rw [show (∑ i, θ i ^ 2) * ((∑ i, θ i ^ 2) + 1) = (∑ i, θ i ^ 2) ^ 2 + ∑ i, θ i ^ 2 by ring]
   · rfl
 
-/-- `main_paper.tex:442`: binary weighting "will trivially always perform at least as well as
+/-- The text after `cor.2`: binary weighting "will trivially always perform at least as well as
 unweighted stacksvd". -/
 theorem stackSVDLimit_le_binaryStackSVDLimitMax (θ c : Fin M → ℝ) :
     stackSVDLimit θ c ≤ binaryStackSVDLimitMax θ c := by
@@ -1213,7 +1213,7 @@ theorem binaryStackSVDRatio_le (θ c : Fin M → ℝ) (S : Finset (Fin M)) :
   · exact le_rfl
   · exact div_nonpos_of_nonpos_of_nonneg (by linarith [not_lt.mp h]) (by positivity)
 
-/-- `main_paper.tex:442`, the two-case display. The guard commutes with the maximum: with the
+/-- The two-case display after `cor.2`. The guard commutes with the maximum: with the
 Lean convention `x / 0 = 0`, the maximum of the guarded values is the maximum of the paper's
 raw ratios. The paper's second branch is the empty subset, which contributes `0` to both
 sides. No hypothesis is needed: below the guard the ratio is `≤ 0`. -/
@@ -1231,7 +1231,7 @@ theorem binaryStackSVDLimitMax_eq_sup_ratio (θ c : Fin M → ℝ) :
   · exact Finset.sup'_le _ _ fun S _ =>
       (binaryStackSVDRatio_le θ c S).trans (binaryStackSVDLimit_le_max S θ c)
 
-/-- `main_paper.tex:443`, "this improves not only the performance of stacksvd, but also the
+/-- The text after `cor.2`, "this improves not only the performance of stacksvd, but also the
 detectability threshold": one subset above the stacksvd threshold makes the maximum positive,
 whatever the full collection does. -/
 theorem binaryStackSVDLimitMax_pos {θ c : Fin M → ℝ} (hc : ∀ i, 0 < c i)
@@ -1251,7 +1251,7 @@ namespace StackedSVD.Scalars
 
 variable {M : ℕ}
 
-/-! ### `prop:binarystacksvd_inadmissable` (`main_paper.tex:660`)
+/-! ### `prop:binarystacksvd_inadmissable`
 
 The paper builds one instance: `θ_i = 1` for every table and `c_j = 2j - 1` (one-based `j`),
 which is `c i = 2i + 1` on the zero-based `Fin M`. On it,
@@ -1471,7 +1471,7 @@ theorem inad_lt_stackSVDLimitW {M : ℕ} (hM : 1 ≤ M) {ε : ℝ} (hε : 0 < ε
   exact lt_stackSVDLimitW (inadC_pos M) (inad_thr hM hε hε1 hg)
     (Set.mem_Icc.mpr ⟨by linarith, by linarith⟩) hg
 
-/-- `prop:binarystacksvd_inadmissable` (`main_paper.tex:660`): for every `ε ∈ (0,1)` and every
+/-- `prop:binarystacksvd_inadmissable`: for every `ε ∈ (0,1)` and every
 `M ≥ e^{-γ} exp(2/ε)`, the instance `θ_i = 1`, `c_i = 2i - 1` puts optimally weighted stacksvd
 above `1 - ε` while optimally binary-weighted stacksvd and optimally weighted svdstack are
 both `0`, and so are unweighted stacksvd and unweighted svdstack. -/

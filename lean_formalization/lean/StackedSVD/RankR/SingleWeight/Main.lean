@@ -15,8 +15,8 @@ the scalar layer `secMat`, `swTerm`, `swLimit` and `EigSep`.
 
 ## The paper
 
-`main_paper.tex:2112`, `prop:gen_rank_stacksvd_singleweight`. Under
-`assum:gen_rank_stacksvd_eig_sep` (`main_paper.tex:2104`),
+`prop:gen_rank_stacksvd_singleweight`. Under
+`assum:gen_rank_stacksvd_eig_sep`,
 
 ```
 ‖V̂_stacksvd(w)ᵀ V‖_F² →p ∑_ℓ (1 - ∑_i c_i w_i⁴/(γ_ℓ - w_i²)²)
@@ -46,10 +46,10 @@ namespace UnalignedModelR
 variable {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)] {μ : ∀ N, Measure (Ω N)}
   {M : ℕ} {n : Fin M → ℕ → ℕ} {d : ℕ → ℕ} {r : ℕ} {rk : Fin M → ℕ}
 
-/-- The RMT input of `prop:gen_rank_stacksvd_singleweight` (`main_paper.tex:2112`), in the
+/-- The RMT input of `prop:gen_rank_stacksvd_singleweight`, in the
 shape of `HeteroLawR` (`RankR/StackGamma.lean:473`). One field per thing the proposition reads.
 
-* `align` is the per-pair limit of the display at `main_paper.tex:2153`:
+* `align` is the per-pair limit of the `(v̂_lᵀ v_k)²` display (Liu et al. Theorem 1) in its proof:
   `(v̂_lᵀ v_k)² → η_l (z_l)_k² / (γ_l z_lᵀ secDerivMat z_l)`, that is
   `swTerm … * (z_l)_k²`. It is in **projector** form, so it needs no simplicity, and it is
   stronger than the inner form by Bessel (`overlapIdx_ge_inner_sq`,
@@ -73,9 +73,9 @@ structure SingleWeightLaw (m : UnalignedModelR μ M n d r rk) (w c : Fin M → �
   simpleIdx : ∀ (l : Fin r) (N : ℕ), ∀ᵐ ω ∂(μ N),
     SimpleIdx (m.stackGramW w N ω) (m.isHermitian_stackGramW w N ω) (l : ℕ)
 
-/-- **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`), second half, Layer 1
+/-- **`prop:gen_rank_stacksvd_singleweight`**, second half, Layer 1
 form: under `EigSep` and the limit law the single-weight stacksvd performance converges in
-probability to the paper's sum at `main_paper.tex:2119`.
+probability to the sum in the proposition.
 
 The first half of the proposition, the existence of the unit eigenvector `z_ℓ`, is the
 deterministic theorem `SingleWeight.exists_unit_eigvec_secMat`
@@ -111,7 +111,7 @@ theorem prop_gen_rank_stacksvd_singleweight
   rw [hval] at hsum
   exact hsum
 
-/-- **`prop:gen_rank_stacksvd_singleweight`** (`main_paper.tex:2112`) in the paper's own
+/-- **`prop:gen_rank_stacksvd_singleweight`** in the paper's own
 inner-product form, one pair at a time: `(v̂_lᵀ v_k)² →p swTerm … (γ_l) (z_l) (z_l)_k²`.
 Mirror: `thm_rank_r_stacksvd_inner` (`RankR/StackMain.lean:150`). Route: `law.align` on the
 almost sure event `law.simpleIdx l N`, through `normSq_specProjIdx_eq_inner_sq`. No `EigSep`
